@@ -1,0 +1,43 @@
+﻿@page "/KeyBoard"
+<MudTable Dense Elevation=0 Outlined Hover T="KeyboardModel" Items="Keyboards">
+    <ToolBarContent>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+            Create
+        </MudButton>
+        <MudButton Color=Color.Surface Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
+            Reload
+        </MudButton>
+        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.ImportExport">
+            Export
+        </MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Serial Number</MudTh>
+        <MudTh>Manufacturer</MudTh>
+        <MudTh>Model</MudTh>
+        <MudTh>IsWireless</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.SerialNumber</MudTd>
+        <MudTd>@context.Manufacturer</MudTd>
+        <MudTd>@context.Model</MudTd>
+        <MudTd>
+            <MudCheckBox Checked=@context.IsWireless ReadOnly/>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+@code{
+    private List<KeyboardModel> Keyboards = new List<KeyboardModel>()
+    {
+        new KeyboardModel()
+        {
+            SerialNumber="1234",
+            Manufacturer="Zebronic",
+            Model="C3PO",
+            IsWireless=true
+        }
+    };
+}

@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudLayout>
+    <MudAppBar Dense>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@open" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Asset Inventory</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Href="" Icon="@Icons.Filled.Dashboard" IconColor="Color.Primary" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+            <MudNavLink Href="Assets" Icon="@Icons.Filled.Category" IconColor="Color.Primary">Asset Categories</MudNavLink>
+            <MudNavLink Href="About" Icon="@Icons.Filled.Info" IconColor="Color.Primary">About</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer Class="mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+ @code{
+    bool open = false;
+
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+    
+
+}
