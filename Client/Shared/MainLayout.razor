@@ -6,7 +6,8 @@
     <MudAppBar Dense>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit"/>
+        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Mode"/>
     </MudAppBar>
     <MudDrawer @bind-Open="@open" Elevation="1">
         <MudDrawerHeader>
