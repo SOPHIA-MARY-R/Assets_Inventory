@@ -8,8 +8,8 @@
         <MudSpacer />
         <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
         <MudToggleIconButton @bind-Toggled="@_isDarkMode"
-                     Icon="@Icons.Filled.Brightness5" Color="@Color.Warning" Title="Off"
-                     ToggledIcon="@Icons.Filled.Brightness2" ToggledColor="@Color.Primary" ToggledTitle="On"/>
+                     Icon="@Icons.Filled.Nightlight" Color="@Color.Inherit" Title="Switch to Dark Theme"
+                     ToggledIcon="@Icons.Filled.LightMode" ToggledColor="@Color.Inherit" ToggledTitle="Switch to Light Theme"/>
     </MudAppBar>
     <MudDrawer @bind-Open="@open" Elevation="1">
         <MudDrawerHeader>
