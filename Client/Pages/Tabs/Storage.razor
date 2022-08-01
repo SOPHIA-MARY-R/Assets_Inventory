@@ -1,4 +1,5 @@
 ﻿@page "/Storage"
+@using MyFirstBlazorWASMApp.Client.Enums;
 <MudTable Dense Elevation=0 Outlined Hover T="StorageModel" Items="Storages">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
@@ -13,13 +14,25 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
-        <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
+        <MudTh>Bus type</MudTh>
+        <MudTh>Media type</MudTh>
+        <MudTh>Health condition</MudTh>
+        <MudTh>Friendly name</MudTh>
+        <MudTh>Size</MudTh>
+        <MudTh>IsActive</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
-        <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
+        <MudTd>@context.BusType</MudTd>
+        <MudTd>@context.MediaType</MudTd>
+        <MudTd>@context.HealthCondition</MudTd>
+        <MudTd>@context.FriendlyName</MudTd>
+        <MudTd>@context.Size</MudTd>
+        <MudTd>
+            <MudCheckBox Checked=@context.IsActive ReadOnly/>
+        </MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -31,8 +44,13 @@
         new StorageModel()
         {
             SerialNumber="1234",
-            Manufacturer="Zebronic",
-            Model="C3PO"
+            Model="C3PO",
+            BusType=DriveBusType.MAX,
+            MediaType=DriveMediaType.HDD,
+            HealthCondition=DriveHealthCondition.Healthy,
+            FriendlyName="Hardy",
+            Size=120,
+            IsActive=true,
         }
     };
 }

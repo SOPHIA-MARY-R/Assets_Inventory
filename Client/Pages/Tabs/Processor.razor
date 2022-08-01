@@ -1,4 +1,5 @@
 ﻿@page "/Processor"
+@using MyFirstBlazorWASMApp.Client.Enums
 <MudTable Dense Elevation=0 Outlined Hover T="ProcessorModel" Items="Processors">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
@@ -14,12 +15,26 @@
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
-        <MudTh>Model</MudTh>
+        <MudTh>ProcessorID</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Architecture</MudTh>
+        <MudTh>Family</MudTh>
+        <MudTh>No of cores</MudTh>
+        <MudTh>No of Logical Processors</MudTh>
+        <MudTh>Thread count</MudTh>
+        <MudTh>Max clock speed</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
-        <MudTd>@context.Model</MudTd>
+        <MudTd>@context.ProcessorID</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Architecture</MudTd>
+        <MudTd>@context.Family</MudTd>
+        <MudTd>@context.NumberOfCores</MudTd>
+        <MudTd>@context.NumberOfLogicalProcessors</MudTd>
+        <MudTd>@context.ThreadCount</MudTd>
+        <MudTd>@context.MaxClockSpeed</MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -32,7 +47,14 @@
         {
             SerialNumber="1234",
             Manufacturer="Zebronic",
-            Model="C3PO"
+            ProcessorID="C3PO",
+            Name="Intel",
+            Architecture=ProcessorArchitecture.ia64,
+            Family=8086,
+            NumberOfCores=4,
+            NumberOfLogicalProcessors=8,
+            ThreadCount=36,
+            MaxClockSpeed=2
         }
     };
 }
