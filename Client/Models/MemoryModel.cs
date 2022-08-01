@@ -1,9 +1,14 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Models
+﻿using MyFirstBlazorWASMApp.Client.Enums;
+
+namespace MyFirstBlazorWASMApp.Client.Models
 {
     public class MemoryModel
     {
         public string SerialNumber { get; set; }
         public string Manufacturer { get; set; }
-        public string Model { get; set; }
+        public int CapacityInGB{ get; set; }
+        public MemoryType MemoryType{ get; set; }
+        public double Speed{ get; set; }
+        public MemoryFormFactor FormFactor{ get; set; }
     }
 }

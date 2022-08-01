@@ -14,12 +14,18 @@
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
-        <MudTh>Model</MudTh>
+        <MudTh>Capacity in GB</MudTh>
+        <MudTh>Memory Type</MudTh>
+        <MudTh>Speed</MudTh>
+        <MudTh>Form Factor</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
-        <MudTd>@context.Model</MudTd>
+        <MudTd>@context.CapacityInGB</MudTd>
+        <MudTd>@context.MemoryType</MudTd>
+        <MudTd>@context.Speed</MudTd>
+        <MudTd>@context.FormFactor</MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -32,7 +38,10 @@
         {
             SerialNumber="1234",
             Manufacturer="Zebronic",
-            Model="C3PO"
+            CapacityInGB=8,
+            MemoryType=Enums.MemoryType.DRAM,
+            Speed=1335,
+            FormFactor=Enums.MemoryFormFactor.SRIMM
         }
     };
 }

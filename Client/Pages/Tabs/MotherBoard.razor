@@ -14,12 +14,16 @@
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
-        <MudTh>Model</MudTh>
+        <MudTh>Product</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Version</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
-        <MudTd>@context.Model</MudTd>
+        <MudTd>@context.Product</MudTd>
+        <MudTd>@context.Status</MudTd>
+        <MudTd>@context.Version</MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -32,7 +36,9 @@
         {
             SerialNumber="1234",
             Manufacturer="Zebronic",
-            Model="C3PO"
+            Product="9025",
+            Status="Good",
+            Version="90.05"
         }
     };
 }
