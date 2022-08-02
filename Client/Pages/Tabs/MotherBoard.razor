@@ -10,6 +10,8 @@
         <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
             Export
         </MudButton>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
@@ -25,6 +27,12 @@
         <MudTd>@context.Status</MudTd>
         <MudTd>@context.Version</MudTd>
     </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
     <PagerContent>
         <MudTablePager HideRowsPerPage/>
     </PagerContent>
@@ -41,4 +49,21 @@
             Version="90.05"
         }
     };
+    private string searchString = null;
+    private bool FilterFunc(KeyboardModel keyboard)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+            return true;
+        return false;
+    } 
+
+    private int _selected = 1;
 }
