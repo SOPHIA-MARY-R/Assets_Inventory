@@ -1,0 +1,42 @@
+﻿@page "/KeyboardForm"
+@inject NavigationManager NavManager
+<div style="display: flex; align-items:center; justify-content:center; margin: auto">
+<MudPaper Class="pa-8 ma-3">
+<MudForm @ref="@form">
+    <div>
+    <MudText Typo="Typo.h5">Add keyboard record</MudText>
+    <MudTextField T="String" Label="Serial Number" Required/>
+    <MudTextField T="String" Label="Manufacturer" Required/>
+    <MudTextField T="String" Label="Model" Required/>
+    <MudCheckBox @bind-Checked="@_isWireless" Label="Is Wireless" Color="Color.Primary"/>
+    <MudText></MudText>
+    <MudButton Variant="Variant.Filled" OnClick="@(async () => await Submit())" Class="justify-content-center align-content-center mx-auto my-auto d-flex" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Submit</MudButton>
+    </div>
+</MudForm>
+</MudPaper>
+</div>
+@code {
+    private bool _isWireless = true;
+
+    void Redirect()
+    {
+        NavManager.NavigateTo("/Assets");
+    }
+
+    [Inject] ISnackbar Snackbar { get; set; }
+
+    KeyboardModel model = new KeyboardModel();
+
+    MudForm form;
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            Snackbar.Add("Submited!", Severity.Success);
+            Redirect();
+        }
+    }
+
+}
