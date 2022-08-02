@@ -34,7 +34,7 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager/>
+        <MudTablePager HideRowsPerPage/>
     </PagerContent>
 </MudTable>
 @code{
@@ -48,10 +48,8 @@
             IsWireless=true
         }
     };
+
     private string searchString = null;
-
-
-
     private bool FilterFunc(KeyboardModel keyboard)
     {
         if (string.IsNullOrWhiteSpace(searchString))
@@ -67,4 +65,5 @@
         return false;
     } 
 
+    private int _selected = 1;
 }
