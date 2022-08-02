@@ -60,6 +60,43 @@
             Size=120,
             IsActive=true,
         }
+        ,
+         new StorageModel()
+        {
+            SerialNumber="1235",
+            Model="C4PE",
+            BusType=DriveBusType.FileBackedVirtual,
+            MediaType=DriveMediaType.SSD,
+            HealthCondition=DriveHealthCondition.Unhealthy,
+            FriendlyName="Speed",
+            Size=200,
+            IsActive=false,
+        }
+        ,
+         new StorageModel()
+        {
+            SerialNumber="1250",
+            Model="C2P1",
+            BusType=DriveBusType.FibreChannel,
+            MediaType=DriveMediaType.Unspecified,
+            HealthCondition=DriveHealthCondition.Unhealthy,
+            FriendlyName="Clash",
+            Size=220,
+            IsActive=true,
+        }
+        ,
+        new StorageModel()
+        {
+            SerialNumber="1821",
+            Model="C8H1",
+            BusType=DriveBusType.MMC,
+            MediaType=DriveMediaType.SSD,
+            HealthCondition=DriveHealthCondition.Warning,
+            FriendlyName="Bound",
+            Size=210,
+            IsActive=true,
+        }
+
     };
     private string searchString = null;
     private bool FilterFunc(KeyboardModel keyboard)
