@@ -1,6 +1,12 @@
 ﻿@page "/KeyboardForm"
 @inject NavigationManager NavManager
-<div style="display: flex; align-items:center; justify-content:center; margin: auto">
+<style>
+    body{
+        background-image:url('./images/background.jpg');
+        background-size:cover;
+    }
+</style>
+<div style="display: flex; align-items:center; justify-content:center; margin: auto;">
 <MudPaper Class="pa-8 ma-3">
 <MudForm @ref="@form">
     <div>
