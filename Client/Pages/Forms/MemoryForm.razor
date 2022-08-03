@@ -1,0 +1,51 @@
+﻿@page "/MemoryForm"
+@inject NavigationManager NavManager
+<style>
+    body{
+        background-image:url('./images/background.jpg');
+        background-size:cover;
+        background-repeat:repeat;
+    }
+</style>
+<div style="display: flex; align-items:center; justify-content:center; margin: auto;">
+<MudPaper Class="pa-10 ma-1">
+<MudForm @ref="@form">
+    <div>
+    <MudText Color="Color.Primary" Style="margin-bottom:15px" Typo="Typo.h5">Add Memory Card record</MudText>
+    <MudText></MudText>
+    <MudText></MudText>
+    <MudTextField Color=Color.Primary T="String" Style="margin-bottom:5px" Label="Serial Number" Variant="Variant.Outlined" Required/>
+    <MudTextField T="String" Style="margin-bottom:5px" Label="Manufacturer" Variant="Variant.Outlined" Required/>
+    <MudTextField T="String" Style="margin-bottom:5px" Label="Capacity(in GB)" Variant="Variant.Outlined" Required/>
+    <MudTextField T="String" Style="margin-bottom:5px" Label="Memory Type" Variant="Variant.Outlined" Required/>
+    <MudTextField T="String" Style="margin-bottom:5px" Label="Speed" Variant="Variant.Outlined" Required/>
+    <MudTextField T="String" Style="margin-bottom:5px" Label="Form Factor" Variant="Variant.Outlined" Required/>
+    <MudText></MudText>
+    <MudText></MudText>
+    <MudText></MudText>
+    <MudButton Style="margin:9px" Variant="Variant.Filled" OnClick="@(async () => await Submit())" Class="justify-content-center align-content-center" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Submit</MudButton>
+    <MudButton Style="margin:9px" Variant="Variant.Filled" OnClick="Redirect" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
+    </div>
+</MudForm>
+</MudPaper>
+</div>
+@code {
+    void Redirect()
+    {
+        NavManager.NavigateTo("/Assets");
+    }
+
+    [Inject] ISnackbar Snackbar { get; set; }
+    MudForm form;
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            Snackbar.Add("Submitted!", Severity.Success);
+            Redirect();
+        }
+    }
+
+}

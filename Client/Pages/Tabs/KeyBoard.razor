@@ -5,8 +5,16 @@
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="Redirect" StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
+        <MudButton Color=Color.Tertiary Disabled="@_processing" OnClick="ProcessSomething" Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
+        @if (_processing)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudText Class="ms-2">Processing</MudText>
+        }
+        else
+        {
+            <MudText>Reload</MudText>
+        }
         </MudButton>
         <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
             Export
@@ -39,6 +47,14 @@
     </PagerContent>
 </MudTable>
 @code{
+    private bool _processing = false;
+
+    async Task ProcessSomething()
+    {
+        _processing = true;
+        await Task.Delay(2000);
+        _processing = false;
+    }
     private List<KeyboardModel> Keyboards = new List<KeyboardModel>()
     {
         new KeyboardModel()
