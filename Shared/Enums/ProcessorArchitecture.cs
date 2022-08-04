@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Enums;
+﻿namespace MyFirstBlazorWASMApp.Shared.Enums;
 public enum ProcessorArchitecture : byte
 {
     x86 = 0,

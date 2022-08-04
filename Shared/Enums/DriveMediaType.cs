@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Enums
+﻿namespace MyFirstBlazorWASMApp.Shared.Enums
 {
     public enum DriveMediaType : byte
     {
