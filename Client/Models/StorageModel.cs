@@ -1,6 +1,4 @@
-﻿using MyFirstBlazorWASMApp.Client.Enums;
-
-namespace MyFirstBlazorWASMApp.Client.Models
+﻿namespace MyFirstBlazorWASMApp.Client.Models
 {
     public class StorageModel
     {
