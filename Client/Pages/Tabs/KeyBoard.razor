@@ -1,8 +1,10 @@
 ﻿@page "/KeyBoard"
+@inject IDialogService DialogService
 @inject NavigationManager NavManager
+@using MyFirstBlazorWASMApp.Client.Pages.Dialogs
 <MudTable Dense Elevation=0 Outlined Hover T="KeyboardModel" Items="Keyboards" Filter="new Func<KeyboardModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="Redirect" StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="OpenDialog" StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Disabled="@_processing" OnClick="ProcessSomething" Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -105,9 +107,9 @@
             return true;
         return false;
     } 
-
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/KeyboardForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<KeyboardDialog>("", options);
     }
 }

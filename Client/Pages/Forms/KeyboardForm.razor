@@ -8,30 +8,26 @@
     }
 </style>
 <div style="display: flex; align-items:center; justify-content:center; margin: auto;">
-<MudPaper Class="pa-13 ma-12">
-<MudForm @ref="@form">
-    <div>
-    <MudText Color="Color.Primary" Style="margin-bottom:20px" Typo="Typo.h5">Add keyboard record</MudText>
-    <MudText></MudText>
-    <MudText></MudText>
-    <MudTextField Color=Color.Primary T="String" Style="margin-bottom:10px" Label="Serial Number" Variant="Variant.Outlined" Required/>
-    <MudTextField T="String" Style="margin-bottom:10px" Label="Manufacturer" Variant="Variant.Outlined" Required/>
-    <MudTextField T="String" Style="margin-bottom:10px" Label="Model" Variant="Variant.Outlined" Required/>
-    <MudRadioGroup T="string" Required="true">
-         <MudRadio Option="@("Wired")">Wired</MudRadio>
-         <MudRadio Option="@("Wireless")">Wireless</MudRadio>
-    </MudRadioGroup>
-    <MudText></MudText>
-    <MudText></MudText>
-    <MudText></MudText>
-    <MudButton Style="margin-right:10px" Variant="Variant.Filled" OnClick="@(async () => await Submit())" Class="justify-content-center align-content-center" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Submit</MudButton>
-    <MudButton Variant="Variant.Filled" OnClick="Redirect" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
-    </div>
-</MudForm>
-</MudPaper>
+    <MudPaper Class="pa-13 ma-12" Style="width:40%">
+        <MudForm @ref="@form"> 
+            <div>
+                <MudText Color="Color.Primary" Style="display: flex; align-items:center; justify-content:center; margin: auto;" Typo="Typo.h5">Add keyboard record</MudText>
+                <MudTextField Color=Color.Primary T="String" Style="margin-bottom:10px" Label="Serial Number" Variant="Variant.Outlined" Required/>
+                <MudTextField T="String" Style="margin-bottom:10px" Label="Manufacturer" Variant="Variant.Outlined" Required/>
+                <MudTextField T="String" Style="margin-bottom:10px" Label="Model" Variant="Variant.Outlined" Required/>
+                <MudRadioGroup T="string" Required="true">
+                     <MudRadio Option="@("Wired")">Wired</MudRadio>
+                     <MudRadio Option="@("Wireless")">Wireless</MudRadio>
+                </MudRadioGroup>
+                <div style="display: flex; align-items:center; justify-content:center; margin: auto;">
+                    <MudButton Variant="Variant.Filled" OnClick="@(async () => await Submit())" Class="ma-2 justify-content-center align-content-center" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Submit</MudButton>
+                    <MudButton Class="ma-2" Variant="Variant.Filled" OnClick="Redirect" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
+                </div>
+            </div>
+        </MudForm>
+    </MudPaper>
 </div>
 @code {
-    private bool _isWireless = true;
 
     void Redirect()
     {
