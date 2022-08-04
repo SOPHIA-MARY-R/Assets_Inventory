@@ -1,4 +1,4 @@
-﻿namespace Fluid.Shared.Enums;
+﻿namespace Fluid.Shared.Enums.Technical;
 public enum MemoryType : byte
 {
     Other = 1,
