@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\MyFirstBlazorWASMApp.Shared.csproj" />
+    <ProjectReference Include="..\Shared\Fluid.Shared.csproj" />
   </ItemGroup>
 
 </Project>

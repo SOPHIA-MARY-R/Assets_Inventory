@@ -1,6 +1,6 @@
-﻿using MyFirstBlazorWASMApp.Client.Enums;
+﻿using Fluid.Client.Enums;
 
-namespace MyFirstBlazorWASMApp.Client.Models
+namespace Fluid.Client.Models
 {
     public class StorageModel
     {

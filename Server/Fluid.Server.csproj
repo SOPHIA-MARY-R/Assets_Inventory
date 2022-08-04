@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\MyFirstBlazorWASMApp.Client.csproj" />
-    <ProjectReference Include="..\Shared\MyFirstBlazorWASMApp.Shared.csproj" />
+    <ProjectReference Include="..\Client\Fluid.Client.csproj" />
+    <ProjectReference Include="..\Shared\Fluid.Shared.csproj" />
   </ItemGroup>
 
 
