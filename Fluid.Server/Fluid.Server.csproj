@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\MyFirstBlazorWASMApp.Client.csproj" />
-    <ProjectReference Include="..\Shared\MyFirstBlazorWASMApp.Shared.csproj" />
+    <ProjectReference Include="..\Fluid.Client\Fluid.Client.csproj" />
+    <ProjectReference Include="..\Fluid.Shared\Fluid.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

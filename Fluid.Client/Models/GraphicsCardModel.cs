@@ -1,10 +1,9 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Models
+﻿namespace Fluid.Client.Models
 {
-    public class KeyboardModel
+    public class GraphicsCardModel
     {
         public string SerialNumber { get; set; }
         public string Manufacturer { get; set; }
         public string Model { get; set; }
-        public bool IsWireless { get; set; }
     }
 }

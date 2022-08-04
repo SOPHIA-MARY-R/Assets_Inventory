@@ -1,12 +1,12 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Models
+﻿namespace Fluid.Client.Models
 {
     public class MotherboardModel
     {
         public string SerialNumber { get; set; }
         public string Manufacturer { get; set; }
         public string Product { get; set; }
-        public string Status { get; set; } 
-        public string Version { get; set; } 
+        public string Status { get; set; }
+        public string Version { get; set; }
 
     }
 }

@@ -1,5 +1,5 @@
-﻿namespace MyFirstBlazorWASMApp.Client;
-internal static class ProcessorFamily
+﻿namespace Fluid.Shared;
+public static class ProcessorFamily
 {
     public static readonly Dictionary<int, string> Families = new Dictionary<int, string>()
     {

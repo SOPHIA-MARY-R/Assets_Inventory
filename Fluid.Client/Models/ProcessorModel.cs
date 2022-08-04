@@ -1,4 +1,6 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Models
+﻿using Fluid.Shared.Enums;
+
+namespace Fluid.Client.Models
 {
     public class ProcessorModel
     {

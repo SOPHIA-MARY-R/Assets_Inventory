@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Shared.Enums;
+﻿namespace Fluid.Shared.Enums;
 public enum MemoryFormFactor : byte
 {
     Unknown = 0,
