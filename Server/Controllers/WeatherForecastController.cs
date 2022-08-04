@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using MyFirstBlazorWASMApp.Shared;
+using Fluid.Shared;
 
-namespace MyFirstBlazorWASMApp.Server.Controllers
+namespace Fluid.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]

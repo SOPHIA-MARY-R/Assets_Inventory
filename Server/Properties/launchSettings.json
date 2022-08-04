@@ -8,7 +8,7 @@
       }
     },
     "profiles": {
-      "MyFirstBlazorWASMApp.Server": {
+      "Fluid.Server": {
         "commandName": "Project",
         "dotnetRunMessages": true,
         "launchBrowser": true,

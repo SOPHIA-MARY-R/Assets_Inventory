@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Enums;
+﻿namespace Fluid.Client.Enums;
 public enum MemoryType : byte
 {
     Other = 1,

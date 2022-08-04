@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Models
+﻿namespace Fluid.Client.Models
 {
     public class GraphicsCardModel
     {
