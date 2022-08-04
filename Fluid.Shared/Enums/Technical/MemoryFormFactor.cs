@@ -1,4 +1,4 @@
-﻿namespace Fluid.Shared.Enums;
+﻿namespace Fluid.Shared.Enums.Technical;
 public enum MemoryFormFactor : byte
 {
     Unknown = 0,
