@@ -1,4 +1,4 @@
-﻿namespace Fluid.Client.Enums;
+﻿namespace Fluid.Shared.Enums;
 public enum ProcessorArchitecture : byte
 {
     x86 = 0,

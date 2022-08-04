@@ -1,19 +1,18 @@
 ﻿@inherits LayoutComponentBase
-<MudThemeProvider/>
+<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 <MudLayout>
     <MudAppBar Dense>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(() => _open = !_open)" />
         <MudSpacer />
-        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
         <MudToggleIconButton @bind-Toggled="@_isDarkMode"
                      Icon="@Icons.Filled.Nightlight" Color="@Color.Inherit" Title="Switch to Dark Theme"
                      ToggledIcon="@Icons.Filled.LightMode" ToggledColor="@Color.Inherit" ToggledTitle="Switch to Light Theme"/>
         <MudIconButton Icon="@Icons.Filled.NotificationsActive" Color="Color.Inherit"/>
         <MudIconButton Icon="@Icons.Filled.AccountCircle" Color="Color.Inherit"/>
     </MudAppBar>
-    <MudDrawer @bind-Open="@open" Elevation="1">
+    <MudDrawer @bind-Open="@_open" Elevation="1">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">Asset Inventory</MudText>
         </MudDrawerHeader>
@@ -24,20 +23,24 @@
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
-        <MudContainer Class="mt-4">
+        <MudContainer Class="mt-4" MaxWidth="MaxWidth.ExtraLarge">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
- @code{
-    bool open = false;
-    public bool LightModeOn { get; set; }
-    void ToggleDrawer()
-    {
-        open = !open;
-    }
-    private MudTheme _theme = new();
+@code{
+    private bool _open = false;
     private bool _isDarkMode;
-    
+    private MudThemeProvider _mudThemeProvider;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
 
 }
