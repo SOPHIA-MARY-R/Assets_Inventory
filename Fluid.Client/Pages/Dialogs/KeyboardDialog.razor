@@ -1,31 +1,43 @@
 ﻿@inject NavigationManager NavManager
-<MudDialog Style="width: 90%; margin: 6px">
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+    </TitleContent>
     <DialogContent>
-        <MudForm @ref="@form" Class="pa-5 ml-3 mr-3 mt-3"> 
-            <div>
-                <MudText Color="Color.Primary" Style="display: flex; align-items:center; justify-content:center; margin: auto;" Typo="Typo.h5">Add keyboard record</MudText>
-                <MudTextField Color=Color.Primary T="String" Style="margin-bottom:10px" Label="Serial Number" Variant="Variant.Outlined" Required/>
-                <MudTextField T="String" Style="margin-bottom:10px" Label="Manufacturer" Variant="Variant.Outlined" Required/>
-                <MudTextField T="String" Style="margin-bottom:10px" Label="Model" Variant="Variant.Outlined" Required/>
-                <MudRadioGroup T="string" Required="true">
-                     <MudRadio Option="@("Wired")">Wired</MudRadio>
-                     <MudRadio Option="@("Wireless")">Wireless</MudRadio>
-                </MudRadioGroup>
-            </div>
-        </MudForm>
+        <EditForm Model="Model" OnValidSubmit="Submit">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.SerialNumber" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
+                </MudItem>
+                <MudItem xs="12" Class="d-flex">
+                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                </MudItem>
+            </MudGrid>
+        </EditForm>
     </DialogContent>    
     <DialogActions>
-        <div style="display: flex; align-items:center; justify-content:center; margin: auto;">
-            <MudButton Variant="Variant.Filled" OnClick="Submit" Class="ma-2 justify-content-center align-content-center" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Submit</MudButton>
-            <MudButton Class="ma-2" Variant="Variant.Filled" OnClick="Cancel" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
-        </div>
+        <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+@code 
+{
+    [CascadingParameter] 
+    private MudDialogInstance MudDialog { get; set; }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog.Cancel();
+    [Parameter]
+    public KeyboardModel Model { get; set; } = new();
+
+    private void Submit() 
+    {
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
 
 
     private bool _isWireless = true;
