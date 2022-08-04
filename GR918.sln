@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluid.Client", "Fluid.Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluid.Shared", "Fluid.Shared\Fluid.Shared.csproj", "{DDBA82AD-F48F-41AE-A3CE-F689DB4618AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluid.Core", "Fluid.Core\Fluid.Core.csproj", "{F392964E-00B7-4D1B-B360-9FD70AF96D00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DDBA82AD-F48F-41AE-A3CE-F689DB4618AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDBA82AD-F48F-41AE-A3CE-F689DB4618AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDBA82AD-F48F-41AE-A3CE-F689DB4618AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F392964E-00B7-4D1B-B360-9FD70AF96D00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F392964E-00B7-4D1B-B360-9FD70AF96D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F392964E-00B7-4D1B-B360-9FD70AF96D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F392964E-00B7-4D1B-B360-9FD70AF96D00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
