@@ -1,4 +1,4 @@
-﻿namespace MyFirstBlazorWASMApp.Client.Enums
+﻿namespace Fluid.Shared.Enums
 {
     public enum DriveBusType : byte
     {
