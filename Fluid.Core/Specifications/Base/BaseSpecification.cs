@@ -42,9 +42,4 @@ public class BaseSpecification<T> : ISpecification<T> where T : class, IEntity
     {
         return new OrSpecification<T>(this, specification);
     }
-
-    protected void SetFilterCondition(Expression<Func<T, bool>> filterExpression)
-    {
-        FilterCondition = filterExpression;
-    }
 }

@@ -1,6 +1,4 @@
-﻿using Fluid.Core.Specifications.Base;
-
-namespace Fluid.Core.Extensions;
+﻿namespace Fluid.Core.Extensions;
 
 public static class QueryableExtensions
 {
