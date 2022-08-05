@@ -28,7 +28,9 @@
         <MudTh>No of cores</MudTh>
         <MudTh Class="align-content-center">No of Logical Processors</MudTh>
         <MudTh>Thread count</MudTh>
+        
         <MudTh>Max clock speed</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -41,6 +43,10 @@
         <MudTd>@context.NumberOfLogicalProcessors</MudTd>
         <MudTd>@context.ThreadCount</MudTd>
         <MudTd>@context.MaxClockSpeed</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>

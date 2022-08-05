@@ -20,11 +20,16 @@
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>

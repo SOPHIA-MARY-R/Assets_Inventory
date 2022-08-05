@@ -25,6 +25,7 @@
         <MudTh>Memory Type</MudTh>
         <MudTh>Speed</MudTh>
         <MudTh>Form Factor</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -33,6 +34,10 @@
         <MudTd>@context.MemoryType</MudTd>
         <MudTd>@context.Speed</MudTd>
         <MudTd>@context.FormFactor</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>

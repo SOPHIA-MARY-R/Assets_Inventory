@@ -22,6 +22,7 @@
         <MudTh>Product</MudTh>
         <MudTh>Status</MudTh>
         <MudTh>Version</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -29,6 +30,10 @@
         <MudTd>@context.Product</MudTd>
         <MudTd>@context.Status</MudTd>
         <MudTd>@context.Version</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
