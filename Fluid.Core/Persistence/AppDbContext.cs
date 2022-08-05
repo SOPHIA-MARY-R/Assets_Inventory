@@ -7,7 +7,6 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<MachineInfo> MachineMaster { get; set; }
-    public DbSet<ComponentType> ComponentTypes { get; set; }
     public DbSet<MotherboardInfo> MotherboardMaster { get; set; }
     public DbSet<PhysicalMemoryInfo> PhysicalMemoryMaster { get; set; }
     public DbSet<HardDiskInfo> HardDiskMaster { get; set; }

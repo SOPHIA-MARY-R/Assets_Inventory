@@ -24,5 +24,5 @@ public class PhysicalMemoryInfo : IEntity
 
     public decimal Price { get; set; }
 
-    public ComponentType ComponentType { get; set; }
+    public ComponentType ComponentType => ComponentType.Memory;
 }

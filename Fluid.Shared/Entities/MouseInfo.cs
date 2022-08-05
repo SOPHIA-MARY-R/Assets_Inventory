@@ -9,7 +9,7 @@ public class MouseInfo : IEntity
 
     public string Model { get; set; }
 
-    public string IsWireless { get; set; }
+    public bool IsWireless { get; set; }
 
     public string Description { get; set; }
 
@@ -20,5 +20,5 @@ public class MouseInfo : IEntity
 
     public decimal Price { get; set; }
 
-    public ComponentType ComponentType { get; set; }
+    public ComponentType ComponentType => ComponentType.Mouse;
 }
