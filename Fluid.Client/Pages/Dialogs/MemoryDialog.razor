@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavManager
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Memory Card</MudText>
     </TitleContent>
     <DialogContent>
         <EditForm Model="Model" OnValidSubmit="Submit">
@@ -13,10 +13,16 @@
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
+                    <MudTextField Label="Capacity(in GB)" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.CapacityInGB" />
                 </MudItem>
-                <MudItem xs="12" Class="d-flex">
-                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                <MudItem xs="12">
+                    <MudTextField Label="Memory Type" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MemoryType" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Speed" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Form Factor" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.FormFactor"/>
                 </MudItem>
             </MudGrid>
         </EditForm>
@@ -32,7 +38,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public KeyboardModel Model { get; set; } = new();
+    public MemoryModel Model { get; set; } = new();
 
     private void Submit() 
     {

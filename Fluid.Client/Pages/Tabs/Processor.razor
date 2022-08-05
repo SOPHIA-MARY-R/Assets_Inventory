@@ -1,8 +1,11 @@
 ﻿@page "/Processor"
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="ProcessorModel" Items="Processors">
+@inject IDialogService DialogService
+@using Fluid.Client.Pages.Dialogs
+@using Fluid.Shared.Enums.Technical;
+<MudTable Dense Elevation=0 Outlined Hover T="ProcessorModel" Items="Processors"  Filter="new Func<ProcessorModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -108,22 +111,37 @@
         }
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(ProcessorModel processor)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (processor.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (processor.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (processor.ProcessorID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if (processor.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.Architecture.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.Family.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.NumberOfCores.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.NumberOfLogicalProcessors.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.ThreadCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (processor.MaxClockSpeed.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{processor.SerialNumber} {processor.Manufacturer} {processor.ProcessorID} {processor.Name} {processor.Architecture} {processor.Family} {processor.NumberOfCores} {processor.NumberOfLogicalProcessors} {processor.ThreadCount} {processor.MaxClockSpeed}".Contains(searchString))
             return true;
         return false;
     } 
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/ProcessorForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ProcessorDialog>("", options);
     }
 }

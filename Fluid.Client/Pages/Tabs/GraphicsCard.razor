@@ -1,8 +1,10 @@
 ﻿@page "/GraphicsCard"
+@inject IDialogService DialogService
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="GraphicsCardModel" Items="GraphicsCards">
+@using Fluid.Client.Pages.Dialogs
+<MudTable Dense Elevation=0 Outlined Hover T="GraphicsCardModel" Items="GraphicsCards" Filter="new Func<GraphicsCardModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -66,22 +68,23 @@
         }
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(GraphicsCardModel graphicsCard)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (graphicsCard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (graphicsCard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (graphicsCard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if ($"{graphicsCard.SerialNumber} {graphicsCard.Manufacturer} {graphicsCard.Model}".Contains(searchString))
             return true;
         return false;
     } 
-     void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/GraphicsForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<GraphicsCardDialog>("", options);
     }
 }
