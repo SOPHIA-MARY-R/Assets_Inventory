@@ -18,5 +18,5 @@ public class MotherboardInfo
 
     public decimal Price { get; set; }
 
-    public ComponentType ComponentType { get; set; }
+    public ComponentType ComponentType => ComponentType.Motherboard;
 }
