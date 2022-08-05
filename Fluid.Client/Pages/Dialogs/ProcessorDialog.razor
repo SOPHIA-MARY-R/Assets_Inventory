@@ -1,0 +1,63 @@
+﻿@inject NavigationManager NavManager
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Processor</MudText>
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="Model" OnValidSubmit="Submit">
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.SerialNumber" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Processor ID" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ProcessorID" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Name" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Architecture" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Architecture" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Family" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Family"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="No of Cores" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfCores"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="No of Logical Processors" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfLogicalProcessors"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Thread Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ThreadCount"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Max Clock Speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MaxClockSpeed"/>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </DialogContent>    
+    <DialogActions>
+        <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+@code 
+{
+    [CascadingParameter] 
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public ProcessorModel Model { get; set; } = new();
+
+    private void Submit() 
+    {
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+
+
+    [Inject] ISnackbar Snackbar { get; set; }
+}
+

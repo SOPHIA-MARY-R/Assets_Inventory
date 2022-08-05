@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavManager
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Monitor</MudText>
     </TitleContent>
     <DialogContent>
         <EditForm Model="Model" OnValidSubmit="Submit">
@@ -14,9 +14,6 @@
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
-                </MudItem>
-                <MudItem xs="12" Class="d-flex">
-                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
                 </MudItem>
             </MudGrid>
         </EditForm>
@@ -32,7 +29,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public KeyboardModel Model { get; set; } = new();
+    public MonitorModel Model { get; set; } = new();
 
     private void Submit() 
     {

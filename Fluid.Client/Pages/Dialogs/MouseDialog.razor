@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavManager
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Mouse</MudText>
     </TitleContent>
     <DialogContent>
         <EditForm Model="Model" OnValidSubmit="Submit">
@@ -32,7 +32,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public KeyboardModel Model { get; set; } = new();
+    public MouseModel Model { get; set; } = new();
 
     private void Submit() 
     {
