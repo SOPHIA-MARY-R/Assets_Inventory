@@ -1,4 +1,4 @@
-﻿using Fluid.Shared.Enums;
+﻿using Fluid.Shared.Enums.Technical;
 
 namespace Fluid.Client.Models
 {
