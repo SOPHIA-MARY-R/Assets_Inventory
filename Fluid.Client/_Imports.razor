@@ -9,5 +9,15 @@
 @using Fluid.Client
 @using Fluid.Client.Models
 @using Fluid.Client.Pages.Tabs
+@using Fluid.Client.Services.HttpClients
 @using Fluid.Client.Shared
+@using Fluid.Shared.Models
+@using Fluid.Shared.Requests
+@using Fluid.Shared.Wrapper
 @using MudBlazor
+
+@* Injecting the services here, makes it available for entire client app project *@
+@inject IDialogService dialogService
+@inject HttpClient httpClient 
+@inject NavigationManager navigationManager
+@inject ISnackbar snackbar
