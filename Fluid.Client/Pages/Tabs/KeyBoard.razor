@@ -21,6 +21,7 @@
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
         <MudTh>IsWireless</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -28,6 +29,10 @@
         <MudTd>@context.Model</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsWireless ReadOnly/>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -40,6 +45,7 @@
         <MudTablePager HideRowsPerPage/>
     </PagerContent>
 </MudTable>
+
 @code{
     private List<KeyboardModel> Keyboards = new List<KeyboardModel>()
     {
@@ -96,4 +102,5 @@
 		var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<KeyboardDialog>("", options);
     }
+    private KeyboardModel _model = new() { };
 }

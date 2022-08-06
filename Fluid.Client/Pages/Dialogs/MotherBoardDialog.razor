@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavManager
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Motherboard</MudText>
     </TitleContent>
     <DialogContent>
         <EditForm Model="Model" OnValidSubmit="Submit">
@@ -13,10 +13,13 @@
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
+                    <MudTextField Label="Product" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Product" />
                 </MudItem>
-                <MudItem xs="12" Class="d-flex">
-                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                <MudItem xs="12">
+                    <MudTextField Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Status" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Version" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Version" />
                 </MudItem>
             </MudGrid>
         </EditForm>
@@ -32,12 +35,13 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public KeyboardModel Model { get; set; } = new();
+    public MotherboardModel Model { get; set; } = new();
 
     private void Submit() 
     {
         MudDialog.Close(DialogResult.Ok(Model));
     }
+
 
     [Inject] ISnackbar Snackbar { get; set; }
 }

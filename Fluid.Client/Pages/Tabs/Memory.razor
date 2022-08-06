@@ -1,8 +1,12 @@
 ﻿@page "/Memory"
+@using Fluid.Shared.Enums.Technical
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="MemoryModel" Items="Memories">
+@inject IDialogService DialogService
+@using Fluid.Client.Pages.Dialogs
+@using Fluid.Shared.Enums.Technical;
+<MudTable Dense Elevation=0 Outlined Hover T="MemoryModel" Items="Memories" Filter="new Func<MemoryModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -21,6 +25,7 @@
         <MudTh>Memory Type</MudTh>
         <MudTh>Speed</MudTh>
         <MudTh>Form Factor</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -29,6 +34,10 @@
         <MudTd>@context.MemoryType</MudTd>
         <MudTd>@context.Speed</MudTd>
         <MudTd>@context.FormFactor</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
@@ -84,22 +93,29 @@
         }
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(MemoryModel memory)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (memory.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (memory.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (memory.CapacityInGB.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if (memory.MemoryType.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (memory.Speed.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (memory.FormFactor.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{memory.SerialNumber} {memory.Manufacturer} {memory.CapacityInGB} {memory.MemoryType} {memory.Speed} {memory.FormFactor}".Contains(searchString))
             return true;
         return false;
     }
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/MemoryForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<MemoryDialog>("", options);
     }
 }

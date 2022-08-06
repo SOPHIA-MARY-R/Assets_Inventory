@@ -1,8 +1,10 @@
 ﻿@page "/Mouse"
+@inject IDialogService DialogService
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="MouseModel" Items="Mouses">
+@using Fluid.Client.Pages.Dialogs
+<MudTable Dense Elevation=0 Outlined Hover T="MouseModel" Items="Mouses" Filter="new Func<MouseModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success Class="ma-2" OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success Class="ma-2" OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -19,6 +21,7 @@
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
         <MudTh>IsWireless</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -26,6 +29,10 @@
         <MudTd>@context.Model</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsWireless ReadOnly/>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -74,22 +81,23 @@
         }
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(MouseModel mouse)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (mouse.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (mouse.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (mouse.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if ($"{mouse.SerialNumber} {mouse.Manufacturer} {mouse.Model}".Contains(searchString))
             return true;
         return false;
     } 
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/MouseForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<MouseDialog>("", options);
     }
 }

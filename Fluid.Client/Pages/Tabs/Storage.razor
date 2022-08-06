@@ -1,8 +1,12 @@
 ﻿@page "/Storage"
+@using Fluid.Shared.Enums.Technical
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="StorageModel" Items="Storages">
+@inject IDialogService DialogService
+@using Fluid.Client.Pages.Dialogs
+@using Fluid.Shared.Enums.Technical;
+<MudTable Dense Elevation=0 Outlined Hover T="StorageModel" Items="Storages" Filter="new Func<StorageModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -23,6 +27,7 @@
         <MudTh>Friendly name</MudTh>
         <MudTh>Size</MudTh>
         <MudTh>IsActive</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -34,6 +39,10 @@
         <MudTd>@context.Size</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsActive ReadOnly/>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -99,22 +108,31 @@
 
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(StorageModel storage)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (storage.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (storage.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (storage.BusType.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if (storage.MediaType.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (storage.HealthCondition.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (storage.FriendlyName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (storage.Size.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{storage.SerialNumber} {storage.Model} {storage.BusType} {storage.MediaType} {storage.HealthCondition} {storage.FriendlyName} {storage.Size}".Contains(searchString))
             return true;
         return false;
     } 
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/StorageForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<StorageDialog>("", options);
     }
 }

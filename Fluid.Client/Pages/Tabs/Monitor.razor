@@ -1,8 +1,10 @@
 ﻿@page "/Monitor"
+@inject IDialogService DialogService
 @inject NavigationManager NavManager
-<MudTable Dense Elevation=0 Outlined Hover T="MonitorModel" Items="Monitors">
+@using Fluid.Client.Pages.Dialogs
+<MudTable Dense Elevation=0 Outlined Hover T="MonitorModel" Items="Monitors" Filter="new Func<MonitorModel,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="Redirect" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
+        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
         </MudButton>
         <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
@@ -18,11 +20,16 @@
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
@@ -66,22 +73,23 @@
         }
     };
     private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
+    private bool FilterFunc(MonitorModel monitor)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (monitor.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (monitor.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (monitor.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
+        if ($"{monitor.SerialNumber} {monitor.Manufacturer} {monitor.Model}".Contains(searchString))
             return true;
         return false;
     } 
-    void Redirect()
+    private void OpenDialog()
     {
-        NavManager.NavigateTo("/MonitorForm");
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<MonitorDialog>("", options);
     }
 }
