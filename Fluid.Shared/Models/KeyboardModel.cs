@@ -1,6 +1,8 @@
-﻿namespace Fluid.Shared.Entities;
+﻿using Fluid.Shared.Entities;
 
-public class MouseInfo : IEntity
+namespace Fluid.Shared.Models;
+
+public class KeyboardModel
 {
     [Key]
     public string OemSerialNo { get; set; }
@@ -22,5 +24,5 @@ public class MouseInfo : IEntity
 
     public decimal Price { get; set; }
 
-    public ComponentType ComponentType => ComponentType.Mouse;
+    public ComponentType ComponentType => ComponentType.Keyboard;
 }

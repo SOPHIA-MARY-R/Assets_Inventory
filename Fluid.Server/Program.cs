@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDatabase(builder.Configuration, "DefaultConnection");
+builder.Services.AddFeatures();
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 

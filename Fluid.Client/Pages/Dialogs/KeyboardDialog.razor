@@ -1,13 +1,13 @@
-﻿@inject NavigationManager NavManager
-<MudDialog>
-    <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
-    </TitleContent>
-    <DialogContent>
-        <EditForm Model="Model" OnValidSubmit="Submit">
+﻿@inject KeyboardMasterHttpClient masterHttpClient
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        </TitleContent>
+        <DialogContent>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.SerialNumber" />
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" ReadOnly=@IsEditMode />
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
@@ -15,29 +15,56 @@
                 <MudItem xs="12">
                     <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
                 </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" />
+                </MudItem>
                 <MudItem xs="12" Class="d-flex">
                     <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
                 </MudItem>
             </MudGrid>
-        </EditForm>
-    </DialogContent>    
-    <DialogActions>
-        <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
-    </DialogActions>
-</MudDialog>
-@code 
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
 {
-    [CascadingParameter] 
+    [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public KeyboardModel Model { get; set; } = new();
 
-    private void Submit() 
-    {
-        MudDialog.Close(DialogResult.Ok(Model));
-    }
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
 
-    [Inject] ISnackbar Snackbar { get; set; }
+    private async Task SubmitAsync()
+    {
+        IResult<string> result;
+        if (IsEditMode)
+        {
+            result = await masterHttpClient.EditAsync(Model);
+        }
+        else
+        {
+            result = await masterHttpClient.AddAsync(Model);
+        }
+        if (result.Succeeded)
+        {
+            snackbar.Add(result.Messages[0], Severity.Success);
+            MudDialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
+        }
+    }
 }
