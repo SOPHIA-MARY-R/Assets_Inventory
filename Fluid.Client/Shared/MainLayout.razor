@@ -16,10 +16,11 @@
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">Asset Inventory</MudText>
         </MudDrawerHeader>
-        <MudNavMenu>
-            <MudNavLink Href="" Icon="@Icons.Filled.Dashboard" IconColor="Color.Primary" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-            <MudNavLink Href="Assets" Icon="@Icons.Filled.Category" IconColor="Color.Primary">Asset Categories</MudNavLink>
-            <MudNavLink Href="About" Icon="@Icons.Filled.Info" IconColor="Color.Primary">About</MudNavLink>
+        <MudNavMenu Color="Color.Secondary" Bordered>
+            <MudNavLink Href="" Icon="@Icons.Filled.Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+            <MudNavLink Href="MachineMaster" Icon="@Icons.Filled.Computer">Machine Master</MudNavLink>
+            <MudNavLink Href="Assets" Icon="@Icons.Filled.Category">Asset Categories</MudNavLink>
+            <MudNavLink Href="About" Icon="@Icons.Filled.Info">About</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
@@ -29,7 +30,7 @@
     </MudMainContent>
 </MudLayout>
 @code{
-    private bool _open = false;
+    private bool _open = true;
     private bool _isDarkMode;
     private MudThemeProvider _mudThemeProvider;
 

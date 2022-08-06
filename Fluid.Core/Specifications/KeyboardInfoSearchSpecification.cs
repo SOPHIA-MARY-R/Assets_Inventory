@@ -7,13 +7,13 @@ public class KeyboardInfoSearchSpecification : BaseSpecification<KeyboardInfo>
 {
     public KeyboardInfoSearchSpecification(string searchString)
     {
-        searchString = searchString.ToLower();
         if (string.IsNullOrEmpty(searchString))
         {
             FilterCondition = p => true;
         }
         else
         {
+            searchString = searchString.ToLower();
             FilterCondition = p => p.OemSerialNo.ToLower().Contains(searchString)
                                 || p.Manufacturer.ToLower().Contains(searchString)
                                 || p.Model.ToLower().Contains(searchString)
