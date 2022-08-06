@@ -1,8 +1,10 @@
 ﻿using Fluid.Shared.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Fluid.Core.Persistence;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -20,5 +22,12 @@ public class AppDbContext : DbContext
             property.SetColumnType("decimal(18,2)");
         }
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Ignore<IdentityRole>();
+        modelBuilder.Ignore<IdentityUserToken<string>>();
+        modelBuilder.Ignore<IdentityUserRole<string>>();
+        modelBuilder.Ignore<IdentityUserLogin<string>>();
+        modelBuilder.Ignore<IdentityRoleClaim<string>>();
+        modelBuilder.Ignore<IdentityUserClaim<string>>();
+        modelBuilder.Entity<IdentityUser>().ToTable("Technicians", "dbo");
     }
 }
