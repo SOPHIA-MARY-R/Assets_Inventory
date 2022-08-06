@@ -2,7 +2,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
 @using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined Hover T="KeyboardModel" Items="Keyboards" Filter="new Func<KeyboardModel,bool>(FilterFunc)">
+<MudTable Dense Elevation=0 Outlined HorizontalScrollbar Hover T="KeyboardModel" Items="Keyboards" Filter="new Func<KeyboardModel,bool>(FilterFunc)">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="OpenDialog" StartIcon="@Icons.Material.Filled.Add">
             Create
