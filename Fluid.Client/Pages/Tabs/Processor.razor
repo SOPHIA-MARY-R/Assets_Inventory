@@ -3,8 +3,7 @@
 @inject NavigationManager NavManager
 @inject IDialogService DialogService
 @using Fluid.Client.Pages.Dialogs
-@using Fluid.Shared.Enums.Technical;
-<MudTable Dense Elevation=0 Outlined Hover T="ProcessorModel" Items="Processors"  Filter="new Func<ProcessorModel,bool>(FilterFunc)">
+<MudTable Dense Elevation=0 Outlined HorizontalScrollbar Hover T="ProcessorModel" Items="Processors"  Filter="new Func<ProcessorModel,bool>(FilterFunc)">
     <ToolBarContent>
         <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
             Create
@@ -30,7 +29,7 @@
         <MudTh>Thread count</MudTh>
         
         <MudTh>Max clock speed</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh Style="column-span:2;">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.SerialNumber</MudTd>
@@ -44,8 +43,10 @@
         <MudTd>@context.ThreadCount</MudTd>
         <MudTd>@context.MaxClockSpeed</MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Style="margin-right:0" Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Style="margin-left:0" Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

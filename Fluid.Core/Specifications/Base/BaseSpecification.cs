@@ -1,4 +1,6 @@
-﻿namespace Fluid.Core.Specifications.Base;
+﻿using Fluid.Shared.Contracts;
+
+namespace Fluid.Core.Specifications.Base;
 
 public class BaseSpecification<T> : ISpecification<T> where T : class, IEntity
 {

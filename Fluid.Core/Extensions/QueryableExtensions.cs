@@ -1,4 +1,6 @@
-﻿namespace Fluid.Core.Extensions;
+﻿using Fluid.Shared.Wrapper;
+
+namespace Fluid.Core.Extensions;
 
 public static class QueryableExtensions
 {

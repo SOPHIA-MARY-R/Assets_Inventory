@@ -1,4 +1,4 @@
-﻿global using Fluid.Core.Interfaces.Repositories;
+global using Fluid.Core.Interfaces.Repositories;
 global using Fluid.Shared.Contracts;
 global using Fluid.Shared.Wrapper;
 global using Microsoft.EntityFrameworkCore;

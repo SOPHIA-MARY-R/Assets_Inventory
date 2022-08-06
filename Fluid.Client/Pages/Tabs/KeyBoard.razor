@@ -1,4 +1,4 @@
-﻿@using Fluid.Client.Pages.Dialogs
+@using Fluid.Client.Pages.Dialogs
 @inject KeyboardMasterHttpClient masterHttpClient
 <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<KeyboardModel>>>(OnServerReloadAsync))" @ref="_keyboardTable">
     <ToolBarContent>

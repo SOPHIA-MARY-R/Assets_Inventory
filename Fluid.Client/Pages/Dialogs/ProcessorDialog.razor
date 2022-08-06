@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager NavManager
+@using Fluid.Shared.Enums.Technical;
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Processor</MudText>
@@ -19,7 +20,12 @@
                     <MudTextField Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Name" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField Label="Architecture" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Architecture" />
+                    <MudSelect T="ProcessorArchitecture" Label="Architecture" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Architecture" >
+                         @foreach (ProcessorArchitecture archi in Enum.GetValues(typeof(ProcessorArchitecture)))
+                         {
+                            <MudSelectItem Value="@(archi)"/>
+                         }
+                    </MudSelect>
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField Label="Family" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Family"/>
@@ -35,6 +41,9 @@
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Max Clock Speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MaxClockSpeed"/>
+                </MudItem>
+                <MudItem>
+                    
                 </MudItem>
             </MudGrid>
         </EditForm>
@@ -59,5 +68,6 @@
 
 
     [Inject] ISnackbar Snackbar { get; set; }
+
 }
 
