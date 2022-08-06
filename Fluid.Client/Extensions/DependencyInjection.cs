@@ -8,6 +8,7 @@ public static class DependencyInjection
     {
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
         services.AddTransient<KeyboardMasterHttpClient>();
+        services.AddTransient<MouseMasterHttpClient>();
         return services;
     }
 }
