@@ -13,6 +13,8 @@ public class MouseInfo : IEntity
 
     public string Description { get; set; }
 
+    public UseStatus UseStatus { get; set; }
+
     public MachineInfo? Machine { get; set; }
     public string? MachineId { get; set; }
 
