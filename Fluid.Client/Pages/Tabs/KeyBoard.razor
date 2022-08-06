@@ -1,20 +1,12 @@
-﻿@page "/KeyBoard"
-@inject IDialogService DialogService
-@inject NavigationManager NavManager
-@using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined Hover T="KeyboardModel" Items="Keyboards" Filter="new Func<KeyboardModel,bool>(FilterFunc)">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject KeyboardMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<KeyboardModel>>>(OnServerReloadAsync))" @ref="_keyboardTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="OpenDialog" StartIcon="@Icons.Material.Filled.Add">
-            Create
-        </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
-        </MudButton>
-        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
-            Export
-        </MudButton>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
@@ -24,15 +16,15 @@
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.SerialNumber</MudTd>
+        <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsWireless ReadOnly/>
         </MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -42,65 +34,6 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager HideRowsPerPage/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
-
-@code{
-    private List<KeyboardModel> Keyboards = new List<KeyboardModel>()
-    {
-        new KeyboardModel()
-        {
-            SerialNumber="1234",
-            Manufacturer="Zebronic",
-            Model="C3PO",
-            IsWireless=true
-        }
-        ,
-        new KeyboardModel()
-        {
-            SerialNumber="6937",
-            Manufacturer="Asus",
-            Model="C3H7",
-            IsWireless=false
-        }
-        ,
-        new KeyboardModel()
-        {
-            SerialNumber="3829",
-            Manufacturer="Intel",
-            Model="C9J2",
-            IsWireless=false
-        }
-        ,
-        new KeyboardModel()
-        {
-            SerialNumber="1191",
-            Manufacturer="Sapphire",
-            Model="C1G2",
-            IsWireless=true
-        }
-    };
-
-    private string searchString = null;
-    private bool FilterFunc(KeyboardModel keyboard)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (keyboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (keyboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (keyboard.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{keyboard.SerialNumber} {keyboard.Manufacturer} {keyboard.Model}".Contains(searchString))
-            return true;
-        return false;
-    } 
-    private void OpenDialog()
-    {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<KeyboardDialog>("", options);
-    }
-    private KeyboardModel _model = new() { };
-}
