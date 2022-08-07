@@ -1,20 +1,12 @@
-﻿@page "/Mouse"
-@inject IDialogService DialogService
-@inject NavigationManager NavManager
-@using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined Hover T="MouseModel" Items="Mouses" Filter="new Func<MouseModel,bool>(FilterFunc)">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject MouseMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MouseModel>>>(OnServerReloadAsync))" @ref="_mouseTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success Class="ma-2" OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
-            Create
-        </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
-        </MudButton>
-        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
-            Export
-        </MudButton>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
@@ -24,15 +16,15 @@
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.SerialNumber</MudTd>
+        <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsWireless ReadOnly/>
         </MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -42,62 +34,6 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager HideRowsPerPage/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
-@code{
-    private List<MouseModel> Mouses = new List<MouseModel>()
-    {
-        new MouseModel()
-        {
-            SerialNumber="1234",
-            Manufacturer="Zebronic",
-            Model="C3PO",
-            IsWireless=true
-        }
-        ,
-        new MouseModel()
-        {
-            SerialNumber="1212",
-            Manufacturer="Sapphire",
-            Model="C1J1",
-            IsWireless=true
-        }
-        ,
-        new MouseModel()
-        {
-            SerialNumber="1293",
-            Manufacturer="Intel",
-            Model="C3P1",
-            IsWireless=false
-        }
-        ,
-        new MouseModel()
-        {
-            SerialNumber="2323",
-            Manufacturer="Asus",
-            Model="C1P1",
-            IsWireless=false
-        }
-    };
-    private string searchString = null;
-    private bool FilterFunc(MouseModel mouse)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (mouse.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (mouse.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (mouse.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{mouse.SerialNumber} {mouse.Manufacturer} {mouse.Model}".Contains(searchString))
-            return true;
-        return false;
-    } 
-    private void OpenDialog()
-    {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<MouseDialog>("", options);
-    }
-}

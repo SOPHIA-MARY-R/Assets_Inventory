@@ -21,6 +21,7 @@ public static class DependencyInjection
     public static IServiceCollection AddFeatures(this IServiceCollection services)
     {
         services.AddTransient<KeyboardMasterService>();
+        services.AddTransient<MouseMasterService>();
         return services;
     }
 }

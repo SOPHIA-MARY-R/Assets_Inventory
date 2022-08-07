@@ -41,8 +41,10 @@
             <MudCheckBox Checked=@context.IsActive ReadOnly/>
         </MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <div class="d-flex flex-wrap gap-2">
+                <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+                <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            </div>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
