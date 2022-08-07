@@ -3,7 +3,6 @@ using Fluid.Shared.Entities;
 
 public class MouseModel
 {
-    [Key]
     public string OemSerialNo { get; set; }
 
     public string Manufacturer { get; set; }
