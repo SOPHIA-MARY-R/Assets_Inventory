@@ -1,11 +1,14 @@
-﻿namespace Fluid.Shared.Entities;
+﻿using Fluid.Shared.Entities;
 
-public class MotherboardInfo : IEntity
+namespace Fluid.Shared.Models;
+
+public class MotherboardModel
 {
     [Key]
     public string OemSerialNo { get; set; }
 
     public string Manufacturer { get; set; }
+
     public string Model { get; set; }
     public string Description { get; set; }
     public UseStatus UseStatus { get; set; }

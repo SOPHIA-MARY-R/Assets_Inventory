@@ -8,9 +8,9 @@ namespace Fluid.Server.Controllers;
 [ApiController]
 public class KeyboardMasterController : ControllerBase
 {
-    private readonly KeyboardMasterService _keyboardMasterService;
+    private readonly IKeyboardMasterService _keyboardMasterService;
 
-    public KeyboardMasterController(KeyboardMasterService keyboardMasterService)
+    public KeyboardMasterController(IKeyboardMasterService keyboardMasterService)
     {
         _keyboardMasterService = keyboardMasterService;
     }

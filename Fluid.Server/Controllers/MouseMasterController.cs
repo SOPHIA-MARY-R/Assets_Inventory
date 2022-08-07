@@ -8,9 +8,9 @@ namespace Fluid.Server.Controllers;
 [ApiController]
 public class MouseMasterController : ControllerBase
 {
-    private readonly MouseMasterService _MouseMasterService;
+    private readonly IMouseMasterService _MouseMasterService;
 
-    public MouseMasterController(MouseMasterService MouseMasterService)
+    public MouseMasterController(IMouseMasterService MouseMasterService)
     {
         _MouseMasterService = MouseMasterService;
     }

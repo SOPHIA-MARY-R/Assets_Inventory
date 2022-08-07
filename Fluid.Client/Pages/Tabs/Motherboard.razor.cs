@@ -2,24 +2,24 @@
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
-
 namespace Fluid.Client.Pages.Tabs;
 
-public partial class Keyboard
+
+public partial class Motherboard
 {
-    private List<KeyboardModel> _keyboards;
+    private List<MotherboardModel> _motherboards;
     private string _searchString;
-    private MudTable<KeyboardModel> _keyboardTable;
+    private MudTable<MotherboardModel> _motherboardTable;
     private int _totalItems;
 
-    private async Task<TableData<KeyboardModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<MotherboardModel>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<KeyboardModel> { TotalItems = _totalItems, Items = _keyboards };
+        return new TableData<MotherboardModel> { TotalItems = _totalItems, Items = _motherboards };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -39,7 +39,7 @@ public partial class Keyboard
         if (response.Succeeded)
         {
             _totalItems = response.TotalCount;
-            _keyboards = response.Data;
+            _motherboards = response.Data;
         }
         else
         {
@@ -55,24 +55,23 @@ public partial class Keyboard
         var parameters = new DialogParameters();
         if (!string.IsNullOrEmpty(oemSerialNo))
         {
-            var item = _keyboards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
+            var item = _motherboards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(KeyboardDialog.Model), new KeyboardModel
+                parameters.Add(nameof(MotherboardDialog.Model), new MotherboardModel
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
                     Model = item.Model,
-                    IsWireless = item.IsWireless,
                     PurchaseDate = item.PurchaseDate,
                     Description = item.Description,
                     Price = item.Price
                 });
-                parameters.Add(nameof(KeyboardDialog.IsEditMode), true);
+                parameters.Add(nameof(MotherboardDialog.IsEditMode), true);
             }
         }
         var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
-        var dialog = dialogService.Show<KeyboardDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
+        var dialog = dialogService.Show<MotherboardDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
         if (!(await dialog.Result).Cancelled)
         {
             OnSearch("");
@@ -81,7 +80,7 @@ public partial class Keyboard
 
     private async Task Delete(string Id)
     {
-        if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Keyboard? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
+        if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Motherboard? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
             var response = await masterHttpClient.DeleteAsync(Id);
             OnSearch("");
@@ -102,6 +101,6 @@ public partial class Keyboard
     private void OnSearch(string value)
     {
         _searchString = value;
-        _keyboardTable.ReloadServerData();
+        _motherboardTable.ReloadServerData();
     }
 }

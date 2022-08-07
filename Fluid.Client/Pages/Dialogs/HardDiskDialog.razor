@@ -1,24 +1,51 @@
-﻿@inject MotherboardMasterHttpClient masterHttpClient
+﻿@inject HardDiskMasterHttpClient masterHttpClient
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
-            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Motherboard</MudText>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add HardDisk</MudText>
         </TitleContent>
         <DialogContent>
             <MudGrid>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" ReadOnly=@IsEditMode />
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
+                    <MudSelect T="DriveMediaType" Label="MediaType" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MediaType" >
+                         @foreach (DriveMediaType mediatype in Enum.GetValues(typeof(DriveMediaType)))
+                         {
+                            <MudSelectItem Value="@(mediatype)"/>
+                         }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect T="DriveBusType" Label="BusType" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.BusType" >
+                         @foreach (DriveBusType bustype in Enum.GetValues(typeof(DriveBusType)))
+                         {
+                            <MudSelectItem Value="@(bustype)"/>
+                         }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect T="DriveHealthCondition" Label="Health Condition" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.HealthCondition" >
+                         @foreach (DriveHealthCondition hc in Enum.GetValues(typeof(DriveHealthCondition)))
+                         {
+                            <MudSelectItem Value="@(hc)"/>
+                         }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Size" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Size" />
+                </MudItem>
+                <MudItem xs="6">
                     <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
                 </MudItem>
             </MudGrid>
@@ -35,7 +62,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public MotherboardModel Model { get; set; } = new();
+    public HardDiskModel Model { get; set; } = new();
 
     [Parameter]
     public bool IsEditMode { get; set; } = false;

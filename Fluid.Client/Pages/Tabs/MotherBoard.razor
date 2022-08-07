@@ -1,38 +1,28 @@
-﻿@page "/MotherBoard"
-@inject NavigationManager NavManager
-@inject IDialogService DialogService
-@using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined Hover T="MotherboardModel" Items="Motherboards" Filter="new Func<MotherboardModel,bool>(FilterFunc)">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject MotherboardMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MotherboardModel>>>(OnServerReloadAsync))" @ref="_motherboardTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
-            Create
-        </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
-        </MudButton>
-        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
-            Export
-        </MudButton>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
-        <MudTh>Product</MudTh>
-        <MudTh>Status</MudTh>
-        <MudTh>Version</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>Model</MudTh>
+        <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.SerialNumber</MudTd>
+        <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
-        <MudTd>@context.Product</MudTd>
-        <MudTd>@context.Status</MudTd>
-        <MudTd>@context.Version</MudTd>
+        <MudTd>@context.Model</MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -42,70 +32,6 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager HideRowsPerPage/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
-@code{
-    private List<MotherboardModel> Motherboards = new List<MotherboardModel>()
-    {
-        new MotherboardModel()
-        {
-            SerialNumber="1234",
-            Manufacturer="Zebronic",
-            Product="9025",
-            Status="Good",
-            Version="90.05"
-        }
-        ,
-        new MotherboardModel()
-        {
-            SerialNumber="2192",
-            Manufacturer="Sapphire",
-            Product="1923",
-            Status="Good",
-            Version="9.2"
-        }
-        ,
-        new MotherboardModel()
-        {
-            SerialNumber="2391",
-            Manufacturer="Intel",
-            Product="2382",
-            Status="Bad",
-            Version="8.1"
-        }
-        ,
-        new MotherboardModel()
-        {
-            SerialNumber="2392",
-            Manufacturer="Asus",
-            Product="1291",
-            Status="Worse",
-            Version="9.1"
-        }
-    };
-    private string searchString = null;
-    private bool FilterFunc(MotherboardModel motherboard)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (motherboard.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (motherboard.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (motherboard.Product.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (motherboard.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (motherboard.Version.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{motherboard.SerialNumber} {motherboard.Manufacturer} {motherboard.Product} {motherboard.Status} {motherboard.Version}".Contains(searchString))
-            return true;
-        return false;
-    } 
-    private void OpenDialog()
-    {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<MotherBoardDialog>("", options);
-    }
-}

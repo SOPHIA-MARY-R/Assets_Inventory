@@ -36,6 +36,8 @@ public static class DependencyInjection
         services.AddHttpClientInterceptor();
         services.AddTransient<KeyboardMasterHttpClient>();
         services.AddTransient<MouseMasterHttpClient>();
+        services.AddTransient<MotherboardMasterHttpClient>();
+        services.AddTransient<HardDiskMasterHttpClient>();
         services.AddTransient<UserHttpClient>();
         services.AddTransient<HttpClientInterceptorManager>();
         return services;
