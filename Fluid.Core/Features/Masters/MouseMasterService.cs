@@ -5,7 +5,7 @@ using Fluid.Shared.Models;
 
 namespace Fluid.Core.Features.Masters;
 
-public class MouseMasterService
+public class MouseMasterService : IMouseMasterService
 {
     private readonly IUnitOfWork _unitOfWork;
 
