@@ -1,4 +1,5 @@
 using Fluid.Core.Extensions;
+using Fluid.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddDatabase(builder.Configuration, "DefaultConnection");
 builder.Services.AddFeatures();
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
+builder.Services.AddTransient<DatabaseSeeder>();
 
 var app = builder.Build();
 
@@ -34,5 +36,6 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+app.Services.CreateScope().ServiceProvider.GetService<DatabaseSeeder>().SeedAdminUser();
 
 app.Run();

@@ -1,0 +1,35 @@
+﻿@page "/login"
+<PageTitle>Login | Fluid</PageTitle>
+@layout AuthLayout
+@attribute [AllowAnonymous]
+@inject UserHttpClient userHttpClient
+<EditForm Model="_requestModel" OnValidSubmit="SubmitAsync">
+    <div class="d-flex justify-center">
+        <MudIcon Icon="@Icons.Custom.Brands.MicrosoftAzure" Color="Color.Primary" Size="Size.Large" Style="width: 100px; height: 100px;" />
+    </div>
+    <div class="d-flex justify-center">
+        <MudText Typo="Typo.h5">Login to Fluid</MudText>
+    </div>
+    <MudDivider Class="my-8" />
+    <MudGrid>
+        <DataAnnotationsValidator />
+        <MudItem xs="12">
+            <MudTextField Margin=Margin.Dense Label="UserName" Variant="Variant.Outlined" Immediate @bind-Value="_requestModel.UserName" For="(() => _requestModel.UserName)" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField Margin=Margin.Dense Label="Password" Variant="Variant.Outlined" Immediate @bind-Value="_requestModel.Password" For="(() => _requestModel.Password)" InputType="_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Sign In</MudButton>
+        </MudItem>
+    </MudGrid>
+    <MudDivider Class="my-8" />
+    <MudGrid>
+        <MudItem xs=12>
+            <MudLink Href="/register" Typo="Typo.body1">Register</MudLink>
+        </MudItem>
+        <MudItem xs=12>
+            <MudLink Href="/account/forgot-password" Typo="Typo.body1">Forgot Password?</MudLink>
+        </MudItem>
+    </MudGrid>
+</EditForm>

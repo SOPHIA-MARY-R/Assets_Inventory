@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Fluid.Core.Persistence;
 
-public class AppDbContext : IdentityDbContext<IdentityUser>
+public class AppDbContext : IdentityDbContext<AppUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -28,6 +28,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Ignore<IdentityUserLogin<string>>();
         modelBuilder.Ignore<IdentityRoleClaim<string>>();
         modelBuilder.Ignore<IdentityUserClaim<string>>();
-        modelBuilder.Entity<IdentityUser>().ToTable("Technicians", "dbo");
+        modelBuilder.Entity<AppUser>().ToTable("Technicians", "dbo");
     }
 }

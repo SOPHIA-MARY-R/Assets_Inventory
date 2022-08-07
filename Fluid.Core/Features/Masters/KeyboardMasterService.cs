@@ -5,7 +5,7 @@ using Fluid.Shared.Models;
 
 namespace Fluid.Core.Features.Masters;
 
-public class KeyboardMasterService
+public class KeyboardMasterService : IKeyboardMasterService
 {
     private readonly IUnitOfWork _unitOfWork;
 
