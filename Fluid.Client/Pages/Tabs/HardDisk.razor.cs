@@ -63,6 +63,10 @@ public partial class HardDisk
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
                     Model = item.Model,
+                    MediaType = item.MediaType,
+                    BusType = item.BusType,
+                    HealthCondition = item.HealthCondition,
+                    Size = item.Size,
                     PurchaseDate = item.PurchaseDate,
                     Description = item.Description,
                     Price = item.Price
