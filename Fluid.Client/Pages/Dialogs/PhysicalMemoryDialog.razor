@@ -1,0 +1,86 @@
+﻿@inject PhysicalMemoryMasterHttpClient masterHttpClient
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add PhysicalMemory</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" ReadOnly=@IsEditMode />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Capacity" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Capacity" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect T="MemoryFormFactor" Label="Form Factor" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.FormFactor" >
+                         @foreach (MemoryFormFactor formfactor in Enum.GetValues(typeof(MemoryFormFactor)))
+                         {
+                            <MudSelectItem Value="@(formfactor)"/>
+                         }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect T="MemoryType" Label="Memory Type" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MemoryType" >
+                         @foreach (MemoryType memtype in Enum.GetValues(typeof(MemoryType)))
+                         {
+                            <MudSelectItem Value="@(memtype)"/>
+                         }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Speed" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public PhysicalMemoryModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    private async Task SubmitAsync()
+    {
+        IResult<string> result;
+        if (IsEditMode)
+        {
+            result = await masterHttpClient.EditAsync(Model);
+        }
+        else
+        {
+            result = await masterHttpClient.AddAsync(Model);
+        }
+        if (result.Succeeded)
+        {
+            snackbar.Add(result.Messages[0], Severity.Success);
+            MudDialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
+        }
+    }
+}

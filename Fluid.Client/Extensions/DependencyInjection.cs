@@ -35,6 +35,7 @@ public static class DependencyInjection
         services.AddHttpClient("Fluid.API", client => client.BaseAddress = new Uri(baseAddress)).AddHttpMessageHandler<AuthorizationHeaderHandler>();
         services.AddHttpClientInterceptor();
         services.AddTransient<KeyboardMasterHttpClient>();
+        services.AddTransient<PhysicalMemoryMasterHttpClient>();
         services.AddTransient<MouseMasterHttpClient>();
         services.AddTransient<MotherboardMasterHttpClient>();
         services.AddTransient<HardDiskMasterHttpClient>();

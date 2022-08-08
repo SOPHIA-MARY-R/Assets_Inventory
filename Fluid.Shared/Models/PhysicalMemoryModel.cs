@@ -1,6 +1,8 @@
-﻿namespace Fluid.Shared.Entities;
+﻿namespace Fluid.Shared.Models;
+using Fluid.Shared.Entities;
 
-public class PhysicalMemoryInfo : IEntity
+
+public class PhysicalMemoryModel
 {
     [Key]
     public string OemSerialNo { get; set; }

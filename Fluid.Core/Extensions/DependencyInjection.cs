@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddTransient<IMouseMasterService, MouseMasterService>();
         services.AddTransient<IMotherboardMasterService, MotherboardMasterService>();
         services.AddTransient<IHardDiskMasterService, HardDiskMasterService>();
+        services.AddTransient<IPhysicalMemoryMasterService, PhysicalMemoryMasterService>();
         return services;
     }
 }

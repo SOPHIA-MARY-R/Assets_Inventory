@@ -1,0 +1,43 @@
+﻿@using Fluid.Client.Pages.Dialogs
+@inject PhysicalMemoryMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<PhysicalMemoryModel>>>(OnServerReloadAsync))" @ref="_physicalmemoryTable">
+    <ToolBarContent>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
+        <MudSpacer />
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Serial Number</MudTh>
+        <MudTh>Manufacturer</MudTh>
+        <MudTh>Capacity</MudTh>
+        <MudTh>Speed</MudTh>
+        <MudTh>Memory Type</MudTh>
+        <MudTh>Form Factor</MudTh>
+        <MudTh Style="column-span: 2">Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.OemSerialNo</MudTd>
+        <MudTd>@context.Manufacturer</MudTd>
+        <MudTd>@context.Capacity</MudTd>
+        <MudTd>@context.Speed</MudTd>
+        <MudTd>@context.MemoryType</MudTd>
+        <MudTd>@context.FormFactor</MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
