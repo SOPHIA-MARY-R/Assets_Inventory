@@ -19,7 +19,7 @@ public class HardDiskInfoSearchSpecification : BaseSpecification<HardDiskInfo>
                                 || p.BusType.ToString().ToLower().Contains(searchString)
                                 || p.MediaType.ToString().ToLower().Contains(searchString)
                                 || p.HealthCondition.ToString().ToLower().Contains(searchString)
-                                || p.Size.ToString().ToLower().Contains(searchString)
+                                || p.Size.ToString().Contains(searchString)
                                 || p.Model.ToLower().Contains(searchString)
                                 || p.Price.ToString().Contains(searchString);
         }
