@@ -1,6 +1,6 @@
 ﻿using Fluid.Shared.Enums.Technical;
 
-namespace Fluid.Client.Models
+namespace Fluid.Shared.Models
 {
     public class ProcessorModel
     {
