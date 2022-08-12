@@ -1,9 +1,11 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class MachineInfo : IEntity
+public class FeedLog : IEntity
 {
     [Key]
-    public string AssetTag { get; set; } //Primary Key
+    public string Id { get; set; }
+
+    public string AssetTag { get; set; }
 
     public string OemSerialNo { get; set; }
 
@@ -15,19 +17,13 @@ public class MachineInfo : IEntity
 
     public MachineType MachineType { get; set; }
 
-    public MachineUseType UseType { get; set; }
-
-    public UseStatus UseStatus { get; set; }
-
     public string AssignedPersonName { get; set; }
 
     public string AssetLocation { get; set; }
 
     public string AssetBranch { get; set; }
 
-    public DateTime? PurchaseDate { get; set; }
+    public string JsonRaw { get; set; }
 
-    public DateTime? InitializationDate { get; set; }
-
-    public decimal Price { get; set; }
+    public DateTime LogDateTime { get; set; }
 }

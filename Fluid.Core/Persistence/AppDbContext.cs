@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<HardDiskInfo> HardDiskMaster { get; set; }
     public DbSet<KeyboardInfo> KeyboardMaster { get; set; }
     public DbSet<MouseInfo> MouseMaster { get; set; }
+    public DbSet<FeedLog> FeedLogStorage { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

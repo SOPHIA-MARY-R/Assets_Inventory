@@ -1,6 +1,6 @@
-﻿namespace Fluid.Client.Models
+﻿namespace Fluid.Shared.Models
 {
-    public class MonitorModel
+    public class GraphicsCardModel
     {
         public string SerialNumber { get; set; }
         public string Manufacturer { get; set; }
