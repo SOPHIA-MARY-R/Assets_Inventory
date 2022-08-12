@@ -4,6 +4,7 @@ using Fluid.Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fluid.Core.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220811153154_UpdatedMachineInfoPK")]
+    partial class UpdatedMachineInfoPK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,6 +103,9 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<byte>("BusType")
                         .HasColumnType("tinyint");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("HealthCondition")
                         .HasColumnType("tinyint");
 
@@ -132,7 +137,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("HardDiskMaster", (string)null);
+                    b.ToTable("HardDiskMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.KeyboardInfo", b =>
@@ -168,7 +173,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("KeyboardMaster", (string)null);
+                    b.ToTable("KeyboardMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MachineInfo", b =>
@@ -217,7 +222,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasKey("AssetTag");
 
-                    b.ToTable("MachineMaster", (string)null);
+                    b.ToTable("MachineMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MotherboardInfo", b =>
@@ -243,14 +248,20 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("UseStatus")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("Version")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OemSerialNo");
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("MotherboardMaster", (string)null);
+                    b.ToTable("MotherboardMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MouseInfo", b =>
@@ -286,7 +297,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("MouseMaster", (string)null);
+                    b.ToTable("MouseMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.PhysicalMemoryInfo", b =>
@@ -328,7 +339,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("PhysicalMemoryMaster", (string)null);
+                    b.ToTable("PhysicalMemoryMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.HardDiskInfo", b =>
