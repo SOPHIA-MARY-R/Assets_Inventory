@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluid.Shared", "Fluid.Share
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluid.Core", "Fluid.Core\Fluid.Core.csproj", "{F392964E-00B7-4D1B-B360-9FD70AF96D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluid.BgService", "Fluid.BgService\Fluid.BgService.csproj", "{4F80E909-CD99-48AE-BAFF-A22E66498DFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluid.BgService", "Fluid.BgService\Fluid.BgService.csproj", "{4F80E909-CD99-48AE-BAFF-A22E66498DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

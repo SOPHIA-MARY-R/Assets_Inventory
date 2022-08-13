@@ -1,34 +1,28 @@
-﻿@page "/Monitor"
-@inject IDialogService DialogService
-@inject NavigationManager NavManager
-@using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined Hover T="MonitorModel" Items="Monitors" Filter="new Func<MonitorModel,bool>(FilterFunc)">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject MonitorMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MonitorModel>>>(OnServerReloadAsync))" @ref="_monitorTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
-            Create
-        </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
-        </MudButton>
-        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
-            Export
-        </MudButton>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.SerialNumber</MudTd>
+        <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
+        </MudTd>
+        <MudTd>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -38,58 +32,6 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager HideRowsPerPage/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
-@code{
-    private List<MonitorModel> Monitors = new List<MonitorModel>()
-    {
-        new MonitorModel()
-        {
-            SerialNumber="1234",
-            Manufacturer="Zebronic",
-            Model="C3PO"
-        }
-        ,
-        new MonitorModel()
-        {
-            SerialNumber="2912",
-            Manufacturer="Sapphire",
-            Model="C2P1"
-        }
-        ,
-        new MonitorModel()
-        {
-            SerialNumber="2398",
-            Manufacturer="Asus",
-            Model="C3P1"
-        }
-        ,
-        new MonitorModel()
-        {
-            SerialNumber="2912",
-            Manufacturer="Intel",
-            Model="C1PO"
-        }
-    };
-    private string searchString = null;
-    private bool FilterFunc(MonitorModel monitor)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (monitor.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (monitor.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (monitor.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{monitor.SerialNumber} {monitor.Manufacturer} {monitor.Model}".Contains(searchString))
-            return true;
-        return false;
-    } 
-    private void OpenDialog()
-    {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<MonitorDialog>("", options);
-    }
-}
