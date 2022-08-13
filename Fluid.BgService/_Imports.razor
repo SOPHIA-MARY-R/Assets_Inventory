@@ -10,10 +10,13 @@
 @using Fluid.BgService
 @using Fluid.BgService.Services
 @using Fluid.BgService.Shared
+@using Fluid.Shared.Enums
 
 @attribute [Authorize]
+@inject AuthenticationStateProvider authStateProvider
 @inject HttpClient httpClient
 @inject MachineIdentifierService machineIdentifierService
 @inject NavigationManager navigationManager
 @inject ISnackbar snackbar
+@inject SystemConfigurationService systemConfigurationService
 @inject UserHttpClient userHttpClient

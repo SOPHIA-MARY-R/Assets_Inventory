@@ -34,6 +34,7 @@ builder.Services.AddScoped(s => new HttpClient() { BaseAddress = new Uri(builder
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<MachineIdentifierService>();
 builder.Services.AddSingleton<TechnicianCredentialsService>();
+builder.Services.AddSingleton<SystemConfigurationService>();
 builder.Services.AddTransient<UserHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, TechnicianAuthStateProvider>();
 builder.Services.AddScoped<TechnicianAuthStateProvider>();
