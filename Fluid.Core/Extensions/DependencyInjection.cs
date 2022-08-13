@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddTransient<IGraphicsCardMasterService, GraphicsCardMasterService>();
         services.AddTransient<IMachineMasterService, MachineMasterService>();
         services.AddTransient<IMonitorMasterService, MonitorMasterService>();
+        services.AddTransient<ICameraMasterService, CameraMasterService>();
         return services;
     }
 }

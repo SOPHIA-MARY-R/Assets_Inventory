@@ -1,6 +1,6 @@
-@using Fluid.Client.Pages.Dialogs
-@inject KeyboardMasterHttpClient masterHttpClient
-<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<KeyboardModel>>>(OnServerReloadAsync))" @ref="_keyboardTable">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject CameraMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<CameraModel>>>(OnServerReloadAsync))" @ref="_CameraTable">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
         <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
@@ -12,15 +12,24 @@
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
-        <MudTh>IsWireless</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>Mega Pixels</MudTh>
+        <MudTh>IsWireLess</MudTh>
+        <MudTh>Resolution</MudTh>
+        <MudTh>HasBuiltInMic</MudTh>
+ 
+        <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
+        <MudTd>@context.MegaPixels</MudTd>
+        <MudTd>@context.Resolution</MudTd>
         <MudTd>
-            <MudCheckBox Checked=@context.IsWireless ReadOnly/>
+            <MudCheckBox Checked=@context.HasBuiltInMic ReadOnly/>
+        </MudTd>
+        <MudTd>
+            <MudCheckBox Checked=@context.IsWireLess ReadOnly/>
         </MudTd>
         <MudTd>
             <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />

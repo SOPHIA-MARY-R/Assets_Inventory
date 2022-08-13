@@ -18,6 +18,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<ProcessorInfo> ProcessorMaster { get; set; }
     public DbSet<GraphicsCardInfo> GraphicsCardMaster { get; set; }
     public DbSet<MonitorInfo> MonitorMaster { get; set; }
+    public DbSet<CameraInfo> CameraMaster { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

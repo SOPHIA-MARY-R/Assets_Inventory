@@ -18,7 +18,7 @@
         <MudTh>No.Of.LogicalProcessors</MudTh>
         <MudTh>Thread Count</MudTh>
         <MudTh>Max clock speed</MudTh>
-        <MudTh Style="column-span: 2">Actions</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.ProcessorId</MudTd>
@@ -30,7 +30,7 @@
         <MudTd>@context.NumberOfLogicalProcessors</MudTd>
         <MudTd>@context.ThreadCount</MudTd>
         <MudTd>@context.MaxClockSpeed</MudTd>
-        <MudTd>
+        <MudTd Style="text-align:center">
             <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.ProcessorId))" />
         </MudTd>
         <MudTd>
