@@ -1,25 +1,21 @@
-﻿@inject NavigationManager NavManager
-@using Fluid.Shared.Enums.Technical;
-<MudDialog>
-    <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Keyboard" Class="mr-3 mb-n1" />Add Processor</MudText>
-    </TitleContent>
-    <DialogContent>
-        <EditForm Model="Model" OnValidSubmit="Submit">
+﻿@inject ProcessorMasterHttpClient masterHttpClient
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Processor</MudText>
+        </TitleContent>
+        <DialogContent>
             <MudGrid>
                 <MudItem xs="6">
-                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.SerialNumber" />
+                    <MudTextField Label="ProcessorID" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ProcessorId" ReadOnly=@IsEditMode />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Name" />
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="Processor ID" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ProcessorID" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Name" />
-                </MudItem>
-                <MudItem xs="12">
                     <MudSelect T="ProcessorArchitecture" Label="Architecture" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Architecture" >
                          @foreach (ProcessorArchitecture archi in Enum.GetValues(typeof(ProcessorArchitecture)))
                          {
@@ -27,47 +23,68 @@
                          }
                     </MudSelect>
                 </MudItem>
-                <MudItem xs="12">
-                    <MudTextField Label="Family" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Family"/>
+                <MudItem xs="6">
+                    <MudTextField Label="Family" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Family" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="No of Cores" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfCores"/>
+                     <MudTextField Label="No.of.cores" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfCores" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="No of Logical Processors" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfLogicalProcessors"/>
+                    <MudTextField Label="No.of.Logical Processors" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfLogicalProcessors" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="Thread Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ThreadCount"/>
+                    <MudTextField Label="Thread Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ThreadCount" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="Max Clock Speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MaxClockSpeed"/>
+                    <MudTextField Label="Max clock speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MaxClockSpeed" />
                 </MudItem>
-                <MudItem>
-                    
+                <MudItem xs="6">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
                 </MudItem>
             </MudGrid>
-        </EditForm>
-    </DialogContent>    
-    <DialogActions>
-        <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
-    </DialogActions>
-</MudDialog>
-@code 
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
 {
-    [CascadingParameter] 
+    [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public ProcessorModel Model { get; set; } = new();
 
-    private void Submit() 
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    private async Task SubmitAsync()
     {
-        MudDialog.Close(DialogResult.Ok(Model));
+        IResult<string> result;
+        if (IsEditMode)
+        {
+            result = await masterHttpClient.EditAsync(Model);
+        }
+        else
+        {
+            result = await masterHttpClient.AddAsync(Model);
+        }
+        if (result.Succeeded)
+        {
+            snackbar.Add(result.Messages[0], Severity.Success);
+            MudDialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
+        }
     }
-
-
-    [Inject] ISnackbar Snackbar { get; set; }
-
 }
-

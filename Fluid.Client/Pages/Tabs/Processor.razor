@@ -1,41 +1,29 @@
-﻿@page "/Processor"
-@using Fluid.Shared.Enums.Technical
-@inject NavigationManager NavManager
-@inject IDialogService DialogService
-@using Fluid.Client.Pages.Dialogs
-<MudTable Dense Elevation=0 Outlined HorizontalScrollbar Hover T="ProcessorModel" Items="Processors"  Filter="new Func<ProcessorModel,bool>(FilterFunc)">
+﻿@using Fluid.Client.Pages.Dialogs
+@inject ProcessorMasterHttpClient masterHttpClient
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<ProcessorModel>>>(OnServerReloadAsync))" @ref="_processorTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success OnClick="OpenDialog" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">
-            Create
-        </MudButton>
-        <MudButton Color=Color.Tertiary Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh">
-            Reload
-        </MudButton>
-        <MudButton Color=Color.Info Class="ma-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">
-            Export
-        </MudButton>
+        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Serial Number</MudTh>
-        <MudTh>Manufacturer</MudTh>
-        <MudTh>ProcessorID</MudTh>
+        <MudTh>Processor ID</MudTh>
         <MudTh>Name</MudTh>
+        <MudTh>Manufacturer</MudTh>
         <MudTh>Architecture</MudTh>
         <MudTh>Family</MudTh>
-        <MudTh>No of cores</MudTh>
-        <MudTh Class="align-content-center">No of Logical Processors</MudTh>
-        <MudTh>Thread count</MudTh>
-        
+        <MudTh>No.Of.Cores</MudTh>
+        <MudTh>No.Of.LogicalProcessors</MudTh>
+        <MudTh>Thread Count</MudTh>
         <MudTh>Max clock speed</MudTh>
-        <MudTh Style="column-span:2;">Actions</MudTh>
+        <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.SerialNumber</MudTd>
-        <MudTd>@context.Manufacturer</MudTd>
-        <MudTd>@context.ProcessorID</MudTd>
+        <MudTd>@context.ProcessorId</MudTd>
         <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Architecture</MudTd>
         <MudTd>@context.Family</MudTd>
         <MudTd>@context.NumberOfCores</MudTd>
@@ -43,10 +31,10 @@
         <MudTd>@context.ThreadCount</MudTd>
         <MudTd>@context.MaxClockSpeed</MudTd>
         <MudTd>
-            <MudIconButton Style="margin-right:0" Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit"/>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.ProcessorId))" />
         </MudTd>
         <MudTd>
-            <MudIconButton Style="margin-left:0" Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete"/>
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.ProcessorId))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -56,100 +44,6 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager HideRowsPerPage/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
-@code{
-    private List<ProcessorModel> Processors = new List<ProcessorModel>()
-    {
-        new ProcessorModel()
-        {
-            SerialNumber="1234",
-            Manufacturer="Zebronic",
-            ProcessorID="C3PO",
-            Name="Intel",
-            Architecture=ProcessorArchitecture.ia64,
-            Family=8086,
-            NumberOfCores=4,
-            NumberOfLogicalProcessors=8,
-            ThreadCount=36,
-            MaxClockSpeed=2
-        }
-        ,
-        new ProcessorModel()
-        {
-            SerialNumber="7656",
-            Manufacturer="Asus",
-            ProcessorID="C3P6",
-            Name="Sapphire",
-            Architecture=ProcessorArchitecture.ARM64,
-            Family=8081,
-            NumberOfCores=2,
-            NumberOfLogicalProcessors=8,
-            ThreadCount=76,
-            MaxClockSpeed=3
-        }
-        ,
-        new ProcessorModel()
-        {
-            SerialNumber="5454",
-            Manufacturer="Intel",
-            ProcessorID="C2J1",
-            Name="Asus",
-            Architecture=ProcessorArchitecture.PowerPC,
-            Family=8012,
-            NumberOfCores=4,
-            NumberOfLogicalProcessors=8,
-            ThreadCount=23,
-            MaxClockSpeed=3
-        }
-        ,
-        new ProcessorModel()
-        {
-            SerialNumber="2323",
-            Manufacturer="Sapphire",
-            ProcessorID="J1H1",
-            Name="Intel",
-            Architecture=ProcessorArchitecture.x86,
-            Family=8081,
-            NumberOfCores=4,
-            NumberOfLogicalProcessors=8,
-            ThreadCount=21,
-            MaxClockSpeed=3
-        }
-    };
-    private string searchString = null;
-    private bool FilterFunc(ProcessorModel processor)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (processor.SerialNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.ProcessorID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.Architecture.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.Family.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.NumberOfCores.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.NumberOfLogicalProcessors.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.ThreadCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (processor.MaxClockSpeed.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{processor.SerialNumber} {processor.Manufacturer} {processor.ProcessorID} {processor.Name} {processor.Architecture} {processor.Family} {processor.NumberOfCores} {processor.NumberOfLogicalProcessors} {processor.ThreadCount} {processor.MaxClockSpeed}".Contains(searchString))
-            return true;
-        return false;
-    } 
-    private void OpenDialog()
-    {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ProcessorDialog>("", options);
-    }
-}
