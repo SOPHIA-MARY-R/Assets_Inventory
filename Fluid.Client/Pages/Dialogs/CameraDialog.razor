@@ -1,8 +1,8 @@
-﻿@inject MonitorMasterHttpClient masterHttpClient
+﻿@inject CameraMasterHttpClient masterHttpClient
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
-            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Monitor</MudText>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Camera</MudText>
         </TitleContent>
         <DialogContent>
             <MudGrid>
@@ -16,23 +16,17 @@
                     <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudSelect T="MonitorPanelType" Label="Monitor Panel Type" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PanelType" >
-                         @foreach (MonitorPanelType type in Enum.GetValues(typeof(MonitorPanelType)))
+                    <MudSelect T="CameraResolution" Label="Camera Resolution" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Resolution" >
+                         @foreach (CameraResolution resolution in Enum.GetValues(typeof(CameraResolution)))
                          {
-                            <MudSelectItem Value="@(type)"/>
+                            <MudSelectItem Value="@(resolution)"/>
                          }
                     </MudSelect>
                 </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Mega Pixels" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MegaPixels" />
+                </MudItem>
                 
-                <MudItem xs="6">
-                    <MudTextField Label="Refresh Rate" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.RefreshRate" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="HDMI Port Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.HDMIPortCount" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="VGA Port Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.VGAPortCount" />
-                </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
                 </MudItem>
@@ -40,7 +34,10 @@
                     <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
                 </MudItem>
                 <MudItem xs="12" Class="d-flex">
-                    <MudSwitch @bind-Checked="Model.HasBuiltInSpeakers" Color="Color.Info" Label="BuiltInSpeakers" Class="mx-auto" />
+                    <MudSwitch @bind-Checked="Model.IsWireLess" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                </MudItem>
+                <MudItem xs="12" Class="d-flex">
+                    <MudSwitch @bind-Checked="Model.HasBuiltInMic" Color="Color.Info" Label="BuiltInMic" Class="mx-auto" />
                 </MudItem>
             </MudGrid>
         </DialogContent>
@@ -56,7 +53,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public MonitorModel Model { get; set; } = new();
+    public CameraModel Model { get; set; } = new();
 
     [Parameter]
     public bool IsEditMode { get; set; } = false;
