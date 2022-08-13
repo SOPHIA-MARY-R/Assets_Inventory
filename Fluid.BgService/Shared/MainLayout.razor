@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudLayout>
+    <MudAppBar>
+        <MudText Typo="Typo.h5">Fluid - Setup</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="@Logout" Edge="Edge.End" Color="Color.Inherit" />
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    private async Task Logout()
+    {
+        await userHttpClient.Logout();
+        navigationManager.NavigateTo("/", true);
+    }
+}

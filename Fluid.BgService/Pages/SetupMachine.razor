@@ -1,0 +1,24 @@
+﻿@page "/Setup-Machine"
+@layout AuthLayout
+<EditForm Model="Model" OnSubmit="Submit">
+    <div class="d-flex justify-center">
+        <MudIcon Icon="@Icons.Material.Filled.Computer" Color="Color.Primary" Size="Size.Large" Style="width: 100px; height: 100px;" />
+    </div>
+    <div class="d-flex justify-center">
+        <MudText Typo="Typo.h4">Setup this machine</MudText>
+    </div>
+    <MudDivider Class="my-8" />
+    <MudGrid>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.subtitle2" Class="mb-n4">Choose the Asset Tag that you would like to setup for this machine</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField Margin="Margin.Dense" Label="Asset Tag" @bind-Value="Model.AssetTag" For="@(() => Model.AssetTag)" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Size="Size.Large" FullWidth="true">Save Asset Tag</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

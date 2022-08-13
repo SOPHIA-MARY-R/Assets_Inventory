@@ -1,0 +1,55 @@
+﻿@page "/Setup-Server"
+@using Fluid.BgService.Models
+
+@inject MachineIdentifierService serverAddressService
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    @*<MudGrid Class="mt-4">
+        <MudItem xs="12" sm="6" md="3" lg="2">*@
+            <MudTextField @bind-Value="Model.ServerAddress" Variant="Variant.Outlined" Margin="Margin.Dense" Label="Server Address" />
+        @*</MudItem>
+    </MudGrid>*@
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation Variant="Variant.Filled" Class="mt-4">Submit</MudButton>
+</EditForm>
+
+@code
+{
+    private MachineIdentifier Model { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Model = serverAddressService.MachineIdentifier;
+        base.OnInitialized();
+    }
+
+    public async Task<bool> IsValidUri()
+    {
+        if (string.IsNullOrEmpty(Model.ServerAddress)) return false;
+        var result = Uri.TryCreate(Model.ServerAddress, UriKind.Absolute, out Uri uri);
+        if (!result) return false;
+        try
+        {
+            var response = await httpClient.GetAsync(new Uri(Model.ServerAddress + "/api/sample/greet"));
+            var expected = $"Pinging from client {uri.Host}:{uri.Port} is working successfully";
+            var actual = await response.Content.ReadAsStringAsync();
+            if (actual == expected)
+            {
+                snackbar.Add(actual, Severity.Success);
+                return response.StatusCode == System.Net.HttpStatusCode.OK;
+            }
+        }
+        catch(Exception e)
+        {
+            snackbar.Add(e.Message, Severity.Error);
+        }
+        return false;
+    }
+
+    public async Task SubmitAsync()
+    {
+        if (await IsValidUri())
+        {
+            serverAddressService.SetMachineIdentifier(Model);
+            snackbar.Add("Updated server address successfully", Severity.Success);
+        }
+    }
+}
