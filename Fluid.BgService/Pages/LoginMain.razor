@@ -1,0 +1,28 @@
+﻿@page "/login"
+@layout AuthLayout
+@attribute [AllowAnonymous]
+
+@if(!_isLoggedIn)
+{
+    <Login />
+}
+else if(!_isMachineSetup)
+{
+    <SetupMachine />
+}
+
+@code{
+    private bool _isLoggedIn = false;
+    private bool _isMachineSetup;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _isLoggedIn = (await authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
+        _isMachineSetup = machineIdentifierService.MachineIdentifier.AssetTag != "unset";
+        if(_isLoggedIn && _isMachineSetup)
+        {
+            navigationManager.NavigateTo("/Setup-Details");
+        }
+        await base.OnInitializedAsync();
+    }
+}
