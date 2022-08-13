@@ -14,11 +14,9 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<HardDiskInfo> HardDiskMaster { get; set; }
     public DbSet<KeyboardInfo> KeyboardMaster { get; set; }
     public DbSet<MouseInfo> MouseMaster { get; set; }
-<<<<<<< HEAD
-    public DbSet<ProcessorInfo> ProcessorMaster { get; set; }
-=======
     public DbSet<FeedLog> FeedLogStorage { get; set; }
->>>>>>> 487fc68eb34cfff18050d466a9bb4a3a9f56b71b
+    //public DbSet<ProcessorInfo> ProcessorMaster { get; set; }
+    //public DbSet<GraphicsCardInfo> GraphicsCardMaster { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -40,6 +40,8 @@ public static class DependencyInjection
         services.AddTransient<MotherboardMasterHttpClient>();
         services.AddTransient<HardDiskMasterHttpClient>();
         services.AddTransient<MachineMasterHttpClient>();
+        services.AddTransient<ProcessorMasterHttpClient>();
+        services.AddTransient<GraphicsCardMasterHttpClient>();
         services.AddTransient<UserHttpClient>();
         services.AddTransient<HttpClientInterceptorManager>();
         return services;

@@ -4,21 +4,22 @@ using Fluid.Shared.Requests;
 using MudBlazor;
 namespace Fluid.Client.Pages.Tabs;
 
-public partial class Processor
+
+public partial class GraphicsCard
 {
-    private List<ProcessorModel> _processors;
+    private List<GraphicsCardModel> _graphicsCards;
     private string _searchString;
-    private MudTable<ProcessorModel> _processorTable;
+    private MudTable<GraphicsCardModel> _graphicsCardTable;
     private int _totalItems;
 
-    private async Task<TableData<ProcessorModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<GraphicsCardModel>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<ProcessorModel> { TotalItems = _totalItems, Items = _processors };
+        return new TableData<GraphicsCardModel> { TotalItems = _totalItems, Items = _graphicsCards };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -38,7 +39,7 @@ public partial class Processor
         if (response.Succeeded)
         {
             _totalItems = response.TotalCount;
-            _processors = response.Data;
+            _graphicsCards = response.Data;
         }
         else
         {
@@ -49,34 +50,28 @@ public partial class Processor
         }
     }
 
-    private async void InvokeModal(string processorId)
+    private async void InvokeModal(string oemSerialNo)
     {
         var parameters = new DialogParameters();
-        if (!string.IsNullOrEmpty(processorId))
+        if (!string.IsNullOrEmpty(oemSerialNo))
         {
-            var item = _processors.FirstOrDefault(c => c.ProcessorId == processorId);
+            var item = _graphicsCards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(ProcessorDialog.Model), new ProcessorModel
+                parameters.Add(nameof(GraphicsCardDialog.Model), new GraphicsCardModel
                 {
-                    ProcessorId = item.ProcessorId,
-                    Name = item.Name,
+                    OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
-                    Family = item.Family,
-                    NumberOfCores = item.NumberOfCores,
-                    NumberOfLogicalProcessors = item.NumberOfLogicalProcessors,
-                    ThreadCount = item.ThreadCount,
-                    MaxClockSpeed = item.MaxClockSpeed,
+                    Model = item.Model,
                     PurchaseDate = item.PurchaseDate,
                     Description = item.Description,
-                    Price = item.Price,
-                    UseStatus = item.UseStatus,
+                    Price = item.Price
                 });
-                parameters.Add(nameof(ProcessorDialog.IsEditMode), true);
+                parameters.Add(nameof(GraphicsCardDialog.IsEditMode), true);
             }
         }
         var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
-        var dialog = dialogService.Show<ProcessorDialog>(string.IsNullOrEmpty(processorId) ? "Add" : "Update", parameters, options);
+        var dialog = dialogService.Show<GraphicsCardDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
         if (!(await dialog.Result).Cancelled)
         {
             OnSearch("");
@@ -85,7 +80,7 @@ public partial class Processor
 
     private async Task Delete(string Id)
     {
-        if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Processor? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
+        if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this GraphicsCard? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
             var response = await masterHttpClient.DeleteAsync(Id);
             OnSearch("");
@@ -106,6 +101,6 @@ public partial class Processor
     private void OnSearch(string value)
     {
         _searchString = value;
-        _processorTable.ReloadServerData();
+        _graphicsCardTable.ReloadServerData();
     }
 }

@@ -18,7 +18,6 @@ public class SampleController : ControllerBase
         Console.WriteLine($"Manufacturer - {motherboardInfo.Manufacturer}");
         Console.WriteLine($"Model - {motherboardInfo.Model}");
         Console.WriteLine($"OEMSerialNo - {motherboardInfo.OemSerialNo}");
-        Console.WriteLine($"Status - {motherboardInfo.Status}");
         Console.WriteLine($"Version - {motherboardInfo.Version}");
         return Ok();
     }
