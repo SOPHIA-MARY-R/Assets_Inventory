@@ -18,6 +18,7 @@ public class MonitorInfoSearchSpecification : BaseSpecification<MonitorInfo>
                                 || p.Manufacturer.ToLower().Contains(searchString)
                                 || p.Model.ToLower().Contains(searchString)
                                 || p.Price.ToString().Contains(searchString);
+                               
         }
     }
 }

@@ -2,6 +2,7 @@
 
 public class MachineMasterModel
 {
+    [Key]
     public string AssetTag { get; set; } //Primary Key
 
     public string OemSerialNo { get; set; }

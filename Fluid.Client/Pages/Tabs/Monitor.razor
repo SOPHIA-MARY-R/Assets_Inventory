@@ -12,12 +12,24 @@
         <MudTh>Serial Number</MudTh>
         <MudTh>Manufacturer</MudTh>
         <MudTh>Model</MudTh>
+        <MudTh>Panel Type</MudTh>
+        <MudTh>HasBuiltInSpeakers</MudTh>
+        <MudTh>Refresh Rate</MudTh>
+        <MudTh>HDMI Port Count</MudTh>
+        <MudTh>VGA Port Count</MudTh>
         <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
+        <MudTd>@context.PanelType</MudTd>
+        <MudTd>
+            <MudCheckBox Checked=@context.HasBuiltInSpeakers ReadOnly/>
+        </MudTd>
+        <MudTd>@context.RefreshRate</MudTd>
+        <MudTd>@context.HDMIPortCount</MudTd>
+        <MudTd>@context.VGAPortCount</MudTd>
         <MudTd>
             <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
         </MudTd>

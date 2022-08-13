@@ -63,6 +63,11 @@ public partial class Monitor
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
                     Model = item.Model,
+                    PanelType=item.PanelType,
+                    HasBuiltInSpeakers = item.HasBuiltInSpeakers,
+                    HDMIPortCount = item.HDMIPortCount,
+                    VGAPortCount = item.VGAPortCount,
+                    RefreshRate=item.RefreshRate,
                     PurchaseDate = item.PurchaseDate,
                     Description = item.Description,
                     Price = item.Price
