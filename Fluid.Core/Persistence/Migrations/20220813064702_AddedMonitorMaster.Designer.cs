@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fluid.Core.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220806133622_UpdatedIdentityUserToAppUser")]
-    partial class UpdatedIdentityUserToAppUser
+    [Migration("20220813064702_AddedMonitorMaster")]
+    partial class AddedMonitorMaster
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -95,6 +95,39 @@ namespace Fluid.Core.Persistence.Migrations
                     b.ToTable("Technicians", "dbo");
                 });
 
+            modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>
+                {
+                    b.Property<string>("OemSerialNo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte>("UseStatus")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("OemSerialNo");
+
+                    b.HasIndex("MachineId");
+
+                    b.ToTable("GraphicsCardMaster");
+                });
+
             modelBuilder.Entity("Fluid.Shared.Entities.HardDiskInfo", b =>
                 {
                     b.Property<string>("OemSerialNo")
@@ -102,6 +135,9 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.Property<byte>("BusType")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("HealthCondition")
                         .HasColumnType("tinyint");
@@ -175,7 +211,7 @@ namespace Fluid.Core.Persistence.Migrations
 
             modelBuilder.Entity("Fluid.Shared.Entities.MachineInfo", b =>
                 {
-                    b.Property<string>("OemServiceTag")
+                    b.Property<string>("AssetTag")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AssetBranch")
@@ -217,15 +253,54 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<byte>("UseType")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("OemServiceTag");
+                    b.HasKey("AssetTag");
 
                     b.ToTable("MachineMaster");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.MonitorInfo", b =>
+                {
+                    b.Property<string>("OemSerialNo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte>("UseStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Version")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OemSerialNo");
+
+                    b.HasIndex("MachineId");
+
+                    b.ToTable("MonitorMaster");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MotherboardInfo", b =>
                 {
                     b.Property<string>("OemSerialNo")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MachineId")
                         .HasColumnType("nvarchar(450)");
@@ -296,6 +371,9 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("FormFactor")
                         .HasColumnType("tinyint");
 
@@ -327,6 +405,66 @@ namespace Fluid.Core.Persistence.Migrations
                     b.ToTable("PhysicalMemoryMaster");
                 });
 
+            modelBuilder.Entity("Fluid.Shared.Entities.ProcessorInfo", b =>
+                {
+                    b.Property<string>("ProcessorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Architecture")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Family")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MachineId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MaxClockSpeed")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfCores")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfLogicalProcessors")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ThreadCount")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("UseStatus")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("ProcessorId");
+
+                    b.HasIndex("MachineId");
+
+                    b.ToTable("ProcessorMaster");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>
+                {
+                    b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
+                        .WithMany()
+                        .HasForeignKey("MachineId");
+
+                    b.Navigation("Machine");
+                });
+
             modelBuilder.Entity("Fluid.Shared.Entities.HardDiskInfo", b =>
                 {
                     b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
@@ -337,6 +475,15 @@ namespace Fluid.Core.Persistence.Migrations
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.KeyboardInfo", b =>
+                {
+                    b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
+                        .WithMany()
+                        .HasForeignKey("MachineId");
+
+                    b.Navigation("Machine");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.MonitorInfo", b =>
                 {
                     b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
                         .WithMany()
@@ -364,6 +511,15 @@ namespace Fluid.Core.Persistence.Migrations
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.PhysicalMemoryInfo", b =>
+                {
+                    b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
+                        .WithMany()
+                        .HasForeignKey("MachineId");
+
+                    b.Navigation("Machine");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.ProcessorInfo", b =>
                 {
                     b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
                         .WithMany()

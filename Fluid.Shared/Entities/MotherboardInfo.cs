@@ -8,7 +8,6 @@ public class MotherboardInfo : IEntity
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
-    public string Version { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }
