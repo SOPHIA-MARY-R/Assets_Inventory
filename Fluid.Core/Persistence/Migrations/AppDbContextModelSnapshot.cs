@@ -135,7 +135,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("CameraMaster");
+                    b.ToTable("CameraMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>
@@ -168,7 +168,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("GraphicsCardMaster");
+                    b.ToTable("GraphicsCardMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.HardDiskInfo", b =>
@@ -213,7 +213,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("HardDiskMaster");
+                    b.ToTable("HardDiskMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.KeyboardInfo", b =>
@@ -249,7 +249,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("KeyboardMaster");
+                    b.ToTable("KeyboardMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MachineInfo", b =>
@@ -298,7 +298,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasKey("AssetTag");
 
-                    b.ToTable("MachineMaster");
+                    b.ToTable("MachineMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MonitorInfo", b =>
@@ -349,7 +349,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("MonitorMaster");
+                    b.ToTable("MonitorMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MotherboardInfo", b =>
@@ -382,7 +382,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("MotherboardMaster");
+                    b.ToTable("MotherboardMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.MouseInfo", b =>
@@ -418,7 +418,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("MouseMaster");
+                    b.ToTable("MouseMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.PhysicalMemoryInfo", b =>
@@ -460,7 +460,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("PhysicalMemoryMaster");
+                    b.ToTable("PhysicalMemoryMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.ProcessorInfo", b =>
@@ -511,7 +511,7 @@ namespace Fluid.Core.Persistence.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("ProcessorMaster");
+                    b.ToTable("ProcessorMaster", (string)null);
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.CameraInfo", b =>
