@@ -17,4 +17,16 @@ public static class RouteExtensions
         }
         return url;
     }
+    
+    public static string ToPeriodRoute(this string url, DateTime fromDate, DateTime toDate)
+    {
+        return url.AddDateTimeToUrl("fromDateTicks", fromDate)
+            .AddDateTimeToUrl("toDateTicks", toDate);
+    }
+
+    private static string AddDateTimeToUrl(this string url, string label, DateTime dateTime)
+    {
+        url += $"&{label}={dateTime.Ticks}";
+        return url;
+    }
 }
