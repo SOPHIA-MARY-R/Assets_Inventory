@@ -1,10 +1,13 @@
 using Fluid.Core.Extensions;
+using Fluid.Core.Interfaces;
 using Fluid.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddDatabase(builder.Configuration, "DefaultConnection");
 builder.Services.AddFeatures();
 builder.Services.AddControllers();
