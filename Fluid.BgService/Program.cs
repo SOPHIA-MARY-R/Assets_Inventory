@@ -3,10 +3,8 @@ using Fluid.BgService;
 using Fluid.BgService.Authentication;
 using Fluid.BgService.Extensions;
 using Fluid.BgService.Models;
-using Fluid.BgService.Persistence;
 using Fluid.BgService.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using MudBlazor.Services;
 
@@ -31,10 +29,10 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 100;
 });
 builder.Services.AddScoped(s => new HttpClient() { BaseAddress = new Uri(builder.Configuration.GetSection(nameof(MachineIdentifier)).GetValue<string>(nameof(MachineIdentifier.ServerAddress)))});
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<MachineIdentifierService>();
 builder.Services.AddSingleton<TechnicianCredentialsService>();
-builder.Services.AddSingleton<SystemConfigurationService>();
+builder.Services.AddScoped<SystemConfigurationService>();
 builder.Services.AddTransient<UserHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, TechnicianAuthStateProvider>();
 builder.Services.AddScoped<TechnicianAuthStateProvider>();
