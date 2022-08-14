@@ -14,7 +14,7 @@ public class BaseSpecification<T> : ISpecification<T> where T : class, IEntity
         FilterCondition = filterCondition;
     }
 
-    public virtual Expression<Func<T, bool>> FilterCondition { get; protected set; }
+    public virtual Expression<Func<T, bool>> FilterCondition { get; protected init; }
 
     public List<Expression<Func<T, object>>> Includes { get; } = new();
 
