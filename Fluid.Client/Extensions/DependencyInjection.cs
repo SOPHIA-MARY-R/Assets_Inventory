@@ -44,6 +44,7 @@ public static class DependencyInjection
         services.AddTransient<ProcessorMasterHttpClient>();
         services.AddTransient<GraphicsCardMasterHttpClient>();
         services.AddTransient<CameraMasterHttpClient>();
+        services.AddTransient<SpeakerMasterHttpClient>();
         services.AddTransient<UserHttpClient>();
         services.AddTransient<HttpClientInterceptorManager>();
         return services;

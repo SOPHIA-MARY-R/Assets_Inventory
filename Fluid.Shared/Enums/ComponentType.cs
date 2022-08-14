@@ -11,6 +11,6 @@ public enum ComponentType : byte
     Monitor,
     Keyboard,
     Mouse,
-    Speakers,
+    Speaker,
     Camera
 }

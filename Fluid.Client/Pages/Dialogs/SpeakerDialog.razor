@@ -1,49 +1,34 @@
-﻿@using Fluid.Shared.Enums
-@inject ProcessorMasterHttpClient masterHttpClient
+﻿@inject SpeakerMasterHttpClient masterHttpClient
+@using Syncfusion.Blazor.DropDowns
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
-            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Processor</MudText>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Speaker</MudText>
         </TitleContent>
         <DialogContent>
             <MudGrid>
                 <MudItem xs="6">
-                    <MudTextField Label="ProcessorID" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ProcessorId" ReadOnly=@IsEditMode />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Name" />
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" ReadOnly=@IsEditMode />
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudSelect T="ProcessorArchitecture" Label="Architecture" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Architecture" >
-                         @foreach (ProcessorArchitecture archi in Enum.GetValues(typeof(ProcessorArchitecture)))
-                         {
-                            <MudSelectItem Value="@(archi)"/>
-                         }
-                    </MudSelect>
+                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField Label="Family" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Family" />
-                </MudItem>
-                <MudItem xs="6">
-                     <MudTextField Label="No.of.cores" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfCores" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="No.of.Logical Processors" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NumberOfLogicalProcessors" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="Thread Count" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ThreadCount" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Label="Max clock speed" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.MaxClockSpeed" />
+                    <SfMultiSelect TValue="string[]" TItem="InputPorts" DataSource="@Ports">
+                        <MultiSelectFieldSettings Text="Type" Value="Byte"></MultiSelectFieldSettings>      
+                    </SfMultiSelect>
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex">
+                    <MudSwitch @bind-Checked="Model.IsBlueTooth" Color="Color.Info" Label="IsBlueTooth" Class="mx-auto" />
                 </MudItem>
             </MudGrid>
         </DialogContent>
@@ -59,7 +44,7 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public ProcessorModel Model { get; set; } = new();
+    public SpeakerModel Model { get; set; } = new();
 
     [Parameter]
     public bool IsEditMode { get; set; } = false;
@@ -88,4 +73,17 @@
             }
         }
     }
+    public class InputPorts
+    {
+        public int Byte { get; set; }
+
+        public string Type { get; set; }
+    }
+
+    List<InputPorts>Ports = new List<InputPorts>
+    {
+        new InputPorts() { Byte=0, Type="3.5mm"},
+        new InputPorts() { Byte=1, Type="USB"},
+        new InputPorts() { Byte=2, Type="Other"}
+    };
 }
