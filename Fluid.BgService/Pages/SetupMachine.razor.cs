@@ -4,11 +4,16 @@ namespace Fluid.BgService.Pages;
 
 public partial class SetupMachine
 {
+    private bool _redirectToSetupDetails;
     protected override void OnInitialized()
     {
         if (machineIdentifierService.MachineIdentifier.AssetTag != "unset")
         {
             Model.AssetTag = machineIdentifierService.MachineIdentifier.AssetTag;
+        }
+        else
+        {
+            _redirectToSetupDetails = true;
         }
         base.OnInitialized();
     }
@@ -26,7 +31,14 @@ public partial class SetupMachine
             machineIdentifierService.SetAssetTag(Model.AssetTag);
             snackbar.Add("Saved the Asset Tag successfully", MudBlazor.Severity.Success);
             await Task.Delay(1000);
-            navigationManager.NavigateTo("/", true);
+            if (_redirectToSetupDetails)
+            {
+                navigationManager.NavigateTo("/Setup-Details", true);
+            }
+            else
+            {
+                navigationManager.NavigateTo("/", true);
+            }
         }
     }
 }

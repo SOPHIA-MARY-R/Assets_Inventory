@@ -14,11 +14,11 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<HardDiskInfo> HardDiskMaster { get; set; }
     public DbSet<KeyboardInfo> KeyboardMaster { get; set; }
     public DbSet<MouseInfo> MouseMaster { get; set; }
-    //public DbSet<FeedLog> FeedLogStorage { get; set; }
     public DbSet<ProcessorInfo> ProcessorMaster { get; set; }
     public DbSet<GraphicsCardInfo> GraphicsCardMaster { get; set; }
     public DbSet<MonitorInfo> MonitorMaster { get; set; }
     public DbSet<CameraInfo> CameraMaster { get; set; }
+    public DbSet<FeedLog> FeedLogStorage { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

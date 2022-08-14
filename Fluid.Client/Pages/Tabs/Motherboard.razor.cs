@@ -2,9 +2,8 @@
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
+
 namespace Fluid.Client.Pages.Tabs;
-
-
 public partial class Motherboard
 {
     private List<MotherboardModel> _motherboards;
