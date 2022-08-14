@@ -8,34 +8,7 @@ namespace Fluid.Core.Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_MonitorInfo_MachineMaster_MachineId",
-                table: "MonitorInfo");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_MonitorInfo",
-                table: "MonitorInfo");
-
-            migrationBuilder.RenameTable(
-                name: "MonitorInfo",
-                newName: "MonitorMaster");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_MonitorInfo_MachineId",
-                table: "MonitorMaster",
-                newName: "IX_MonitorMaster_MachineId");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_MonitorMaster",
-                table: "MonitorMaster",
-                column: "OemSerialNo");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_MonitorMaster_MachineMaster_MachineId",
-                table: "MonitorMaster",
-                column: "MachineId",
-                principalTable: "MachineMaster",
-                principalColumn: "AssetTag");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
