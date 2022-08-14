@@ -1,4 +1,5 @@
-﻿@inject CameraMasterHttpClient masterHttpClient
+﻿@using MudBlazor.Extensions
+@inject CameraMasterHttpClient masterHttpClient
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
@@ -19,7 +20,7 @@
                     <MudSelect T="CameraResolution" Label="Camera Resolution" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Resolution" >
                          @foreach (CameraResolution resolution in Enum.GetValues(typeof(CameraResolution)))
                          {
-                            <MudSelectItem Value="@(resolution)"/>
+                            <MudSelectItem Value="@resolution">@resolution.ToDescriptionString()</MudSelectItem>
                          }
                     </MudSelect>
                 </MudItem>

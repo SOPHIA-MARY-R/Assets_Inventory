@@ -7,7 +7,7 @@ public class SpeakerInfo : IEntity
 
     public string Manufacturer { get; set; }
     public string Model { get; set; }
-    public byte InputPorts { get; set; }
+    public SpeakerInputPorts InputPorts { get; set; }
     public bool IsBlueTooth { get; set; }
 
     public string Description { get; set; }

@@ -1,4 +1,5 @@
 ﻿@using Fluid.Client.Pages.Dialogs
+@using MudBlazor.Extensions
 @inject SpeakerMasterHttpClient masterHttpClient
 <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<SpeakerModel>>>(OnServerReloadAsync))" @ref="_speakerTable">
     <ToolBarContent>
@@ -20,7 +21,7 @@
         <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
-        <MudTd>@context.InputPorts</MudTd>
+        <MudTd>@context.InputPorts.ToDescriptionString()</MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsBlueTooth ReadOnly/>
         </MudTd>

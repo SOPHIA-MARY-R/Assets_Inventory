@@ -1,4 +1,5 @@
 ﻿@inject SpeakerMasterHttpClient masterHttpClient
+@using MudBlazor.Extensions
 @using Syncfusion.Blazor.DropDowns
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
@@ -17,9 +18,12 @@
                     <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
                 </MudItem>
                 <MudItem xs="6">
-                    <SfMultiSelect TValue="string[]" TItem="InputPorts" DataSource="@Ports">
-                        <MultiSelectFieldSettings Text="Type" Value="Byte"></MultiSelectFieldSettings>      
-                    </SfMultiSelect>
+                    <MudSelect T="SpeakerInputPorts" Label="Input Ports" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.InputPorts" >
+                         @foreach (SpeakerInputPorts type in Enum.GetValues(typeof(SpeakerInputPorts)))
+                         {
+                               <MudSelectItem Value="@type">@type.ToDescriptionString()</MudSelectItem>
+                         }
+                    </MudSelect>
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
@@ -73,17 +77,5 @@
             }
         }
     }
-    public class InputPorts
-    {
-        public int Byte { get; set; }
 
-        public string Type { get; set; }
-    }
-
-    List<InputPorts>Ports = new List<InputPorts>
-    {
-        new InputPorts() { Byte=0, Type="3.5mm"},
-        new InputPorts() { Byte=1, Type="USB"},
-        new InputPorts() { Byte=2, Type="Other"}
-    };
 }

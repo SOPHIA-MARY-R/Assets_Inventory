@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
-namespace Fluid.Shared.Enums.Technical
+namespace Fluid.Shared.Enums.Technical;
+public enum SpeakerInputPorts: byte
 {
-    internal class SpeakerInputPorts
-    {
-    }
+    [Description("Other")]
+    Other = 1, 
+    [Description("3.5 mm")]
+    _3Point5mm = 2,
+    [Description("USB")]
+    USB = 3, 
 }

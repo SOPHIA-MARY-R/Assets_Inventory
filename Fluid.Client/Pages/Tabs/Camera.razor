@@ -1,4 +1,5 @@
 ﻿@using Fluid.Client.Pages.Dialogs
+@using MudBlazor.Extensions
 @inject CameraMasterHttpClient masterHttpClient
 <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<CameraModel>>>(OnServerReloadAsync))" @ref="_CameraTable">
     <ToolBarContent>
@@ -24,13 +25,14 @@
         <MudTd>@context.Manufacturer</MudTd>
         <MudTd>@context.Model</MudTd>
         <MudTd>@context.MegaPixels</MudTd>
-        <MudTd>@context.Resolution</MudTd>
-        <MudTd>
-            <MudCheckBox Checked=@context.HasBuiltInMic ReadOnly/>
-        </MudTd>
         <MudTd>
             <MudCheckBox Checked=@context.IsWireLess ReadOnly/>
         </MudTd>
+        <MudTd>@context.Resolution.ToDescriptionString()</MudTd>
+        <MudTd>
+            <MudCheckBox Checked=@context.HasBuiltInMic ReadOnly/>
+        </MudTd>
+        
         <MudTd>
             <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
         </MudTd>
