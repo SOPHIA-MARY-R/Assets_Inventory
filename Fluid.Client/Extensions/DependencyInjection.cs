@@ -17,6 +17,7 @@ public static class DependencyInjection
         builder.Services.AddHttpClients(builder.HostEnvironment.BaseAddress);
         builder.Services.AddMudServices();
         builder.Services.AddBlazoredLocalStorage();
+        builder.Services.AddSingleton<PeriodService>();
         return builder;
     }
 
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddTransient<GraphicsCardMasterHttpClient>();
         services.AddTransient<CameraMasterHttpClient>();
         services.AddTransient<SpeakerMasterHttpClient>();
+        services.AddTransient<FeedLogHttpClient>();
         services.AddTransient<UserHttpClient>();
         services.AddTransient<HttpClientInterceptorManager>();
         return services;

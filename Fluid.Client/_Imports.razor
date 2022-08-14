@@ -10,6 +10,7 @@
 @using Microsoft.JSInterop
 @using Fluid.Client
 @using Fluid.Client.Pages.Tabs
+@using Fluid.Client.Services
 @using Fluid.Client.Services.HttpClients
 @using Fluid.Client.Shared
 @using Fluid.Shared.Models
@@ -22,4 +23,5 @@
 @inject IDialogService dialogService
 @inject HttpClient httpClient 
 @inject NavigationManager navigationManager
+@inject PeriodService periodService
 @inject ISnackbar snackbar
