@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace Fluid.Client.Pages;
 
-public partial class HardwareChangeLogs
+public partial class HardwareLogs
 {
     private MudTable<FeedLog> _feedLogTable;
     private List<FeedLog> _feedLogs = new();
