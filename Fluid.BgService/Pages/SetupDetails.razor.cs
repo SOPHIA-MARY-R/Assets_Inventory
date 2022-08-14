@@ -4,19 +4,34 @@ namespace Fluid.BgService.Pages;
 
 public partial class SetupDetails
 {
-    public SystemConfiguration Model = new();
-
-    public void Submit()
-    {
-        systemConfigurationService.SetSystemConfiguration(Model);
-    }
+    private SystemConfiguration Model { get; set; } = new();
 
     protected override Task OnInitializedAsync()
     {
-        Model.MachineModel.AssetTag = machineIdentifierService.MachineIdentifier.AssetTag;
-        Model.Motherboard.MachineId = Model.MachineModel.AssetTag;
-        Model.Mouse.MachineId = Model.MachineModel.AssetTag;
-        Model.Keyboard.MachineId = Model.MachineModel.AssetTag;
+        Model = systemConfigurationService.SystemConfiguration;
+        Model.MachineDetails.AssetTag = machineIdentifierService.MachineIdentifier.AssetTag;
+        Model.Motherboard.MachineId = Model.MachineDetails.AssetTag;
+        Model.Mouse.MachineId = Model.MachineDetails.AssetTag;
+        Model.Keyboard.MachineId = Model.MachineDetails.AssetTag;
         return base.OnInitializedAsync();
+    }
+
+    private async void Submit()
+    {
+        systemConfigurationService.SystemConfiguration = Model;
+        var isSucceeded = await systemConfigurationService.SerializeSystemConfiguration();
+        if (isSucceeded)
+        {
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine("SystemConfiguration upload failed");
+        }
+    }
+
+    private void AutoFill()
+    {
+        Model.Motherboard = systemConfigurationService.GetMotherboardDetails();
     }
 }
