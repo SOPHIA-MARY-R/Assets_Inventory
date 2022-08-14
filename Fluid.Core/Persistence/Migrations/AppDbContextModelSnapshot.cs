@@ -155,8 +155,14 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<string>("AssignedPersonName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AttendingTechnicianId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("JsonRaw")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("LogAttendStatus")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("LogDateTime")
                         .HasColumnType("datetime2");
