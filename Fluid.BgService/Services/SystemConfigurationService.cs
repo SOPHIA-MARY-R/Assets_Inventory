@@ -34,7 +34,7 @@ public class SystemConfigurationService
 
     public async Task<bool> SerializeSystemConfiguration()
     {
-        var response = await _httpClient.PostAsJsonAsync("api/feedlog/feed", SystemConfiguration);
+        var response = await _httpClient.PostAsJsonAsync("api/feed-log/feed", SystemConfiguration);
         var result = await response.ToResult();
         if (result.Succeeded)
         {

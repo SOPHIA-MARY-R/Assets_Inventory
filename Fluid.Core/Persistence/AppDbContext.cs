@@ -36,5 +36,6 @@ public class AppDbContext : IdentityDbContext<AppUser>
         modelBuilder.Ignore<IdentityRoleClaim<string>>();
         modelBuilder.Ignore<IdentityUserClaim<string>>();
         modelBuilder.Entity<AppUser>().ToTable("Technicians", "dbo");
+        modelBuilder.Entity<FeedLog>().Ignore(x => x.ShowDetails);
     }
 }

@@ -15,7 +15,7 @@ public class AndSpecification<T> : BaseSpecification<T> where T : class, IEntity
 
     public override Expression<Func<T, bool>> FilterCondition => GetFilterExpression();
 
-    public Expression<Func<T, bool>> GetFilterExpression()
+    private Expression<Func<T, bool>> GetFilterExpression()
     {
         var leftExpression = _left.FilterCondition;
         var rightExpression = _right.FilterCondition;
@@ -42,7 +42,7 @@ public class OrSpecification<T> : BaseSpecification<T> where T : class, IEntity
 
     public override Expression<Func<T, bool>> FilterCondition => GetFilterExpression();
 
-    public Expression<Func<T, bool>> GetFilterExpression()
+    private Expression<Func<T, bool>> GetFilterExpression()
     {
         var leftExpression = _left.FilterCondition;
         var rightExpression = _right.FilterCondition;
