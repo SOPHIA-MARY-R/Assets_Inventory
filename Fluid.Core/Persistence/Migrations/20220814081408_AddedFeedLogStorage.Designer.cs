@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fluid.Core.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220813115602_RemovedCameraMaster")]
-    partial class RemovedCameraMaster
+    [Migration("20220814081408_AddedFeedLogStorage")]
+    partial class AddedFeedLogStorage
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,6 +93,94 @@ namespace Fluid.Core.Persistence.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Technicians", "dbo");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.CameraInfo", b =>
+                {
+                    b.Property<string>("OemSerialNo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasBuiltInMic")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsWireLess")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MachineId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MegaPixels")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte>("Resolution")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("UseStatus")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("OemSerialNo");
+
+                    b.HasIndex("MachineId");
+
+                    b.ToTable("CameraMaster");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.FeedLog", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AssetBranch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetTag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssignedPersonName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JsonRaw")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LogDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MachineName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("MachineType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OemSerialNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedLogStorage");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>
@@ -469,6 +557,15 @@ namespace Fluid.Core.Persistence.Migrations
                     b.HasIndex("MachineId");
 
                     b.ToTable("ProcessorMaster");
+                });
+
+            modelBuilder.Entity("Fluid.Shared.Entities.CameraInfo", b =>
+                {
+                    b.HasOne("Fluid.Shared.Entities.MachineInfo", "Machine")
+                        .WithMany()
+                        .HasForeignKey("MachineId");
+
+                    b.Navigation("Machine");
                 });
 
             modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>

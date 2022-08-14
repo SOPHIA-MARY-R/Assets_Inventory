@@ -138,6 +138,49 @@ namespace Fluid.Core.Persistence.Migrations
                     b.ToTable("CameraMaster", (string)null);
                 });
 
+            modelBuilder.Entity("Fluid.Shared.Entities.FeedLog", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AssetBranch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetTag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssignedPersonName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JsonRaw")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LogDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MachineName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("MachineType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OemSerialNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedLogStorage");
+                });
+
             modelBuilder.Entity("Fluid.Shared.Entities.GraphicsCardInfo", b =>
                 {
                     b.Property<string>("OemSerialNo")
