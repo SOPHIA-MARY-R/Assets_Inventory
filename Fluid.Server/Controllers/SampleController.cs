@@ -11,13 +11,4 @@ public class SampleController : ControllerBase
     {
         return Ok($"Pinging from client {Request.Host} is working successfully");
     }
-
-    [HttpPost("api/sample/motherboard")]
-    public IActionResult GetMotherboardData(MotherboardInfo motherboardInfo)
-    {
-        Console.WriteLine($"Manufacturer - {motherboardInfo.Manufacturer}");
-        Console.WriteLine($"Model - {motherboardInfo.Model}");
-        Console.WriteLine($"OEMSerialNo - {motherboardInfo.OemSerialNo}");
-        return Ok();
-    }
 }

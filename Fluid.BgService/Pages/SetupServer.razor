@@ -1,7 +1,6 @@
 ﻿@page "/Setup-Server"
 @using Fluid.BgService.Models
 
-@inject MachineIdentifierService serverAddressService
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     @*<MudGrid Class="mt-4">
         <MudItem xs="12" sm="6" md="3" lg="2">*@
@@ -17,11 +16,11 @@
 
     protected override void OnInitialized()
     {
-        Model = serverAddressService.MachineIdentifier;
+        Model = machineIdentifierService.MachineIdentifier;
         base.OnInitialized();
     }
 
-    public async Task<bool> IsValidUri()
+    private async Task<bool> IsValidUri()
     {
         if (string.IsNullOrEmpty(Model.ServerAddress)) return false;
         var result = Uri.TryCreate(Model.ServerAddress, UriKind.Absolute, out Uri uri);
@@ -44,11 +43,11 @@
         return false;
     }
 
-    public async Task SubmitAsync()
+    private async Task SubmitAsync()
     {
         if (await IsValidUri())
         {
-            serverAddressService.SetMachineIdentifier(Model);
+            machineIdentifierService.SetMachineIdentifier(Model);
             snackbar.Add("Updated server address successfully", Severity.Success);
         }
     }
