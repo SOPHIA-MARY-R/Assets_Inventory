@@ -1,4 +1,5 @@
-﻿using Fluid.Shared.Models;
+﻿using Fluid.BgService.Services;
+using Fluid.Shared.Models;
 
 namespace Fluid.BgService.Pages;
 
@@ -19,7 +20,7 @@ public partial class SetupDetails
     private async void Submit()
     {
         systemConfigurationService.SystemConfiguration = Model;
-        var isSucceeded = await systemConfigurationService.SerializeSystemConfiguration();
+        var isSucceeded = await systemConfigurationService.LogSystemConfiguration();
         if (isSucceeded)
         {
             navigationManager.NavigateTo("/");
@@ -32,6 +33,6 @@ public partial class SetupDetails
 
     private void AutoFill()
     {
-        Model.Motherboard = systemConfigurationService.GetMotherboardDetails();
+        Model.Motherboard = SystemConfigurationService.GetMotherboardDetails();
     }
 }
