@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using Microsoft.Extensions.Options;
 
 namespace Fluid.BgService.Services;
 
@@ -31,14 +31,17 @@ public class WritableOptions<T> where T : class, new()
         var fileInfo = fileProvider.GetFileInfo(_file);
         var physicalPath = fileInfo.PhysicalPath;
 
-        var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
-        var sectionObject = jObject.TryGetValue(_section, out JToken section) ?
-            JsonConvert.DeserializeObject<T>(section.ToString()) : Value ?? new T();
+        var jsonSerializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
+        var jsonObject = JsonSerializer.Deserialize<JsonObject>(File.ReadAllBytes(physicalPath), jsonSerializerOptions);
+        var section = jsonObject!.TryGetPropertyValue(_section, out JsonNode node) ? JsonSerializer.Deserialize<T>(node!.ToString()) : Value ?? new T();
 
-        applyChanges(sectionObject);
+        applyChanges(section);
 
-        jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
-        File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+        jsonObject[_section] = JsonNode.Parse(JsonSerializer.Serialize(section));
+        File.WriteAllText(physicalPath, JsonSerializer.Serialize(jsonObject, jsonSerializerOptions));
         _configuration.Reload();
     }
 }

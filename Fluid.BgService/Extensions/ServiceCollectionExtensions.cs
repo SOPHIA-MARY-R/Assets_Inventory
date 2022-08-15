@@ -8,8 +8,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<MachineIdentifier>(configuration.GetSection(nameof(MachineIdentifier)));
-        services.Configure<TechnicianCredentials>(configuration.GetSection(nameof(TechnicianCredentials)));
+        services.ConfigureWritable<MachineIdentifier>(configuration.GetSection(nameof(MachineIdentifier)));
+        services.ConfigureWritable<TechnicianCredentials>(configuration.GetSection(nameof(TechnicianCredentials)));
+        services.ConfigureWritable<BackgroundLogTime>(configuration.GetSection(nameof(BackgroundLogTime)));
         return services;
     }
 

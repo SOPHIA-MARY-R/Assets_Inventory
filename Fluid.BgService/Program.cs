@@ -17,11 +17,8 @@ var options = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Services.ConfigureOptions(builder.Configuration);
-builder.Services.ConfigureWritable<MachineIdentifier>(builder.Configuration.GetSection(nameof(MachineIdentifier)));
-builder.Services.ConfigureWritable<TechnicianCredentials>(builder.Configuration.GetSection(nameof(TechnicianCredentials)));
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddHostedService<Worker>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices(config =>
 {
@@ -32,11 +29,14 @@ builder.Services.AddScoped(s => new HttpClient() { BaseAddress = new Uri(builder
 //builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<MachineIdentifierService>();
 builder.Services.AddSingleton<TechnicianCredentialsService>();
-builder.Services.AddScoped<SystemConfigurationService>();
+builder.Services.AddSingleton<SystemConfigurationService>();
 builder.Services.AddTransient<UserHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, TechnicianAuthStateProvider>();
 builder.Services.AddScoped<TechnicianAuthStateProvider>();
 builder.Services.AddTransient<AuthorizationHeaderHandler>();
+
+builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<BackgroundLoggerService>();
 
 builder.Host.UseWindowsService();
 builder.Host.UseSystemd();
