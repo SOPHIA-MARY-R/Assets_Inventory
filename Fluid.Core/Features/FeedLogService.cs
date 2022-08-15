@@ -65,6 +65,7 @@ public class FeedLogService : IFeedLogService
                 .Specify(new FeedLogMachineNameSpecification(filter.MachineName))
                 .Specify(new FeedLogMachineTypeSpecification(filter.MachineType))
                 .Specify(new FeedLogAssignedPersonNameSpecification(filter.AssignedPersonName))
+                .OrderByDescending(x => x.LogDateTime)
                 .ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
