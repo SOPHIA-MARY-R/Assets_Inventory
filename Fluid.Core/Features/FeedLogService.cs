@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using EFCore.BulkExtensions;
 using Fluid.Core.Extensions;
 using Fluid.Core.Interfaces;
 using Fluid.Core.Specifications.FeedLogs;
@@ -12,11 +13,13 @@ namespace Fluid.Core.Features;
 public class FeedLogService : IFeedLogService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ISystemConfigurationService _systemConfigurationService;
     private readonly ICurrentUserService _currentUserService;
 
-    public FeedLogService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+    public FeedLogService(IUnitOfWork unitOfWork, ISystemConfigurationService systemConfigurationService, ICurrentUserService currentUserService)
     {
         _unitOfWork = unitOfWork;
+        _systemConfigurationService = systemConfigurationService;
         _currentUserService = currentUserService;
     }
 
@@ -74,6 +77,37 @@ public class FeedLogService : IFeedLogService
         }
     }
 
+    public async Task<IResult> AutoValidateLogsAsync()
+    {
+        try
+        {
+            var assetTags = await _unitOfWork.GetRepository<FeedLog>().Entities
+                .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Unattended))
+                .Select(x => x.AssetTag)
+                .Distinct()
+                .ToListAsync();
+            foreach (var assetTag in assetTags)
+            {
+                var feedLogs = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAssetTagSpecification(assetTag))
+                    .ToListAsync();
+                var systemConfiguration = await _systemConfigurationService.GetSystemConfiguration(assetTag);
+                foreach (var feedLog in feedLogs)
+                {
+                    var logSysConfig = JsonSerializer.Deserialize(feedLog.JsonRaw, typeof(SystemConfiguration));
+                    feedLog.LogAttendStatus = (SystemConfiguration)logSysConfig == systemConfiguration && systemConfiguration != null
+                        ? LogAttendStatus.AutoValidated
+                        : LogAttendStatus.Pending;
+                }
+                await _unitOfWork.AppDbContext.BulkUpdateAsync(feedLogs);
+            }
+            return await Result.SuccessAsync();
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
     public async Task<IResult> AttendLog(FeedLog feedLog)
     {
         try
