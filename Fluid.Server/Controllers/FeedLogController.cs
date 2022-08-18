@@ -34,4 +34,10 @@ public class FeedLogController : ControllerBase
     {
         return Ok(await _feedLogService.AttendLog(feedLog));
     }
+    
+    [HttpGet("autovalidate")]
+    public async Task<IActionResult> AutoValidateLogs()
+    {
+        return Ok(await _feedLogService.AutoValidateLogsAsync());
+    }
 }
