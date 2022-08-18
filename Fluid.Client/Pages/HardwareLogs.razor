@@ -2,14 +2,13 @@
 @inject FeedLogHttpClient feedLogHttpClient
 @using Fluid.Shared.Entities
 @using Fluid.Shared.Enums
-@using MudBlazor.Extensions
 <MudText Typo="Typo.h5" Color="Color.Primary">Hardware Change Logs</MudText>
 <MudText Typo="Typo.body1">See all unattended logs from all machines here</MudText>
 <MudDivider Class="my-4"/>
 <MudPaper Class="pa-4" Outlined Elevation="0">
     <div class="d-flex flex-column">
         <div class="d-flex flex-wrap">
-            <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
+            <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => feedLogHttpClient.AutoValidateLogs())" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
             <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _feedLogTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
         </div>
         <div class="d-flex py-4">
