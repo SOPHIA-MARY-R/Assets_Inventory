@@ -1,11 +1,22 @@
-﻿using Fluid.BgService.Models;
+﻿using Fluid.BgService.Authentication;
+using Fluid.BgService.Models;
 using Fluid.BgService.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace Fluid.BgService.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddUserAuth(this IServiceCollection services)
+    {
+        services.AddTransient<UserHttpClient>();
+        services.AddScoped<AuthenticationStateProvider, TechnicianAuthStateProvider>();
+        services.AddScoped<TechnicianAuthStateProvider>();
+        services.AddTransient<AuthorizationHeaderHandler>();
+        return services;
+    }
+    
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.ConfigureWritable<MachineIdentifier>(configuration.GetSection(nameof(MachineIdentifier)));
