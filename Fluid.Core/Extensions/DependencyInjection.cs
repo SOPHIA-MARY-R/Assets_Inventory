@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddTransient<IMonitorMasterService, MonitorMasterService>();
         services.AddTransient<ICameraMasterService, CameraMasterService>();
         services.AddTransient<IFeedLogService, FeedLogService>();
+        services.AddTransient<ISystemConfigurationService, SystemConfigurationService>();
         services.AddTransient<ISpeakerMasterService, SpeakerMasterService>();
         return services;
     }
