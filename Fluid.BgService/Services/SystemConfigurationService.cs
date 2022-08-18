@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Fluid.BgService.Extensions;
 using Fluid.BgService.Models;
+using Fluid.Shared.Entities;
 
 namespace Fluid.BgService.Services;
 
@@ -74,9 +75,9 @@ public class SystemConfigurationService
         }
     }
 
-    public static MotherboardModel GetMotherboardDetails()
+    public static MotherboardInfo GetMotherboardDetails()
     {
-        var motherboard = new MotherboardModel();
+        var motherboard = new MotherboardInfo();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             var searcher = new ManagementObjectSearcher("Select * From Win32_BaseBoard");

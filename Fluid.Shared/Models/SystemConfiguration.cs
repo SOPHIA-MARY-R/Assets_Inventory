@@ -1,20 +1,22 @@
-﻿namespace Fluid.Shared.Models;
+﻿using Fluid.Shared.Entities;
+
+namespace Fluid.Shared.Models;
 
 public class SystemConfiguration
 {
-    public MachineMasterModel MachineDetails { get; set; } = new();
+    public MachineInfo MachineDetails { get; set; } = new();
 
-    public MotherboardModel Motherboard { get; set; } = new();
+    public MotherboardInfo Motherboard { get; set; } = new();
 
-    public List<PhysicalMemoryModel> PhysicalMemories { get; set; } = new();
+    public List<PhysicalMemoryInfo> PhysicalMemories { get; set; } = new();
 
-    public List<HardDiskModel> HardDisks { get; set; } = new();
+    public List<HardDiskInfo> HardDisks { get; set; } = new();
 
-    public List<ProcessorModel> Processors { get; set; } = new();
+    public List<ProcessorInfo> Processors { get; set; } = new();
 
-    public MouseModel Mouse { get; set; } = new();
+    public MouseInfo Mouse { get; set; } = new();
 
-    public KeyboardModel Keyboard { get; set; } = new();
+    public KeyboardInfo Keyboard { get; set; } = new();
 
-    public MonitorModel Monitor { get; set; } = new();
+    public MonitorInfo Monitor { get; set; } = new();
 }
