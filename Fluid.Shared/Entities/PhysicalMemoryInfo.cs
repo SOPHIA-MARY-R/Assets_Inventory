@@ -1,7 +1,43 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class PhysicalMemoryInfo : IEntity
+public class PhysicalMemoryInfo : IEntity, IEquatable<PhysicalMemoryInfo>
 {
+    public bool Equals(PhysicalMemoryInfo other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return OemSerialNo == other.OemSerialNo &&
+               Manufacturer == other.Manufacturer &&
+               Capacity == other.Capacity &&
+               Speed.Equals(other.Speed) &&
+               MemoryType == other.MemoryType &&
+               FormFactor == other.FormFactor &&
+               MachineId == other.MachineId &&
+               Description == other.Description;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == this.GetType() && Equals((PhysicalMemoryInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(OemSerialNo, Manufacturer, Capacity, Speed, (int)MemoryType, (int)FormFactor, MachineId, Description);
+    }
+
+    public static bool operator ==(PhysicalMemoryInfo left, PhysicalMemoryInfo right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(PhysicalMemoryInfo left, PhysicalMemoryInfo right)
+    {
+        return !Equals(left, right);
+    }
+
     [Key]
     public string OemSerialNo { get; set; }
 

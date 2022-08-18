@@ -1,7 +1,40 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class GraphicsCardInfo : IEntity
+public class GraphicsCardInfo : IEntity, IEquatable<GraphicsCardInfo>
 {
+    public bool Equals(GraphicsCardInfo other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return OemSerialNo == other.OemSerialNo &&
+               Manufacturer == other.Manufacturer &&
+               Model == other.Model &&
+               Description == other.Description &&
+               MachineId == other.MachineId;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((GraphicsCardInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(OemSerialNo, Manufacturer, Model, Description, MachineId);
+    }
+
+    public static bool operator ==(GraphicsCardInfo left, GraphicsCardInfo right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(GraphicsCardInfo left, GraphicsCardInfo right)
+    {
+        return !Equals(left, right);
+    }
+
     [Key]
     public string OemSerialNo { get; set; }
 

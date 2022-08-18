@@ -1,7 +1,41 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class SpeakerInfo : IEntity
+public class SpeakerInfo : IEntity, IEquatable<SpeakerInfo>
 {
+    public bool Equals(SpeakerInfo other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return OemSerialNo == other.OemSerialNo &&
+               Manufacturer == other.Manufacturer &&
+               Model == other.Model &&
+               InputPorts == other.InputPorts &&
+               IsBlueTooth == other.IsBlueTooth &&
+               MachineId == other.MachineId;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == this.GetType() && Equals((SpeakerInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(OemSerialNo, Manufacturer, Model, (int)InputPorts, IsBlueTooth, MachineId);
+    }
+
+    public static bool operator ==(SpeakerInfo left, SpeakerInfo right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(SpeakerInfo left, SpeakerInfo right)
+    {
+        return !Equals(left, right);
+    }
+
     [Key]
     public string OemSerialNo { get; set; }
 
