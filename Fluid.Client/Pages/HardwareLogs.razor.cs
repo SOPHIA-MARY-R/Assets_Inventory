@@ -8,7 +8,7 @@ public partial class HardwareLogs
 {
     private MudTable<FeedLog> _feedLogTable;
     private List<FeedLog> _feedLogs = new();
-    private FeedLog _feedLog;
+    //private FeedLog _feedLog;
     private readonly FeedLogFilter _filterModel = new();
     private DateRange _searchDateRange;
     private int _totalItems;
@@ -29,7 +29,7 @@ public partial class HardwareLogs
     {
         _filterModel.FromDateTimeTicks = periodService.FromDate.Ticks;
         _filterModel.ToDateTimeTicks = periodService.ToDate.Ticks;
-        var result = await feedLogHttpClient.GetAllAsync(pageNumber, pageSize, _filterModel);
+        var result = await FeedLogHttpClient.GetAllAsync(pageNumber, pageSize, _filterModel);
         if (result.Succeeded)
         {
             _totalItems = result.TotalCount;
