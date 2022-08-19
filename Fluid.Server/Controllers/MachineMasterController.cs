@@ -1,4 +1,5 @@
-﻿using Fluid.Core.Features.Masters;
+﻿using Fluid.Core.Features;
+using Fluid.Core.Features.Masters;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,12 @@ namespace Fluid.Server.Controllers;
 public class MachineMasterController : ControllerBase
 {
     private readonly IMachineMasterService _machineMasterService;
+    private readonly ISystemConfigurationService _systemConfigurationService;
 
-    public MachineMasterController(IMachineMasterService machineMasterService)
+    public MachineMasterController(IMachineMasterService machineMasterService, ISystemConfigurationService systemConfigurationService)
     {
         _machineMasterService = machineMasterService;
+        _systemConfigurationService = systemConfigurationService;
     }
 
     [HttpGet]
@@ -24,7 +27,7 @@ public class MachineMasterController : ControllerBase
     [HttpGet("{assetTag}")]
     public async Task<IActionResult> GetByIdAsync(string assetTag)
     {
-        return Ok(await _machineMasterService.GetByIdAsync(assetTag));
+        return Ok(await _systemConfigurationService.GetSystemConfiguration(assetTag));
     }
 
     [HttpPost]
