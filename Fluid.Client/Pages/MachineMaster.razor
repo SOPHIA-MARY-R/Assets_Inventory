@@ -1,24 +1,24 @@
 ﻿@page "/Machine-Master"
-@inject MachineMasterHttpClient masterHttpClient
+@inject MachineMasterHttpClient MasterHttpClient
 <PageTitle>Machine Master | Fluid</PageTitle>
 
 <MudText Typo="Typo.h5" Color="Color.Primary">Machine Master</MudText>
 <MudText Typo="Typo.body1">Manage all machines in the inventory</MudText>
 
-<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar Class="mt-4" ServerData="@(new Func<TableState, Task<TableData<MachineMasterModel>>>(OnServerReloadAsync))" @ref="_machineTable">
+<MudTable Dense Elevation="0" Outlined Hover HorizontalScrollbar Class="mt-4" ServerData="@(new Func<TableState, Task<TableData<MachineMasterModel>>>(OnServerReloadAsync))" @ref="_machineTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
-        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
-        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" DisableElevation StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color="Color.Tertiary" Class="ms-2" Variant="Variant.Filled" DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color="Color.Info" Class="ms-2" Variant="Variant.Filled" DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
         <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Asset Tag</MudTh>
-        <MudTh>Manufacturer</MudTh>
-        <MudTh>Model</MudTh>
-        <MudTh>Machine Type</MudTh>
-        <MudTh>Location</MudTh>
+        <MudTh><MudTableSortLabel T="MachineMasterModel" SortLabel="@nameof(MachineMasterModel.AssetTag)">Asset Tag</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="MachineMasterModel" SortLabel="@nameof(MachineMasterModel.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="MachineMasterModel" SortLabel="@nameof(MachineMasterModel.Model)">Model</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="MachineMasterModel" SortLabel="@nameof(MachineMasterModel.MachineType)">Machine Type</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="MachineMasterModel" SortLabel="@nameof(MachineMasterModel.AssetLocation)">Asset Location</MudTableSortLabel></MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>

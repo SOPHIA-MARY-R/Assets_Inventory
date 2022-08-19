@@ -28,7 +28,7 @@ public partial class MachineMaster
         {
             orderings = tableState.SortDirection != SortDirection.None ? new[] { $"{tableState.SortLabel} {tableState.SortDirection}" } : new[] { $"{tableState.SortLabel}" };
         }
-        var response = await masterHttpClient.GetAllAsync(new PagedRequest
+        var response = await MasterHttpClient.GetAllAsync(new PagedRequest
         {
             PageNumber = page + 1,
             PageSize = pageSize,
@@ -53,18 +53,11 @@ public partial class MachineMaster
     {
         if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Machine? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await MasterHttpClient.DeleteAsync(Id);
             OnSearch("");
             foreach (var message in response.Messages)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
-                {
-                    snackbar.Add(message, Severity.Error);
-                }
+                snackbar.Add(message, response.Succeeded ? Severity.Success : Severity.Error);
             }
         }
     }
