@@ -37,6 +37,12 @@ public class UnitOfWork : IUnitOfWork
         return await AppDbContext.SaveChangesAsync();
     }
 
+    public Task Rollback()
+    {
+        AppDbContext.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
+        return Task.CompletedTask;
+    }
+
     public void Dispose()
     {
         Dispose(true);
