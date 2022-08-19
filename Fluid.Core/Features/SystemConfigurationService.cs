@@ -41,29 +41,71 @@ public class SystemConfigurationService : ISystemConfigurationService
     {
         try
         {
+            var assetTag = systemConfiguration.MachineDetails.AssetTag;
             if (await _unitOfWork.GetRepository<MachineInfo>()
-                    .GetByIdAsync(systemConfiguration.MachineDetails.AssetTag) is not null)
+                    .GetByIdAsync(assetTag) is not null)
                 throw new Exception("Machine with the same asset tag already present");
             await _unitOfWork.GetRepository<MachineInfo>().AddAsync(systemConfiguration.MachineDetails);
 
             var existingMotherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
                 .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if (existingMotherboard is not null && !string.IsNullOrEmpty(existingMotherboard.MachineId))
-                throw new Exception("The Selected Motherboard is already in use by another machine");
-            await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(systemConfiguration.Motherboard);
-            
+            if (existingMotherboard is not null)
+            {
+                if (!string.IsNullOrEmpty(existingMotherboard.MachineId))
+                {
+                    throw new Exception("The Selected Motherboard is already in use by another machine");
+                }
+                else
+                {
+                    existingMotherboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MotherboardInfo>()
+                        .UpdateAsync(existingMotherboard, existingMotherboard.OemSerialNo);
+                }
+            }
+            else
+            {
+                await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(systemConfiguration.Motherboard);
+            }
+
             var existingKeyboard = await _unitOfWork.GetRepository<KeyboardInfo>()
                 .GetByIdAsync(systemConfiguration.Keyboard.OemSerialNo);
-            if (existingKeyboard is not null && !string.IsNullOrEmpty(existingKeyboard.MachineId))
-                throw new Exception("The Selected Keyboard is already in use by another machine");
-            await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(systemConfiguration.Keyboard);
-            
+            if (existingKeyboard is not null)
+            {
+                if (!string.IsNullOrEmpty(existingKeyboard.MachineId))
+                {
+                    throw new Exception("The Selected Keyboard is already in use by another machine");
+                }
+                else
+                {
+                    existingKeyboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<KeyboardInfo>()
+                        .UpdateAsync(existingKeyboard, existingKeyboard.OemSerialNo);
+                }
+            }
+            else
+            {
+                await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(systemConfiguration.Keyboard);
+            }
+
             var existingMouse = await _unitOfWork.GetRepository<MouseInfo>()
                 .GetByIdAsync(systemConfiguration.Mouse.OemSerialNo);
-            if (existingMouse is not null && !string.IsNullOrEmpty(existingMouse.MachineId))
-                throw new Exception("The Selected Mouse is already in use by another machine");
-            await _unitOfWork.GetRepository<MouseInfo>().AddAsync(systemConfiguration.Mouse);
-            
+            if (existingMouse is not null)
+            {
+                if (!string.IsNullOrEmpty(existingMouse.MachineId))
+                {
+                    throw new Exception("The Selected Mouse is already in use by another machine");
+                }
+                else
+                {
+                    existingMouse.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(existingMouse, existingMouse.OemSerialNo);
+                }
+            }
+            else
+            {
+                await _unitOfWork.GetRepository<MouseInfo>().AddAsync(systemConfiguration.Mouse);
+            }
+
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Machine added successfully");
         }
@@ -81,20 +123,20 @@ public class SystemConfigurationService : ISystemConfigurationService
             var assetTag = systemConfiguration.MachineDetails.AssetTag;
             if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
                 throw new Exception("Machine does not exist in database");
-            await _unitOfWork.GetRepository<MachineInfo>().AddAsync(systemConfiguration.MachineDetails);
+            await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(systemConfiguration.MachineDetails, assetTag);
 
             var motherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
                 .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if(motherboard is not null && string.IsNullOrEmpty(motherboard.MachineId))
+            if (motherboard is not null && string.IsNullOrEmpty(motherboard.MachineId))
                 throw new Exception("The Selected Motherboard is already in use by another machine");
             //await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync()
-            
+
             var existingOldMotherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
                 .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if(existingOldMotherboard is not null)
+            if (existingOldMotherboard is not null)
                 existingOldMotherboard.MachineId = assetTag;
-            
-            
+
+
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Machine updated successfully");
         }
