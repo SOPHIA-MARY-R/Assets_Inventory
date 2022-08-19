@@ -1,7 +1,93 @@
 ﻿@page "/Machine-Master/Add"
 @page "/Machine-Master/{Id}/Edit"
-<h3>AddEditMachineInfo</h3>
+@using Fluid.Shared.Enums
+@inject MachineMasterHttpClient MasterHttpClient;
 
-@code {
-    
+@if (string.IsNullOrEmpty(Id))
+{
+    <MudText Typo="Typo.h5" Color="Color.Primary">Add Machine Info</MudText>
 }
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Primary">Edit Machine Info</MudText>
+}
+<MudDivider Class="my-4"/>
+<MudGrid>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField Disabled="!string.IsNullOrEmpty(Id)" @bind-Value="Model.MachineDetails.AssetTag" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Tag"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial No"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudTextField @bind-Value="Model.MachineDetails.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudSelect @bind-Value="Model.MachineDetails.MachineType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Machine Type">
+            @foreach (var value in Enum.GetValues<MachineType>())
+            {
+                <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudSelect @bind-Value="Model.MachineDetails.UseType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Use Type">
+            @foreach (var value in Enum.GetValues<MachineUseType>())
+            {
+                <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    @if (Model.MachineDetails.UseType == MachineUseType.PersonUse)
+    {
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="Model.MachineDetails.AssignedPersonName" Margin=Margin.Dense Variant=Variant.Outlined Label="Assigned Person Name"/>
+        </MudItem>
+    }
+</MudGrid>
+<MudDivider Class="my-4" />
+<MudText Typo="Typo.h6" Color="Color.Primary">Hardware Components</MudText>
+<MudGrid class="mt-2">
+    <MudItem xs="12" sm="6">
+        <MudCard Outlined Elevation="0">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">Motherboard</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudRadioGroup @bind-SelectedOption="@motherboardSelectionType">
+                    <MudRadio Option="HardwareSelectionType.Existing">Existing</MudRadio>
+                    <MudRadio Option="HardwareSelectionType.New">New</MudRadio>
+                    <MudRadio Option="HardwareSelectionType.Empty">Empty</MudRadio>
+                </MudRadioGroup>
+                @if(motherboardSelectionType == HardwareSelectionType.Existing)
+                {
+                    <MudSelect Class="mt-4" Margin="Margin.Dense" Dense T="double" Label="OEM Serial No" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem T="double" Value="4.50"/>
+                        <MudSelectItem T="double" Value="4.99"/>
+                        <MudSelectItem T="double" Value="3.60"/>
+                    </MudSelect>
+                }
+                else if(motherboardSelectionType == HardwareSelectionType.New)
+                {
+                    <MudButton DisableElevation Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body1" Class="ml-4 mt-2">No Motherboard Selected</MudText>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
