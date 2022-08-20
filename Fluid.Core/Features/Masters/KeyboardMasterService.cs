@@ -11,11 +11,11 @@ public class KeyboardMasterService : IKeyboardMasterService
 
     public KeyboardMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<KeyboardModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<KeyboardInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<KeyboardInfo, KeyboardModel>> expressionMap = info => new KeyboardModel
+            Expression<Func<KeyboardInfo, KeyboardInfo>> expressionMap = info => new KeyboardInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -35,7 +35,7 @@ public class KeyboardMasterService : IKeyboardMasterService
         }
         catch(Exception e)
         {
-            return PaginatedResult<KeyboardModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<KeyboardInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -52,7 +52,7 @@ public class KeyboardMasterService : IKeyboardMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(KeyboardModel model)
+    public async Task<Result<string>> AddAsync(KeyboardInfo model)
     {
         try
         {
@@ -79,7 +79,7 @@ public class KeyboardMasterService : IKeyboardMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(KeyboardModel model)
+    public async Task<Result<string>> EditAsync(KeyboardInfo model)
     {
         try
         {

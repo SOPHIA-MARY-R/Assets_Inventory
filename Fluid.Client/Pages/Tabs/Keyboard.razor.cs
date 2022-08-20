@@ -85,15 +85,15 @@ public partial class Keyboard
         {
             var response = await masterHttpClient.DeleteAsync(Id);
             OnSearch("");
-            foreach (var message in response.Messages)
+            if (response.Succeeded)
             {
-                if (response.Succeeded)
+                snackbar.Add("Deleted Successfully", Severity.Info);
+            }
+            else
+            {
+                foreach (var message in response.Messages)
                 {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
-                {
-                    snackbar.Add(message, Severity.Error);
+                    snackbar.Add(message, Severity.Warning);
                 }
             }
         }
