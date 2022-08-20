@@ -1,4 +1,5 @@
-﻿using Fluid.Shared.Entities;
+﻿using Fluid.Client.Pages.Dialogs.MachineMasterDialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
@@ -6,12 +7,11 @@ using MudBlazor;
 
 namespace Fluid.Client.Pages;
 
-public partial class AddEditMachineInfo
+public partial class AddEditMachine
 {
     [Parameter]
     public string Id { get; set; }
-    private SystemConfiguration _model = new SystemConfiguration(); 
-    private SystemConfiguration _systemConfiguration = new SystemConfiguration();
+    private SystemConfiguration _model = new(); 
 
     private string _motherboardOemSerialNo;
     private HardwareSelectionType _motherboardSelectionType = HardwareSelectionType.Existing;
@@ -26,7 +26,7 @@ public partial class AddEditMachineInfo
         var result = await MotherboardMasterHttpClient.GetByIdAsync(_motherboardOemSerialNo);
         if (result.Succeeded)
         {
-            _model.Motherboard = result.Data;
+            _model.Motherboards = new List<MotherboardInfo>() { result.Data };
             snackbar.Add("Motherboard found successfully");
         }
         else
@@ -46,10 +46,10 @@ public partial class AddEditMachineInfo
                 await LoadMotherboard();
                 break;
             case HardwareSelectionType.New:
-                _model.Motherboard = new MotherboardInfo();
+                _model.Motherboards = new List<MotherboardInfo>();
                 break;
             case HardwareSelectionType.Empty:
-                _model.Motherboard = null;
+                _model.Motherboards = null;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
@@ -74,7 +74,32 @@ public partial class AddEditMachineInfo
                 }
             }
         }
+
+        _model.Motherboards = new List<MotherboardInfo>();
         await base.OnInitializedAsync();
     }
-    
+
+    private async Task InvokeMotherboardDialog(bool isNew, bool isEdit, MotherboardInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineMotherboardDialog.IsNew), isNew },
+            { nameof(AddEditMachineMotherboardDialog.IsEdit), isEdit },
+            { nameof(AddEditMachineMotherboardDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineMotherboardDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as MotherboardInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.Motherboards.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.Motherboards.Remove(_model.Motherboards.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.Motherboards.Add(updatedInfo);
+    }
+
+    private void DeleteMotherboardInfo(MotherboardInfo motherboardInfo)
+    {
+        _model.Motherboards.Remove(motherboardInfo);
+    }
 }

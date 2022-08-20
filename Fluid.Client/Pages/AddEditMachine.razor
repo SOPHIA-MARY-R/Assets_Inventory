@@ -64,38 +64,35 @@ else
     <MudExpansionPanels Elevation="0" MultiExpansion>
         <MudExpansionPanel>
             <TitleContent>
-                <MudText Typo="Typo.h6">Motherboard</MudText>
+                <div class="d-flex mr-4">
+                    <MudText Typo="Typo.h6">Motherboard</MudText>
+                    <div class="ml-auto d-flex gap-x-2">
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMotherboardDialog(false, false, new MotherboardInfo()))">Add Existing</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMotherboardDialog(true, false, new MotherboardInfo()))">Add New</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Motherboards.Clear())">Leave empty</MudButton>
+                    </div>
+                </div>
             </TitleContent>
             <ChildContent>
-                <MudRadioGroup T="HardwareSelectionType" SelectedOption="@_motherboardSelectionType" SelectedOptionChanged="OnMotherboardSelectionType">
-                    <MudRadio Option="HardwareSelectionType.Existing">Existing</MudRadio>
-                    <MudRadio Option="HardwareSelectionType.New">New</MudRadio>
-                    <MudRadio Option="HardwareSelectionType.Empty">Empty</MudRadio>
-                </MudRadioGroup>
-                @switch (_motherboardSelectionType)
-                {
-                    case HardwareSelectionType.Existing:
-                        <div class="d-flex flex-wrap gap-x-2">
-                            <MudTextField @bind-Value="_motherboardOemSerialNo" DebounceInterval="1000"
-                                          Label="Mother OEMSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined"/>
-                            <div class="d-flex align-center">
-                                <MudButton Variant="Variant.Filled" DisableElevation OnClick="LoadMotherboard" Color="Color.Secondary">Add</MudButton>
-                            </div>
-                        </div>
-                        @if (_model.Motherboard is not null)
-                        {
-                            <MudText Typo="Typo.body1">@_model.Motherboard.Manufacturer @_model.Motherboard.Model</MudText>
-                            <MudText Typo="Typo.body2">@_model.Motherboard.Description</MudText>
-                        }
-                        break;
-                    case HardwareSelectionType.New:
-                        <MudButton DisableElevation Color="@Color.Primary" Variant="@Variant.Filled">Add</MudButton>
-                        break;
-                    case HardwareSelectionType.Empty:
-                    default:
-                        <MudText Typo="@Typo.body1" Class="ml-4 mt-2">No Motherboard Selected</MudText>
-                        break;
-                }
+                <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Motherboards">
+                    <HeaderContent>
+                        <MudTh>Serial Number</MudTh>
+                        <MudTh>Manufacturer</MudTh>
+                        <MudTh>Model</MudTh>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.OemSerialNo</MudTd>
+                        <MudTd>@context.Manufacturer</MudTd>
+                        <MudTd>@context.Model</MudTd>
+                        <MudTd>@context.Description</MudTd>
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMotherboardDialog(false, true, context))">Edit</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMotherboardInfo(context))" >Delete</MudButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
             </ChildContent>
         </MudExpansionPanel>
     </MudExpansionPanels>
