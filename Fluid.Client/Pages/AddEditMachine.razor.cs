@@ -3,7 +3,6 @@ using Fluid.Shared.Entities;
 using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace Fluid.Client.Pages;
@@ -118,6 +117,44 @@ public partial class AddEditMachine
         _model.Keyboards.Add(updatedInfo);
     }
     
+    private async Task InvokeMonitorDialog(bool isNew, bool isEdit, MonitorInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineMonitorDialog.IsNew), isNew },
+            { nameof(AddEditMachineMonitorDialog.IsEdit), isEdit },
+            { nameof(AddEditMachineMonitorDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineMonitorDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as MonitorInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.Monitors.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.Monitors.Remove(_model.Monitors.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.Monitors.Add(updatedInfo);
+    }
+    
+    private async Task InvokeMouseDialog(bool isNew, bool isEdit, MouseInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineMouseDialog.IsNew), isNew },
+            { nameof(AddEditMachineMouseDialog.IsEdit), isEdit },
+            { nameof(AddEditMachineMouseDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineMouseDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as MouseInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.Mouses.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.Mouses.Remove(_model.Mouses.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.Mouses.Add(updatedInfo);
+    }
+    
     private void DeleteMotherboardInfo(MotherboardInfo motherboardInfo)
     {
         _model.Motherboards.Remove(motherboardInfo);
@@ -125,5 +162,15 @@ public partial class AddEditMachine
     private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)
     {
         _model.Keyboards.Remove(keyboardInfo);
+    }
+    
+    private void DeleteMonitorInfo(MonitorInfo monitorInfo)
+    {
+        _model.Monitors.Remove(monitorInfo);
+    }
+    
+    private void DeleteMouseInfo(MouseInfo mouseInfo)
+    {
+        _model.Mouses.Remove(mouseInfo);
     }
 }

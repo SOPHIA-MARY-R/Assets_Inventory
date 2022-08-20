@@ -128,5 +128,75 @@ else
                 </MudTable>
             </ChildContent>
         </MudExpansionPanel>
+        <MudExpansionPanel>
+            <TitleContent>
+                <div class="d-flex mr-4">
+                    <MudText Typo="Typo.h6">Monitor</MudText>
+                    <div class="ml-auto d-flex gap-x-2">
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMonitorDialog(false, false, new MonitorInfo()))">Add Existing</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMonitorDialog(true, false, new MonitorInfo()))">Add New</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Monitors.Clear())">Leave empty</MudButton>
+                    </div>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Monitors">
+                    <HeaderContent>
+                        <MudTh>Serial Number</MudTh>
+                        <MudTh>Manufacturer</MudTh>
+                        <MudTh>Model</MudTh>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.OemSerialNo</MudTd>
+                        <MudTd>@context.Manufacturer</MudTd>
+                        <MudTd>@context.Model</MudTd>
+                        <MudTd>@context.Description</MudTd>
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMonitorDialog(false, true, context))">Edit</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMonitorInfo(context))" >Delete</MudButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </ChildContent>
+        </MudExpansionPanel>
+        <MudExpansionPanel>
+            <TitleContent>
+                <div class="d-flex mr-4">
+                    <MudText Typo="Typo.h6">Mouse</MudText>
+                    <div class="ml-auto d-flex gap-x-2">
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMouseDialog(false, false, new MouseInfo()))">Add Existing</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMouseDialog(true, false, new MouseInfo()))">Add New</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Mouses.Clear())">Leave empty</MudButton>
+                    </div>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Mouses">
+                    <HeaderContent>
+                        <MudTh>Serial Number</MudTh>
+                        <MudTh>Manufacturer</MudTh>
+                        <MudTh>Model</MudTh>
+                        <MudTh>IsWireless</MudTh>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.OemSerialNo</MudTd>
+                        <MudTd>@context.Manufacturer</MudTd>
+                        <MudTd>@context.Model</MudTd>
+                        <MudTd>
+                            <MudCheckBox Checked="@context.IsWireless" ReadOnly/>
+                        </MudTd>
+                        <MudTd>@context.Description</MudTd>
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMouseDialog(false, true, context))">Edit</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMouseInfo(context))" >Delete</MudButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </ChildContent>
+        </MudExpansionPanel>
     </MudExpansionPanels>
 </MudPaper>
