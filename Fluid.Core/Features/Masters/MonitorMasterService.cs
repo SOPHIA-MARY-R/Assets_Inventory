@@ -11,11 +11,11 @@ public class MonitorMasterService : IMonitorMasterService
 
     public MonitorMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<MonitorModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<MonitorInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<MonitorInfo, MonitorModel>> expressionMap = info => new MonitorModel
+            Expression<Func<MonitorInfo, MonitorInfo>> expressionMap = info => new MonitorInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -39,7 +39,7 @@ public class MonitorMasterService : IMonitorMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<MonitorModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<MonitorInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -56,7 +56,7 @@ public class MonitorMasterService : IMonitorMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(MonitorModel model)
+    public async Task<Result<string>> AddAsync(MonitorInfo model)
     {
         try
         {
@@ -87,7 +87,7 @@ public class MonitorMasterService : IMonitorMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(MonitorModel model)
+    public async Task<Result<string>> EditAsync(MonitorInfo model)
     {
         try
         {
