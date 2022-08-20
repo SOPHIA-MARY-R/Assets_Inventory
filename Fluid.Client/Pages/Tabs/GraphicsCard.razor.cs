@@ -78,19 +78,19 @@ public partial class GraphicsCard
         }
     }
 
-    private async Task Delete(string Id)
+    private async Task Delete(string id)
     {
         if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this GraphicsCard? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await masterHttpClient.DeleteAsync(id);
             OnSearch("");
-            foreach (var message in response.Messages)
+            if (response.Succeeded)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
+                snackbar.Add("Deleted Successfully", Severity.Info);
+            }
+            else
+            {
+                foreach (var message in response.Messages)
                 {
                     snackbar.Add(message, Severity.Error);
                 }

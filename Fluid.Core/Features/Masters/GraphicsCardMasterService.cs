@@ -11,11 +11,11 @@ public class GraphicsCardMasterService : IGraphicsCardMasterService
 
     public GraphicsCardMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<GraphicsCardModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<GraphicsCardInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<GraphicsCardInfo, GraphicsCardModel>> expressionMap = info => new GraphicsCardModel
+            Expression<Func<GraphicsCardInfo, GraphicsCardInfo>> expressionMap = info => new GraphicsCardInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -34,7 +34,7 @@ public class GraphicsCardMasterService : IGraphicsCardMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<GraphicsCardModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<GraphicsCardInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -51,7 +51,7 @@ public class GraphicsCardMasterService : IGraphicsCardMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(GraphicsCardModel model)
+    public async Task<Result<string>> AddAsync(GraphicsCardInfo model)
     {
         try
         {
@@ -77,7 +77,7 @@ public class GraphicsCardMasterService : IGraphicsCardMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(GraphicsCardModel model)
+    public async Task<Result<string>> EditAsync(GraphicsCardInfo model)
     {
         try
         {
