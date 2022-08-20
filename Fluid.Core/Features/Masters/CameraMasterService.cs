@@ -11,11 +11,11 @@ public class CameraMasterService : ICameraMasterService
 
     public CameraMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<CameraModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<CameraInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<CameraInfo, CameraModel>> expressionMap = info => new CameraModel
+            Expression<Func<CameraInfo, CameraInfo>> expressionMap = info => new CameraInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -38,7 +38,7 @@ public class CameraMasterService : ICameraMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<CameraModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<CameraInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -55,7 +55,7 @@ public class CameraMasterService : ICameraMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(CameraModel model)
+    public async Task<Result<string>> AddAsync(CameraInfo model)
     {
         try
         {
@@ -85,7 +85,7 @@ public class CameraMasterService : ICameraMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(CameraModel model)
+    public async Task<Result<string>> EditAsync(CameraInfo model)
     {
         try
         {

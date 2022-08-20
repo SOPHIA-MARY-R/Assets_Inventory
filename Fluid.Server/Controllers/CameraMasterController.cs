@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class CameraMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(CameraModel model)
+    public async Task<IActionResult> AddAsync(CameraInfo model)
     {
         return Ok(await _cameraMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(CameraModel model)
+    public async Task<IActionResult> EditAsync(CameraInfo model)
     {
         return Ok(await _cameraMasterService.EditAsync(model));
     }
