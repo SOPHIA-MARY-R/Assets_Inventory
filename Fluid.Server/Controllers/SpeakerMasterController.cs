@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class SpeakerMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(SpeakerModel model)
+    public async Task<IActionResult> AddAsync(SpeakerInfo model)
     {
         return Ok(await _speakerMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(SpeakerModel model)
+    public async Task<IActionResult> EditAsync(SpeakerInfo model)
     {
         return Ok(await _speakerMasterService.EditAsync(model));
     }
