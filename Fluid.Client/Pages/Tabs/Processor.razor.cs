@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -6,19 +7,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class Processor
 {
-    private List<ProcessorModel> _processors;
+    private List<ProcessorInfo> _processors;
     private string _searchString;
-    private MudTable<ProcessorModel> _processorTable;
+    private MudTable<ProcessorInfo> _processorTable;
     private int _totalItems;
 
-    private async Task<TableData<ProcessorModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<ProcessorInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<ProcessorModel> { TotalItems = _totalItems, Items = _processors };
+        return new TableData<ProcessorInfo> { TotalItems = _totalItems, Items = _processors };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -57,7 +58,7 @@ public partial class Processor
             var item = _processors.FirstOrDefault(c => c.ProcessorId == processorId);
             if (item != null)
             {
-                parameters.Add(nameof(ProcessorDialog.Model), new ProcessorModel
+                parameters.Add(nameof(ProcessorDialog.Model), new ProcessorInfo
                 {
                     ProcessorId = item.ProcessorId,
                     Name = item.Name,
@@ -83,19 +84,19 @@ public partial class Processor
         }
     }
 
-    private async Task Delete(string Id)
+    private async Task Delete(string id)
     {
         if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Processor? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await masterHttpClient.DeleteAsync(id);
             OnSearch("");
-            foreach (var message in response.Messages)
+            if (response.Succeeded)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
+                snackbar.Add("Deleted Successfully", Severity.Info);
+            }
+            else
+            {
+                foreach (var message in response.Messages)
                 {
                     snackbar.Add(message, Severity.Error);
                 }

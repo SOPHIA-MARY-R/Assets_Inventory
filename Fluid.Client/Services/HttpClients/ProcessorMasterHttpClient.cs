@@ -3,6 +3,7 @@ using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
 using System.Net.Http.Json;
+using Fluid.Shared.Entities;
 
 namespace Fluid.Client.Services.HttpClients;
 
@@ -12,25 +13,25 @@ public class ProcessorMasterHttpClient
 
     public ProcessorMasterHttpClient(HttpClient httpClient) => _httpClient = httpClient;
 
-    public async Task<PaginatedResult<ProcessorModel>> GetAllAsync(PagedRequest pagedRequest)
+    public async Task<PaginatedResult<ProcessorInfo>> GetAllAsync(PagedRequest pagedRequest)
     {
         var response = await _httpClient.GetAsync("api/masters/processors".ToPagedRoute(pagedRequest));
-        return await response.ToPaginatedResult<ProcessorModel>();
+        return await response.ToPaginatedResult<ProcessorInfo>();
     }
 
-    public async Task<IResult<ProcessorModel>> GetByIdAsync(string processorId)
+    public async Task<IResult<ProcessorInfo>> GetByIdAsync(string processorId)
     {
         var response = await _httpClient.GetAsync($"api/masters/processors/{processorId}");
-        return await response.ToResult<ProcessorModel>();
+        return await response.ToResult<ProcessorInfo>();
     }
 
-    public async Task<IResult<string>> AddAsync(ProcessorModel model)
+    public async Task<IResult<string>> AddAsync(ProcessorInfo model)
     {
         var response = await _httpClient.PostAsJsonAsync("api/masters/processors", model);
         return await response.ToResult<string>();
     }
 
-    public async Task<IResult<string>> EditAsync(ProcessorModel model)
+    public async Task<IResult<string>> EditAsync(ProcessorInfo model)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/masters/processors/{model.ProcessorId}", model);
         return await response.ToResult<string>();
