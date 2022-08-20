@@ -1,5 +1,6 @@
 ﻿using Fluid.Core.Features;
 using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,13 +32,13 @@ public class MachineMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(MachineMasterModel model)
+    public async Task<IActionResult> AddAsync(MachineInfo model)
     {
         return Ok(await _machineMasterService.AddAsync(model));
     }
 
     [HttpPut("{assetTag}")]
-    public async Task<IActionResult> EditAsync(MachineMasterModel model)
+    public async Task<IActionResult> EditAsync(MachineInfo model)
     {
         return Ok(await _machineMasterService.EditAsync(model));
     }

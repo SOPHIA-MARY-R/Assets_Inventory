@@ -3,6 +3,7 @@ using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
 using System.Net.Http.Json;
+using Fluid.Shared.Entities;
 
 namespace Fluid.Client.Services.HttpClients;
 
@@ -15,9 +16,9 @@ public class MachineMasterHttpClient
         _httpClient = httpClient;
     }
 
-    public async Task<PaginatedResult<MachineMasterModel>> GetAllAsync(PagedRequest pagedRequest)
+    public async Task<PaginatedResult<MachineInfo>> GetAllAsync(PagedRequest pagedRequest)
     {
-        return await _httpClient.GetFromJsonAsync<PaginatedResult<MachineMasterModel>>("api/masters/machines".ToPagedRoute(pagedRequest));
+        return await _httpClient.GetFromJsonAsync<PaginatedResult<MachineInfo>>("api/masters/machines".ToPagedRoute(pagedRequest));
     }
 
     public async Task<Result<SystemConfiguration>> GetByIdAsync(string assetTag)

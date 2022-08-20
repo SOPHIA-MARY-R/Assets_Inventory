@@ -11,11 +11,11 @@ public class MachineMasterService : IMachineMasterService
 
     public MachineMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<MachineMasterModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<MachineInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<MachineInfo, MachineMasterModel>> expressionMap = info => new MachineMasterModel
+            Expression<Func<MachineInfo, MachineInfo>> expressionMap = info => new MachineInfo
             {
                 AssetTag = info.AssetTag,
                 OemSerialNo = info.OemSerialNo,
@@ -41,7 +41,7 @@ public class MachineMasterService : IMachineMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<MachineMasterModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<MachineInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -58,7 +58,7 @@ public class MachineMasterService : IMachineMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(MachineMasterModel model)
+    public async Task<Result<string>> AddAsync(MachineInfo model)
     {
         try
         {
@@ -91,7 +91,7 @@ public class MachineMasterService : IMachineMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(MachineMasterModel model)
+    public async Task<Result<string>> EditAsync(MachineInfo model)
     {
         try
         {

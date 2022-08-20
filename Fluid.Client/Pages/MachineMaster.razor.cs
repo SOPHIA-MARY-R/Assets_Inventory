@@ -1,4 +1,5 @@
-﻿using Fluid.Shared.Models;
+﻿using Fluid.Shared.Entities;
+using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
 
@@ -6,19 +7,19 @@ namespace Fluid.Client.Pages;
 
 public partial class MachineMaster
 {
-    private List<MachineMasterModel> _machines;
+    private List<MachineInfo> _machines;
     private string _searchString;
-    private MudTable<MachineMasterModel> _machineTable;
+    private MudTable<MachineInfo> _machineTable;
     private int _totalItems;
 
-    private async Task<TableData<MachineMasterModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<MachineInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<MachineMasterModel> { TotalItems = _totalItems, Items = _machines };
+        return new TableData<MachineInfo> { TotalItems = _totalItems, Items = _machines };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
