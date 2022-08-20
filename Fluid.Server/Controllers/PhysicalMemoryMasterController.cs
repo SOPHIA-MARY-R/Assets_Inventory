@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class PhysicalMemoryMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(PhysicalMemoryModel model)
+    public async Task<IActionResult> AddAsync(PhysicalMemoryInfo model)
     {
         return Ok(await _physicalmemoryMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(PhysicalMemoryModel model)
+    public async Task<IActionResult> EditAsync(PhysicalMemoryInfo model)
     {
         return Ok(await _physicalmemoryMasterService.EditAsync(model));
     }
