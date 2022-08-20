@@ -1,0 +1,94 @@
+﻿@inject KeyboardMasterHttpClient MasterHttpClient
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                @if (IsNew)
+                {
+                    <MudItem xs="12">
+                        <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" />
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="OemSerialNo" OnBlur="SetKeyboardInfo" Disabled="IsEdit" />
+                    </MudItem>
+                }
+                <MudItem xs="12">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Disabled="!(Succeeded || IsNew || IsEdit)" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public KeyboardInfo Model { get; set; } = new();
+    
+    [Parameter]
+    public bool IsNew { get; set; }
+    
+    [Parameter]
+    public bool IsEdit { get; set; }
+    
+    private string OemSerialNo { get; set; }
+    private bool Succeeded { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(Model.OemSerialNo))
+        {
+            OemSerialNo = Model.OemSerialNo;
+        }
+        base.OnParametersSet();
+    }
+
+    private async Task SetKeyboardInfo()
+    {
+        var result = await MasterHttpClient.GetByIdAsync(OemSerialNo);
+        if (result.Succeeded)
+        {
+            Model = result.Data;
+            Succeeded = true;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Warning);
+            }
+            Succeeded = false;
+        }
+    }
+
+    private void SubmitAsync()
+    {
+        if (string.IsNullOrEmpty(Model.OemSerialNo))
+        {
+            snackbar.Add("Please enter valid OEM Serial No and other keyboard details");
+            return;
+        }
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+}

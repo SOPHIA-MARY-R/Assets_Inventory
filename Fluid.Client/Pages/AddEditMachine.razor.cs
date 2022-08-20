@@ -3,6 +3,7 @@ using Fluid.Shared.Entities;
 using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace Fluid.Client.Pages;
@@ -98,8 +99,31 @@ public partial class AddEditMachine
         _model.Motherboards.Add(updatedInfo);
     }
 
+    private async Task InvokeKeyboardDialog(bool isNew, bool isEdit, KeyboardInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineKeyboardDialog.IsNew), isNew },
+            { nameof(AddEditMachineKeyboardDialog.IsEdit), isEdit },
+            { nameof(AddEditMachineKeyboardDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineKeyboardDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as KeyboardInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.Keyboards.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.Keyboards.Remove(_model.Keyboards.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.Keyboards.Add(updatedInfo);
+    }
+    
     private void DeleteMotherboardInfo(MotherboardInfo motherboardInfo)
     {
         _model.Motherboards.Remove(motherboardInfo);
+    }
+    private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)
+    {
+        _model.Keyboards.Remove(keyboardInfo);
     }
 }
