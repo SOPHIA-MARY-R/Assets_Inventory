@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class Keyboard
 {
-    private List<KeyboardModel> _keyboards;
+    private List<KeyboardInfo> _keyboards;
     private string _searchString;
-    private MudTable<KeyboardModel> _keyboardTable;
+    private MudTable<KeyboardInfo> _keyboardTable;
     private int _totalItems;
 
-    private async Task<TableData<KeyboardModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<KeyboardInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<KeyboardModel> { TotalItems = _totalItems, Items = _keyboards };
+        return new TableData<KeyboardInfo> { TotalItems = _totalItems, Items = _keyboards };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -58,7 +59,7 @@ public partial class Keyboard
             var item = _keyboards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(KeyboardDialog.Model), new KeyboardModel
+                parameters.Add(nameof(KeyboardDialog.Model), new KeyboardInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
