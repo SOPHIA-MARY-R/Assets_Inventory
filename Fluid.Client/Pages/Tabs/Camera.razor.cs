@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class Camera
 {
-    private List<CameraModel> _Cameras;
+    private List<CameraInfo> _Cameras;
     private string _searchString;
-    private MudTable<CameraModel> _CameraTable;
+    private MudTable<CameraInfo> _CameraTable;
     private int _totalItems;
 
-    private async Task<TableData<CameraModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<CameraInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<CameraModel> { TotalItems = _totalItems, Items = _Cameras };
+        return new TableData<CameraInfo> { TotalItems = _totalItems, Items = _Cameras };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -58,7 +59,7 @@ public partial class Camera
             var item = _Cameras.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(CameraDialog.Model), new CameraModel
+                parameters.Add(nameof(CameraDialog.Model), new CameraInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
