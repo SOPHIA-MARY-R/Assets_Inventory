@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class GraphicsCard
 {
-    private List<GraphicsCardModel> _graphicsCards;
+    private List<GraphicsCardInfo> _graphicsCards;
     private string _searchString;
-    private MudTable<GraphicsCardModel> _graphicsCardTable;
+    private MudTable<GraphicsCardInfo> _graphicsCardTable;
     private int _totalItems;
 
-    private async Task<TableData<GraphicsCardModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<GraphicsCardInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<GraphicsCardModel> { TotalItems = _totalItems, Items = _graphicsCards };
+        return new TableData<GraphicsCardInfo> { TotalItems = _totalItems, Items = _graphicsCards };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -58,7 +59,7 @@ public partial class GraphicsCard
             var item = _graphicsCards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(GraphicsCardDialog.Model), new GraphicsCardModel
+                parameters.Add(nameof(GraphicsCardDialog.Model), new GraphicsCardInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
