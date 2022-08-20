@@ -11,11 +11,11 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
 
     public PhysicalMemoryMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<PhysicalMemoryModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<PhysicalMemoryInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<PhysicalMemoryInfo, PhysicalMemoryModel>> expressionMap = info => new PhysicalMemoryModel
+            Expression<Func<PhysicalMemoryInfo, PhysicalMemoryInfo>> expressionMap = info => new PhysicalMemoryInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -38,7 +38,7 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<PhysicalMemoryModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<PhysicalMemoryInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -55,7 +55,7 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(PhysicalMemoryModel model)
+    public async Task<Result<string>> AddAsync(PhysicalMemoryInfo model)
     {
         try
         {
@@ -85,7 +85,7 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(PhysicalMemoryModel model)
+    public async Task<Result<string>> EditAsync(PhysicalMemoryInfo model)
     {
         try
         {

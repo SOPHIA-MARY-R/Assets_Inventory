@@ -39,6 +39,6 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-app.Services.CreateScope().ServiceProvider.GetService<DatabaseSeeder>().SeedAdminUser();
+app.Services.CreateScope().ServiceProvider.GetService<DatabaseSeeder>()?.SeedAdminUser();
 
 app.Run();

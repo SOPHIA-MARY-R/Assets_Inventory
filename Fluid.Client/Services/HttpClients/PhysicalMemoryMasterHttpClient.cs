@@ -3,6 +3,7 @@ using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
 using System.Net.Http.Json;
+using Fluid.Shared.Entities;
 
 namespace Fluid.Client.Services.HttpClients;
 
@@ -12,25 +13,25 @@ public class PhysicalMemoryMasterHttpClient
 
     public PhysicalMemoryMasterHttpClient(HttpClient httpClient) => _httpClient = httpClient;
 
-    public async Task<PaginatedResult<PhysicalMemoryModel>> GetAllAsync(PagedRequest pagedRequest)
+    public async Task<PaginatedResult<PhysicalMemoryInfo>> GetAllAsync(PagedRequest pagedRequest)
     {
         var response = await _httpClient.GetAsync("api/masters/physicalmemorys".ToPagedRoute(pagedRequest));
-        return await response.ToPaginatedResult<PhysicalMemoryModel>();
+        return await response.ToPaginatedResult<PhysicalMemoryInfo>();
     }
 
-    public async Task<IResult<PhysicalMemoryModel>> GetByIdAsync(string oemSerialNo)
+    public async Task<IResult<PhysicalMemoryInfo>> GetByIdAsync(string oemSerialNo)
     {
         var response = await _httpClient.GetAsync($"api/masters/physicalmemorys/{oemSerialNo}");
-        return await response.ToResult<PhysicalMemoryModel>();
+        return await response.ToResult<PhysicalMemoryInfo>();
     }
 
-    public async Task<IResult<string>> AddAsync(PhysicalMemoryModel model)
+    public async Task<IResult<string>> AddAsync(PhysicalMemoryInfo model)
     {
         var response = await _httpClient.PostAsJsonAsync("api/masters/physicalmemorys", model);
         return await response.ToResult<string>();
     }
 
-    public async Task<IResult<string>> EditAsync(PhysicalMemoryModel model)
+    public async Task<IResult<string>> EditAsync(PhysicalMemoryInfo model)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/masters/physicalmemorys/{model.OemSerialNo}", model);
         return await response.ToResult<string>();

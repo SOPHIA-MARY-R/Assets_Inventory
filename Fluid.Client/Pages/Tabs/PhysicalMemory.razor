@@ -1,6 +1,6 @@
 ﻿@using Fluid.Client.Pages.Dialogs
 @inject PhysicalMemoryMasterHttpClient masterHttpClient
-<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<PhysicalMemoryModel>>>(OnServerReloadAsync))" @ref="_physicalmemoryTable">
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<PhysicalMemoryInfo>>>(OnServerReloadAsync))" @ref="_physicalmemoryTable">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
         <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>

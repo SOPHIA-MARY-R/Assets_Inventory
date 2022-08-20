@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class PhysicalMemory
 {
-    private List<PhysicalMemoryModel> _physicalmemorys;
+    private List<PhysicalMemoryInfo> _physicalmemorys;
     private string _searchString;
-    private MudTable<PhysicalMemoryModel> _physicalmemoryTable;
+    private MudTable<PhysicalMemoryInfo> _physicalmemoryTable;
     private int _totalItems;
 
-    private async Task<TableData<PhysicalMemoryModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<PhysicalMemoryInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<PhysicalMemoryModel> { TotalItems = _totalItems, Items = _physicalmemorys };
+        return new TableData<PhysicalMemoryInfo> { TotalItems = _totalItems, Items = _physicalmemorys };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -58,7 +59,7 @@ public partial class PhysicalMemory
             var item = _physicalmemorys.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(PhysicalMemoryDialog.Model), new PhysicalMemoryModel
+                parameters.Add(nameof(PhysicalMemoryDialog.Model), new PhysicalMemoryInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
@@ -88,13 +89,13 @@ public partial class PhysicalMemory
         {
             var response = await masterHttpClient.DeleteAsync(Id);
             OnSearch("");
-            foreach (var message in response.Messages)
+            if (response.Succeeded)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
+                snackbar.Add("Deleted Successfully", Severity.Info);
+            }
+            else
+            {
+                foreach (var message in response.Messages)
                 {
                     snackbar.Add(message, Severity.Error);
                 }

@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class MonitorMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(MonitorModel model)
+    public async Task<IActionResult> AddAsync(MonitorInfo model)
     {
         return Ok(await _monitorMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(MonitorModel model)
+    public async Task<IActionResult> EditAsync(MonitorInfo model)
     {
         return Ok(await _monitorMasterService.EditAsync(model));
     }

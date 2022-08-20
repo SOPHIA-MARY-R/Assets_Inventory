@@ -1,36 +1,43 @@
 ﻿@page "/Hardware-Logs"
-@inject FeedLogHttpClient feedLogHttpClient
+@inject FeedLogHttpClient FeedLogHttpClient
 @using Fluid.Shared.Entities
 @using Fluid.Shared.Enums
-@using MudBlazor.Extensions
 <MudText Typo="Typo.h5" Color="Color.Primary">Hardware Change Logs</MudText>
 <MudText Typo="Typo.body1">See all unattended logs from all machines here</MudText>
-<MudDivider Class="my-4"/>
-<MudPaper Class="pa-4" Outlined Elevation="0">
-    <div class="d-flex flex-column">
-        <div class="d-flex flex-wrap">
-            <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
-            <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _feedLogTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
+@* <MudDivider Class="my-4"/> *@
+<MudPaper Class="pa-4 mt-4" Outlined Elevation="0">
+    <div class="d-flex flex-column mb-6">
+        <div class="d-flex justify-space-between">
+            <div class="d-flex flex-wrap gap-x-4">
+                <MudPaper Elevation="0" Outlined Class="px-4 py-2">36 New Logs</MudPaper>
+                <MudPaper Elevation="0" Outlined Class="px-4 py-2">12 Pending</MudPaper>
+                <MudPaper Elevation="0" Outlined Class="px-4 py-2">8 Changes</MudPaper>
+                <MudPaper Elevation="0" Outlined Class="px-4 py-2">1 New Machine</MudPaper>
+            </div>
+            <div class="d-flex flex-wrap">
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => FeedLogHttpClient.AutoValidateLogs())" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _feedLogTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
+            </div>
         </div>
-        <div class="d-flex py-4">
+        <div class="d-flex pt-6 pb-4">
             <MudGrid>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudTextField @bind-Value="_filterModel.AssetTag" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Tag" />
+                    <MudTextField @bind-Value="_filterModel.AssetTag" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Tag"/>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudTextField @bind-Value="_filterModel.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name" />
+                    <MudTextField @bind-Value="_filterModel.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name"/>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudTextField @bind-Value="_filterModel.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location" />
+                    <MudTextField @bind-Value="_filterModel.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location"/>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudTextField @bind-Value="_filterModel.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch" />
+                    <MudTextField @bind-Value="_filterModel.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch"/>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudTextField @bind-Value="_filterModel.AssignedPersonName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Assigned Person" />
+                    <MudTextField @bind-Value="_filterModel.AssignedPersonName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Assigned Person"/>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudSelect @bind-Value="_filterModel.MachineType" ToStringFunc="@(new Func<MachineType?,string>(x => x == null ? "All" : x.ToString()))" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Type" Dense AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect @bind-Value="_filterModel.MachineType" ToStringFunc="@(new Func<MachineType?, string>(x => x == null ? "All" : x.ToString()))" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Type" Dense AnchorOrigin="Origin.BottomCenter">
                         <MudSelectItem T="MachineType?" Value="null">All</MudSelectItem>
                         @foreach (var value in Enum.GetValues<MachineType>())
                         {
@@ -39,7 +46,7 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
-                    <MudSelect @bind-Value="_filterModel.LogAttendStatus" ToStringFunc="@(new Func<LogAttendStatus?,string>(x => x == null ? "All" : x.ToString()))" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Log Attend Status" Dense AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect @bind-Value="_filterModel.LogAttendStatus" ToStringFunc="@(new Func<LogAttendStatus?, string>(x => x == null ? "All" : x.ToString()))" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Log Attend Status" Dense AnchorOrigin="Origin.BottomCenter">
                         <MudSelectItem T="LogAttendStatus?" Value="null">All</MudSelectItem>
                         @foreach (var value in Enum.GetValues<LogAttendStatus>())
                         {
@@ -49,7 +56,7 @@
                 </MudItem>
                 <MudItem xs="12" sm="6" md="3">
                     <MudDateRangePicker AdornmentColor="Color.Inherit" @bind-DateRange="_searchDateRange" DateFormat="dd/MM/yyyy" Label="Log Date Range"
-                                        Margin="Margin.Dense" PickerVariant="PickerVariant.Dialog" Style="background-color:--mud-palette-black" Variant="Variant.Outlined">
+                                        Margin="Margin.Dense" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined">
                         <PickerActions Context="picker">
                             <MudButton Color="Color.Primary" Size="Size.Small" OnClick="@(() => picker.Close(false))">Cancel</MudButton>
                             <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" OnClick="(() => SubmitDateRange(picker))">Ok</MudButton>

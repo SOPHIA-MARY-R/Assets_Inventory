@@ -1,4 +1,6 @@
-﻿using Fluid.Core.Features.Masters;
+﻿using Fluid.Client.Pages.Tabs;
+using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +30,13 @@ public class MouseMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(MouseModel model)
+    public async Task<IActionResult> AddAsync(MouseInfo model)
     {
         return Ok(await _MouseMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(MouseModel model)
+    public async Task<IActionResult> EditAsync(MouseInfo model)
     {
         return Ok(await _MouseMasterService.EditAsync(model));
     }

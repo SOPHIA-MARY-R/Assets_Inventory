@@ -7,8 +7,7 @@ namespace Fluid.Core.Features;
 public interface IFeedLogService
 {
     Task<IResult> SaveLog(SystemConfiguration systemConfiguration);
-
     Task<PaginatedResult<FeedLog>> GetAllAsync(int pageNumber, int pageSize, FeedLogFilter filter);
-
+    Task<IResult> AutoValidateLogsAsync();
     Task<IResult> AttendLog(FeedLog feedLog);
 }

@@ -11,11 +11,11 @@ public class ProcessorMasterService : IProcessorMasterService
 
     public ProcessorMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<ProcessorModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<ProcessorInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<ProcessorInfo, ProcessorModel>> expressionMap = info => new ProcessorModel
+            Expression<Func<ProcessorInfo, ProcessorInfo>> expressionMap = info => new ProcessorInfo
             {
                 ProcessorId = info.ProcessorId,
                 Name = info.Name,
@@ -41,7 +41,7 @@ public class ProcessorMasterService : IProcessorMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<ProcessorModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<ProcessorInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -58,7 +58,7 @@ public class ProcessorMasterService : IProcessorMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(ProcessorModel model)
+    public async Task<Result<string>> AddAsync(ProcessorInfo model)
     {
         try
         {
@@ -91,7 +91,7 @@ public class ProcessorMasterService : IProcessorMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(ProcessorModel model)
+    public async Task<Result<string>> EditAsync(ProcessorInfo model)
     {
         try
         {

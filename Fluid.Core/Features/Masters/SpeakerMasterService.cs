@@ -11,11 +11,11 @@ public class SpeakerMasterService : ISpeakerMasterService
 
     public SpeakerMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<SpeakerModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<SpeakerInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<SpeakerInfo, SpeakerModel>> expressionMap = info => new SpeakerModel
+            Expression<Func<SpeakerInfo, SpeakerInfo>> expressionMap = info => new SpeakerInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -36,7 +36,7 @@ public class SpeakerMasterService : ISpeakerMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<SpeakerModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<SpeakerInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -53,7 +53,7 @@ public class SpeakerMasterService : ISpeakerMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(SpeakerModel model)
+    public async Task<Result<string>> AddAsync(SpeakerInfo model)
     {
         try
         {
@@ -81,7 +81,7 @@ public class SpeakerMasterService : ISpeakerMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(SpeakerModel model)
+    public async Task<Result<string>> EditAsync(SpeakerInfo model)
     {
         try
         {

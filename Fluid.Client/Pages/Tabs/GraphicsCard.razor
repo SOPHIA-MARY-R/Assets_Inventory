@@ -1,6 +1,6 @@
 ﻿@using Fluid.Client.Pages.Dialogs
 @inject GraphicsCardMasterHttpClient masterHttpClient
-<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<GraphicsCardModel>>>(OnServerReloadAsync))" @ref="_graphicsCardTable">
+<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<GraphicsCardInfo>>>(OnServerReloadAsync))" @ref="_graphicsCardTable">
     <ToolBarContent>
         <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
         <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>

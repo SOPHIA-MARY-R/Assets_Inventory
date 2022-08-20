@@ -6,11 +6,14 @@ namespace Fluid.Core.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly AppDbContext _appDbContext;
+    public AppDbContext AppDbContext { get; }
     private bool _disposed;
     private Hashtable _repositories;
 
-    public UnitOfWork(AppDbContext appDbContext) => _appDbContext = appDbContext;
+    public UnitOfWork(AppDbContext appDbContext)
+    {
+        AppDbContext = appDbContext;
+    }
 
     public IRepositoryAsync<T> GetRepository<T>() where T : class, IEntity
     {
@@ -22,7 +25,7 @@ public class UnitOfWork : IUnitOfWork
         if (!_repositories.ContainsKey(type))
         {
             var repositoryType = typeof(RepositoryAsync<>);
-            var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _appDbContext);
+            var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), AppDbContext);
             _repositories.Add(type, repositoryInstance);
         }
 
@@ -31,7 +34,13 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task<int> Commit()
     {
-        return await _appDbContext.SaveChangesAsync();
+        return await AppDbContext.SaveChangesAsync();
+    }
+
+    public Task Rollback()
+    {
+        AppDbContext.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
+        return Task.CompletedTask;
     }
 
     public void Dispose()
@@ -47,7 +56,7 @@ public class UnitOfWork : IUnitOfWork
             if (disposing)
             {
                 //dispose managed resources
-                _appDbContext.Dispose();
+                AppDbContext.Dispose();
             }
         }
         //dispose unmanaged resources

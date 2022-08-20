@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class KeyboardMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(KeyboardModel model)
+    public async Task<IActionResult> AddAsync(KeyboardInfo model)
     {
         return Ok(await _keyboardMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(KeyboardModel model)
+    public async Task<IActionResult> EditAsync(KeyboardInfo model)
     {
         return Ok(await _keyboardMasterService.EditAsync(model));
     }

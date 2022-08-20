@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class HardDiskMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(HardDiskModel model)
+    public async Task<IActionResult> AddAsync(HardDiskInfo model)
     {
         return Ok(await _harddiskMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(HardDiskModel model)
+    public async Task<IActionResult> EditAsync(HardDiskInfo model)
     {
         return Ok(await _harddiskMasterService.EditAsync(model));
     }

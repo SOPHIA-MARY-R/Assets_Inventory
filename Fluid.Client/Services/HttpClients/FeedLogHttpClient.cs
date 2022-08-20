@@ -28,4 +28,10 @@ public class FeedLogHttpClient
         var response = await _httpClient.PostAsJsonAsync($"api/feed-log/{feedLog.Id}/attend", feedLog);
         return await response.ToResult();
     }
+    
+    public async Task<Result> AutoValidateLogs()
+    {
+        return await _httpClient.GetFromJsonAsync<Result>("api/feed-log/autovalidate");
+    }
+
 }

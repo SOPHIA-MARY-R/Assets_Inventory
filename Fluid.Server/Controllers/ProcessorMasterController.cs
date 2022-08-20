@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class ProcessorMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(ProcessorModel model)
+    public async Task<IActionResult> AddAsync(ProcessorInfo model)
     {
         return Ok(await _processorMasterService.AddAsync(model));
     }
 
     [HttpPut("{processorId}")]
-    public async Task<IActionResult> EditAsync(ProcessorModel model)
+    public async Task<IActionResult> EditAsync(ProcessorInfo model)
     {
         return Ok(await _processorMasterService.EditAsync(model));
     }

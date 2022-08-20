@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class GraphicsCardMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(GraphicsCardModel model)
+    public async Task<IActionResult> AddAsync(GraphicsCardInfo model)
     {
         return Ok(await _graphicsCardMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(GraphicsCardModel model)
+    public async Task<IActionResult> EditAsync(GraphicsCardInfo model)
     {
         return Ok(await _graphicsCardMasterService.EditAsync(model));
     }

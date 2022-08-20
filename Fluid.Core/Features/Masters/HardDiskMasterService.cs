@@ -11,11 +11,11 @@ public class HardDiskMasterService : IHardDiskMasterService
 
     public HardDiskMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<HardDiskModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<HardDiskInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<HardDiskInfo, HardDiskModel>> expressionMap = info => new HardDiskModel
+            Expression<Func<HardDiskInfo, HardDiskInfo>> expressionMap = info => new HardDiskInfo
             {
                 OemSerialNo = info.OemSerialNo,
                 Manufacturer = info.Manufacturer,
@@ -38,7 +38,7 @@ public class HardDiskMasterService : IHardDiskMasterService
         }
         catch (Exception e)
         {
-            return PaginatedResult<HardDiskModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<HardDiskInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -55,7 +55,7 @@ public class HardDiskMasterService : IHardDiskMasterService
         }
     }
 
-    public async Task<Result<string>> AddAsync(HardDiskModel model)
+    public async Task<Result<string>> AddAsync(HardDiskInfo model)
     {
         try
         {
@@ -85,7 +85,7 @@ public class HardDiskMasterService : IHardDiskMasterService
         }
     }
 
-    public async Task<Result<string>> EditAsync(HardDiskModel model)
+    public async Task<Result<string>> EditAsync(HardDiskInfo model)
     {
         try
         {

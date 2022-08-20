@@ -26,7 +26,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 100;
 });
 builder.Services.AddScoped(s => new HttpClient() { BaseAddress = new Uri(builder.Configuration.GetSection(nameof(MachineIdentifier)).GetValue<string>(nameof(MachineIdentifier.ServerAddress)))});
-//builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddUserAuth();
 builder.Services.AddSingleton<MachineIdentifierService>();
 builder.Services.AddSingleton<TechnicianCredentialsService>();
 builder.Services.AddSingleton<SystemConfigurationService>();

@@ -5,10 +5,10 @@ namespace Fluid.Core.Features.Masters
 {
     public interface IProcessorMasterService
     {
-        Task<Result<string>> AddAsync(ProcessorModel model);
+        Task<Result<string>> AddAsync(ProcessorInfo model);
         Task<Result<string>> DeleteAsync(string processorId);
-        Task<Result<string>> EditAsync(ProcessorModel model);
-        Task<PaginatedResult<ProcessorModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy);
+        Task<Result<string>> EditAsync(ProcessorInfo model);
+        Task<PaginatedResult<ProcessorInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy);
         Task<Result<ProcessorInfo>> GetByIdAsync(string processorId);
     }
 }

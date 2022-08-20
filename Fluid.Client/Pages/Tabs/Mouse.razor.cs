@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,20 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class Mouse
 {
-    private List<MouseModel> _mouses;
+    private List<MouseInfo> _mouses;
     private string _searchString;
-    private MudTable<MouseModel> _mouseTable;
+    private MudTable<MouseInfo> _mouseTable;
     private int _totalItems;
 
-    private async Task<TableData<MouseModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<MouseInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
+
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<MouseModel> { TotalItems = _totalItems, Items = _mouses };
+        return new TableData<MouseInfo> { TotalItems = _totalItems, Items = _mouses };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -27,8 +29,11 @@ public partial class Mouse
         string[] orderings = null;
         if (!string.IsNullOrEmpty(tableState.SortLabel))
         {
-            orderings = tableState.SortDirection != SortDirection.None ? new[] { $"{tableState.SortLabel} {tableState.SortDirection}" } : new[] { $"{tableState.SortLabel}" };
+            orderings = tableState.SortDirection != SortDirection.None
+                ? new[] { $"{tableState.SortLabel} {tableState.SortDirection}" }
+                : new[] { $"{tableState.SortLabel}" };
         }
+
         var response = await masterHttpClient.GetAllAsync(new PagedRequest
         {
             PageNumber = page + 1,
@@ -58,7 +63,7 @@ public partial class Mouse
             var item = _mouses.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(MouseDialog.Model), new MouseModel
+                parameters.Add(nameof(MouseDialog.Model), new MouseInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
@@ -71,27 +76,32 @@ public partial class Mouse
                 parameters.Add(nameof(MouseDialog.IsEditMode), true);
             }
         }
-        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
-        var dialog = dialogService.Show<MouseDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
+
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog =
+            dialogService.Show<MouseDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
         if (!(await dialog.Result).Cancelled)
         {
             OnSearch("");
         }
     }
 
-    private async Task Delete(string Id)
+    private async Task Delete(string id)
     {
-        if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Mouse? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
+        if ((await dialogService.ShowMessageBox("Confirm Delete?",
+                "Are you sure want to delete this Mouse? This action cannot be undone", yesText: "Delete",
+                cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await masterHttpClient.DeleteAsync(id);
             OnSearch("");
-            foreach (var message in response.Messages)
+            if (response.Succeeded)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
+                snackbar.Add("Deleted Successfully", Severity.Info);
+            }
+            else
+            {
+                foreach (var message in response.Messages)
                 {
                     snackbar.Add(message, Severity.Error);
                 }

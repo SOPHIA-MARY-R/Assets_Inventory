@@ -1,4 +1,5 @@
-﻿using Fluid.Shared.Models;
+﻿using Fluid.Shared.Entities;
+using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
 
@@ -6,19 +7,19 @@ namespace Fluid.Client.Pages;
 
 public partial class MachineMaster
 {
-    private List<MachineMasterModel> _machines;
+    private List<MachineInfo> _machines;
     private string _searchString;
-    private MudTable<MachineMasterModel> _machineTable;
+    private MudTable<MachineInfo> _machineTable;
     private int _totalItems;
 
-    private async Task<TableData<MachineMasterModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<MachineInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<MachineMasterModel> { TotalItems = _totalItems, Items = _machines };
+        return new TableData<MachineInfo> { TotalItems = _totalItems, Items = _machines };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -28,7 +29,7 @@ public partial class MachineMaster
         {
             orderings = tableState.SortDirection != SortDirection.None ? new[] { $"{tableState.SortLabel} {tableState.SortDirection}" } : new[] { $"{tableState.SortLabel}" };
         }
-        var response = await masterHttpClient.GetAllAsync(new PagedRequest
+        var response = await MasterHttpClient.GetAllAsync(new PagedRequest
         {
             PageNumber = page + 1,
             PageSize = pageSize,
@@ -53,18 +54,11 @@ public partial class MachineMaster
     {
         if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Machine? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await MasterHttpClient.DeleteAsync(Id);
             OnSearch("");
             foreach (var message in response.Messages)
             {
-                if (response.Succeeded)
-                {
-                    snackbar.Add(message, Severity.Success);
-                }
-                else
-                {
-                    snackbar.Add(message, Severity.Error);
-                }
+                snackbar.Add(message, response.Succeeded ? Severity.Success : Severity.Error);
             }
         }
     }
