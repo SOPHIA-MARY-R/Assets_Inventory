@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -6,19 +7,19 @@ using MudBlazor;
 namespace Fluid.Client.Pages.Tabs;
 public partial class Motherboard
 {
-    private List<MotherboardModel> _motherboards;
+    private List<MotherboardInfo> _motherboards;
     private string _searchString;
-    private MudTable<MotherboardModel> _motherboardTable;
+    private MudTable<MotherboardInfo> _motherboardTable;
     private int _totalItems;
 
-    private async Task<TableData<MotherboardModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<MotherboardInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<MotherboardModel> { TotalItems = _totalItems, Items = _motherboards };
+        return new TableData<MotherboardInfo> { TotalItems = _totalItems, Items = _motherboards };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -28,7 +29,7 @@ public partial class Motherboard
         {
             orderings = tableState.SortDirection != SortDirection.None ? new[] { $"{tableState.SortLabel} {tableState.SortDirection}" } : new[] { $"{tableState.SortLabel}" };
         }
-        var response = await masterHttpClient.GetAllAsync(new PagedRequest
+        var response = await MasterHttpClient.GetAllAsync(new PagedRequest
         {
             PageNumber = page + 1,
             PageSize = pageSize,
@@ -57,7 +58,7 @@ public partial class Motherboard
             var item = _motherboards.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(MotherboardDialog.Model), new MotherboardModel
+                parameters.Add(nameof(MotherboardDialog.Model), new MotherboardInfo()
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
@@ -77,11 +78,11 @@ public partial class Motherboard
         }
     }
 
-    private async Task Delete(string Id)
+    private async Task Delete(string id)
     {
         if ((await dialogService.ShowMessageBox("Confirm Delete?", "Are you sure want to delete this Motherboard? This action cannot be undone", yesText: "Delete", cancelText: "Cancel")) == true)
         {
-            var response = await masterHttpClient.DeleteAsync(Id);
+            var response = await MasterHttpClient.DeleteAsync(id);
             OnSearch("");
             foreach (var message in response.Messages)
             {

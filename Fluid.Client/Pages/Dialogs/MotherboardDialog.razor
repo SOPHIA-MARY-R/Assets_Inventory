@@ -1,4 +1,4 @@
-﻿@inject MotherboardMasterHttpClient masterHttpClient
+﻿@inject MotherboardMasterHttpClient MasterHttpClient
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
@@ -35,21 +35,21 @@
     private MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public MotherboardModel Model { get; set; } = new();
+    public MotherboardInfo Model { get; set; } = new();
 
     [Parameter]
-    public bool IsEditMode { get; set; } = false;
+    public bool IsEditMode { get; set; }
 
     private async Task SubmitAsync()
     {
         IResult<string> result;
         if (IsEditMode)
         {
-            result = await masterHttpClient.EditAsync(Model);
+            result = await MasterHttpClient.EditAsync(Model);
         }
         else
         {
-            result = await masterHttpClient.AddAsync(Model);
+            result = await MasterHttpClient.AddAsync(Model);
         }
         if (result.Succeeded)
         {

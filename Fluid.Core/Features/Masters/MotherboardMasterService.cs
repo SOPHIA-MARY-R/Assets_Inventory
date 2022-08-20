@@ -11,30 +11,20 @@ public class MotherboardMasterService : IMotherboardMasterService
 
     public MotherboardMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<MotherboardModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<MotherboardInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<MotherboardInfo, MotherboardModel>> expressionMap = info => new MotherboardModel
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Model = info.Model,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-            };
             var specification = new MotherboardInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<MotherboardInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<MotherboardInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<MotherboardInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<MotherboardInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
-            return PaginatedResult<MotherboardModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<MotherboardInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -43,63 +33,43 @@ public class MotherboardMasterService : IMotherboardMasterService
         try
         {
             var motherboardInfo = await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(oemSerialNo);
-            return motherboardInfo is not null ? Result<MotherboardInfo>.Success(motherboardInfo) : throw new Exception("Motherboard not found");
+            return motherboardInfo is not null ? await Result<MotherboardInfo>.SuccessAsync(motherboardInfo) : throw new Exception("Motherboard not found");
         }
         catch (Exception e)
         {
-            return Result<MotherboardInfo>.Fail(e.Message);
+            return await Result<MotherboardInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(MotherboardModel model)
+    public async Task<Result<string>> AddAsync(MotherboardInfo model)
     {
         try
         {
             if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(model.OemSerialNo) is not null)
                 throw new Exception($"Motherboard with OEM Serial Number {model.OemSerialNo} already exists");
-            var motherboardInfo = new MotherboardInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(motherboardInfo);
+            await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(model);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added Motherboard successfully");
+            return await Result<string>.SuccessAsync(model.OemSerialNo, "Added Motherboard successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(MotherboardModel model)
+    public async Task<Result<string>> EditAsync(MotherboardInfo model)
     {
         try
         {
             var oldMotherboardInfo = await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(model.OemSerialNo);
             if (oldMotherboardInfo is null) throw new Exception("Motherboard not found");
-            var updatedMotherboardInfo = new MotherboardInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(updatedMotherboardInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(model, model.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated Motherboard successfully");
+            return await Result<string>.SuccessAsync(model.OemSerialNo, "Updated Motherboard successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -111,11 +81,11 @@ public class MotherboardMasterService : IMotherboardMasterService
             if (motherboardInfo is null) throw new Exception("Motherboard not found");
             await _unitOfWork.GetRepository<MotherboardInfo>().DeleteAsync(motherboardInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

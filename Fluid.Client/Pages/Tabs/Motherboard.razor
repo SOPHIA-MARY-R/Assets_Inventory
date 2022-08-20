@@ -1,10 +1,10 @@
 ﻿@using Fluid.Client.Pages.Dialogs
-@inject MotherboardMasterHttpClient masterHttpClient
-<MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MotherboardModel>>>(OnServerReloadAsync))" @ref="_motherboardTable">
+@inject MotherboardMasterHttpClient MasterHttpClient
+<MudTable Dense Elevation="0" Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MotherboardInfo>>>(OnServerReloadAsync))" @ref="_motherboardTable">
     <ToolBarContent>
-        <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
-        <MudButton Color=Color.Tertiary Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
-        <MudButton Color=Color.Info Class="ms-2" Variant=Variant.Filled DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" DisableElevation OnClick="@(() => InvokeModal(""))" StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
+        <MudButton Color="Color.Tertiary" Class="ms-2" Variant="Variant.Filled" DisableElevation StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => OnSearch(""))">Reload</MudButton>
+        <MudButton Color="Color.Info" Class="ms-2" Variant="Variant.Filled" DisableElevation StartIcon="@Icons.Custom.FileFormats.FileExcel">Export</MudButton>
         <MudSpacer />
         <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>

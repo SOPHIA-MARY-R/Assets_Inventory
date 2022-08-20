@@ -1,4 +1,5 @@
 ﻿using Fluid.Core.Features.Masters;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,13 @@ public class MotherboardMasterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(MotherboardModel model)
+    public async Task<IActionResult> AddAsync(MotherboardInfo model)
     {
         return Ok(await _motherboardMasterService.AddAsync(model));
     }
 
     [HttpPut("{oemSerialNo}")]
-    public async Task<IActionResult> EditAsync(MotherboardModel model)
+    public async Task<IActionResult> EditAsync(MotherboardInfo model)
     {
         return Ok(await _motherboardMasterService.EditAsync(model));
     }
