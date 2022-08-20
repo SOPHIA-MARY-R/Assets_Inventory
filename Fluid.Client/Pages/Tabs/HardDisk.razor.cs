@@ -1,4 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -7,19 +8,19 @@ namespace Fluid.Client.Pages.Tabs;
 
 public partial class HardDisk
 {
-    private List<HardDiskModel> _harddisks;
+    private List<HardDiskInfo> _harddisks;
     private string _searchString;
-    private MudTable<HardDiskModel> _harddiskTable;
+    private MudTable<HardDiskInfo> _harddiskTable;
     private int _totalItems;
 
-    private async Task<TableData<HardDiskModel>> OnServerReloadAsync(TableState tableState)
+    private async Task<TableData<HardDiskInfo>> OnServerReloadAsync(TableState tableState)
     {
         if (!string.IsNullOrWhiteSpace(_searchString))
         {
             tableState.Page = 0;
         }
         await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
-        return new TableData<HardDiskModel> { TotalItems = _totalItems, Items = _harddisks };
+        return new TableData<HardDiskInfo> { TotalItems = _totalItems, Items = _harddisks };
     }
 
     private async Task LoadDataAsync(int page, int pageSize, TableState tableState)
@@ -58,7 +59,7 @@ public partial class HardDisk
             var item = _harddisks.FirstOrDefault(c => c.OemSerialNo == oemSerialNo);
             if (item != null)
             {
-                parameters.Add(nameof(HardDiskDialog.Model), new HardDiskModel
+                parameters.Add(nameof(HardDiskDialog.Model), new HardDiskInfo
                 {
                     OemSerialNo = item.OemSerialNo,
                     Manufacturer = item.Manufacturer,
