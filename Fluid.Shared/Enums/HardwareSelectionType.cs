@@ -1,5 +1,5 @@
 ﻿namespace Fluid.Shared.Enums;
-public enum HardwareSelectionType
+public enum HardwareSelectionType : byte
 {
     Existing,
     New,
