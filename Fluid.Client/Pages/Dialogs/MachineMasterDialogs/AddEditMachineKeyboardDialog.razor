@@ -30,6 +30,9 @@
                 <MudItem xs="12">
                     <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
                 </MudItem>
+                <MudItem xs="12" Class="d-flex">
+                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                </MudItem>
             </MudGrid>
         </DialogContent>
         <DialogActions>
