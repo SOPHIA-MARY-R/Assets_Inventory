@@ -63,19 +63,19 @@
                 <ChildContent>
                     <MudGrid>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Motherboard.OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
+                            <MudTextField @bind-Value="Model.Motherboards[0].OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Motherboard.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
+                            <MudTextField @bind-Value="Model.Motherboards[0].Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Motherboard.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
+                            <MudTextField @bind-Value="Model.Motherboards[0].Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Motherboard.Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
+                            <MudTextField @bind-Value="Model.Motherboards[0].Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Motherboard.PurchaseDate" For="(() => Model.Motherboard.PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
+                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Motherboards[0].PurchaseDate" For="(() => Model.Motherboards[0].PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
                                 <PickerActions Context="picker">
                                     <MudButton OnClick="@(() => picker.Close(false))">Cancel</MudButton>
                                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => picker.Close())">Ok</MudButton>
@@ -83,7 +83,7 @@
                             </MudDatePicker>
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudNumericField @bind-Value="Model.Motherboard.Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
+                            <MudNumericField @bind-Value="Model.Motherboards[0].Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
                         </MudItem>
                     </MudGrid>
                 </ChildContent>
@@ -95,22 +95,22 @@
                 <ChildContent>
                     <MudGrid>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Keyboard.OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
+                            <MudTextField @bind-Value="Model.Keyboards[0].OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Keyboard.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
+                            <MudTextField @bind-Value="Model.Keyboards[0].Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Keyboard.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
+                            <MudTextField @bind-Value="Model.Keyboards[0].Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Keyboard.Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
+                            <MudTextField @bind-Value="Model.Keyboards[0].Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudCheckBox @bind-Value="Model.Keyboard.IsWireless" T="bool" Label="Is Wireless" />
+                            <MudCheckBox @bind-Value="Model.Keyboards[0].IsWireless" T="bool" Label="Is Wireless" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Keyboard.PurchaseDate" For="(() => Model.Keyboard.PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
+                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Keyboards[0].PurchaseDate" For="(() => Model.Keyboards[0].PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
                                 <PickerActions Context="picker">
                                     <MudButton OnClick="@(() => picker.Close(false))">Cancel</MudButton>
                                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => picker.Close())">Ok</MudButton>
@@ -118,7 +118,7 @@
                             </MudDatePicker>
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudNumericField @bind-Value="Model.Keyboard.Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
+                            <MudNumericField @bind-Value="Model.Keyboards[0].Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
                         </MudItem>
                     </MudGrid>
                 </ChildContent>
@@ -130,22 +130,22 @@
                 <ChildContent>
                     <MudGrid>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Mouse.OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
+                            <MudTextField @bind-Value="Model.Mouses[0].OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial Number" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Mouse.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
+                            <MudTextField @bind-Value="Model.Mouses[0].Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Mouse.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
+                            <MudTextField @bind-Value="Model.Mouses[0].Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="Model.Mouse.Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
+                            <MudTextField @bind-Value="Model.Mouses[0].Description" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Description" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudCheckBox @bind-Value="Model.Mouse.IsWireless" T="bool" Label="Is Wireless" />
+                            <MudCheckBox @bind-Value="Model.Mouses[0].IsWireless" T="bool" Label="Is Wireless" />
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Mouse.PurchaseDate" For="(() => Model.Mouse.PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
+                            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Mouses[0].PurchaseDate" For="(() => Model.Mouses[0].PurchaseDate)" PickerVariant="PickerVariant.Dialog" Label="Purchase Date">
                                 <PickerActions Context="picker">
                                     <MudButton OnClick="@(() => picker.Close(false))">Cancel</MudButton>
                                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => picker.Close())">Ok</MudButton>
@@ -153,7 +153,7 @@
                             </MudDatePicker>
                         </MudItem>
                         <MudItem xs="12" md="3">
-                            <MudNumericField @bind-Value="Model.Mouse.Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
+                            <MudNumericField @bind-Value="Model.Mouses[0].Price" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Price" Min="0.0M" HideSpinButtons/>
                         </MudItem>
                     </MudGrid>
                 </ChildContent>
