@@ -11,31 +11,20 @@ public class MouseMasterService : IMouseMasterService
 
     public MouseMasterService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<PaginatedResult<MouseModel>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<MouseInfo>> GetAllAsync(int pageNumber, int pageSize, string searchString, string orderBy)
     {
         try
         {
-            Expression<Func<MouseInfo, MouseModel>> expressionMap = info => new MouseModel
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Model = info.Model,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                IsWireless = info.IsWireless,
-                Description = info.Description,
-            };
             var specification = new MouseInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<MouseInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<MouseInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<MouseInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<MouseInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
-            return PaginatedResult<MouseModel>.Failure(new List<string> { e.Message });
+            return PaginatedResult<MouseInfo>.Failure(new List<string> { e.Message });
         }
     }
 
@@ -43,66 +32,44 @@ public class MouseMasterService : IMouseMasterService
     {
         try
         {
-            var MouseInfo = await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(oemSerialNo);
-            return MouseInfo is not null ? Result<MouseInfo>.Success(MouseInfo) : throw new Exception("Mouse not found");
+            var mouseInfo = await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(oemSerialNo);
+            return mouseInfo is not null ? await Result<MouseInfo>.SuccessAsync(mouseInfo) : throw new Exception("Mouse not found");
         }
         catch (Exception e)
         {
-            return Result<MouseInfo>.Fail(e.Message);
+            return await Result<MouseInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(MouseModel model)
+    public async Task<Result<string>> AddAsync(MouseInfo model)
     {
         try
         {
             if (await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(model.OemSerialNo) is not null)
                 throw new Exception($"Mouse with OEM Serial Number {model.OemSerialNo} already exists");
-            var MouseInfo = new MouseInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                IsWireless = model.IsWireless,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<MouseInfo>().AddAsync(MouseInfo);
+            await _unitOfWork.GetRepository<MouseInfo>().AddAsync(model);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added Mouse successfully");
+            return await Result<string>.SuccessAsync(model.OemSerialNo, "Added Mouse successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(MouseModel model)
+    public async Task<Result<string>> EditAsync(MouseInfo model)
     {
         try
         {
             var oldMouseInfo = await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(model.OemSerialNo);
             if (oldMouseInfo is null) throw new Exception("Mouse not found");
-            var updatedMouseInfo = new MouseInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                IsWireless = model.IsWireless,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(updatedMouseInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(model, model.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated Mouse successfully");
+            return await Result<string>.SuccessAsync(model.OemSerialNo, "Updated Mouse successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -110,15 +77,15 @@ public class MouseMasterService : IMouseMasterService
     {
         try
         {
-            var MouseInfo = await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(oemSerialNo);
-            if (MouseInfo is null) throw new Exception("Mouse not found");
-            await _unitOfWork.GetRepository<MouseInfo>().DeleteAsync(MouseInfo);
+            var mouseInfo = await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(oemSerialNo);
+            if (mouseInfo is null) throw new Exception("Mouse not found");
+            await _unitOfWork.GetRepository<MouseInfo>().DeleteAsync(mouseInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }
