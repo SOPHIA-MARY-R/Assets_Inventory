@@ -23,6 +23,21 @@ public class FeedLogService : IFeedLogService
         _currentUserService = currentUserService;
     }
 
+    public async Task<IResult<FeedLog>> GetById(string id)
+    {
+        try
+        {
+            var feedLog = await _unitOfWork.GetRepository<FeedLog>().GetByIdAsync(id);
+            if (feedLog is null)
+                throw new Exception("The Requested Log record is not found");
+            return await Result<FeedLog>.SuccessAsync(feedLog);
+        }
+        catch (Exception e)
+        {
+            return await Result<FeedLog>.FailAsync(e.Message);
+        }
+    }
+
     public async Task<IResult<SystemConfiguration>> SaveLog(SystemConfiguration systemConfiguration)
     {
         try
