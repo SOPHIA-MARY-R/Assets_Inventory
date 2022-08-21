@@ -2,19 +2,21 @@
 <MudText Typo="Typo.h4">Index</MudText>
 
 <MudDivider Class="my-4" />
-<MudCard Outlined Elevation="0">
-    <div class="d-flex flex-column align-items-center pa-4">
-        <MudText Class="d-flex flex-column justify-start" Typo="Typo.caption">MACHINE DETAILS</MudText>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@systemConfigurationService.SystemConfiguration.MachineDetails.AssetTag</MudText>
-        <MudText Typo="Typo.body1">@systemConfigurationService.SystemConfiguration.MachineDetails.Manufacturer</MudText>
-        <MudText Typo="Typo.h6">@systemConfigurationService.SystemConfiguration.MachineDetails.Model</MudText>
-        <MudText Typo="Typo.body2">Serial Number: @systemConfigurationService.SystemConfiguration.MachineDetails.OemSerialNo</MudText>
-        <MudText Typo="Typo.body2">Machine Type: @systemConfigurationService.SystemConfiguration.MachineDetails.MachineType.ToString()</MudText>
-        <MudText Typo="Typo.body2">UseType: @systemConfigurationService.SystemConfiguration.MachineDetails.UseType.ToString()</MudText>
-        <MudText Typo="Typo.body2">Assigned Person Name: @systemConfigurationService.SystemConfiguration.MachineDetails.AssignedPersonName</MudText>
-    </div>
-</MudCard>
-
+@if (systemConfigurationService.SystemConfiguration is not null)
+{
+    <MudCard Outlined Elevation="0">
+        <div class="d-flex flex-column align-items-center pa-4">
+            <MudText Class="d-flex flex-column justify-start" Typo="Typo.caption">MACHINE DETAILS</MudText>
+            <MudText Typo="Typo.h5" Color="Color.Primary">@systemConfigurationService.SystemConfiguration.MachineDetails.AssetTag</MudText>
+            <MudText Typo="Typo.body1">@systemConfigurationService.SystemConfiguration.MachineDetails.Manufacturer</MudText>
+            <MudText Typo="Typo.h6">@systemConfigurationService.SystemConfiguration.MachineDetails.Model</MudText>
+            <MudText Typo="Typo.body2">Serial Number: @systemConfigurationService.SystemConfiguration.MachineDetails.OemSerialNo</MudText>
+            <MudText Typo="Typo.body2">Machine Type: @systemConfigurationService.SystemConfiguration.MachineDetails.MachineType.ToString()</MudText>
+            <MudText Typo="Typo.body2">UseType: @systemConfigurationService.SystemConfiguration.MachineDetails.UseType.ToString()</MudText>
+            <MudText Typo="Typo.body2">Assigned Person Name: @systemConfigurationService.SystemConfiguration.MachineDetails.AssignedPersonName</MudText>
+        </div>
+    </MudCard>
+}
 @code {
 
 }
