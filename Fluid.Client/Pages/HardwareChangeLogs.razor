@@ -1,0 +1,55 @@
+﻿@page "/Hardware-Change-Logs"
+@using Fluid.Shared.Enums
+<MudText Typo="Typo.h5" Color="Color.Primary">Hardware Change Logs</MudText>
+<MudText Typo="Typo.body1">See all change history for all machines here</MudText>
+<MudPaper Class="pa-4 mt-4" Outlined Elevation="0">
+    <MudTable Dense Elevation="0" HorizontalScrollbar T="HardwareChangeLog" Items="new HardwareChangeLog[] {}">
+        <HeaderContent>
+            <MudTh>Asset Tag</MudTh>
+            <MudTh>Manufacturer</MudTh>
+            <MudTh>Model</MudTh>
+            <MudTh>Machine Name</MudTh>
+            <MudTh>Assigned Person</MudTh>
+            <MudTh>Asset Location</MudTh>
+            <MudTh>Change DateTime</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                @context.AssetTag
+                <br/>
+                @switch (context.MachineType)
+                {
+                    case MachineType.PC:
+                        <MudChip Color="Color.Primary" Size="Size.Small" Text="PC" />
+                        break;
+                    case MachineType.Workstation:
+                        <MudChip Color="Color.Tertiary" Size="Size.Small" Text="Workstation" />
+                        break;
+                    case MachineType.Laptop:
+                        <MudChip Color="Color.Secondary" Size="Size.Small" Text="Laptop" />
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            </MudTd>
+            <MudTd>@context.Manufacturer</MudTd>
+            <MudTd>@context.Model</MudTd>
+            <MudTd>
+                @context.MachineName
+                <br/>
+                <MudChip Color="Color.Primary" Size="Size.Small">Old: @context.OldMachineName</MudChip>
+            </MudTd>
+            <MudTd>
+                @(string.IsNullOrEmpty(context.AssignedPersonName) ? context.AssignedPersonName : "None")
+                <br/>
+                <MudChip Color="Color.Primary" Size="Size.Small">Old: @(string.IsNullOrEmpty(context.OldAssignedPersonName) ? context.OldAssignedPersonName : "None")</MudChip>
+            </MudTd>
+            <MudTd>
+                @context.AssetLocation
+                <br/>
+                <MudChip Color="Color.Primary" Size="Size.Small">Old: @context.OldAssetLocation</MudChip>
+            </MudTd>
+            <MudTd>@context.ChangeDateTime</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>

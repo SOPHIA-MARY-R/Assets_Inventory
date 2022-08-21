@@ -1,19 +1,14 @@
-﻿@page "/Setup-Details"
-@using Fluid.Shared.Entities
-<EditForm Model="Model" OnValidSubmit="Submit" Context="editFormContext">
+﻿@page "/Hardware-Logs/{Id}"
+@inject FeedLogHttpClient MasterHttpClient
+@using Fluid.Shared.Enums
 <div class="d-flex justify-space-between">
-    <div class="d-flex flex-column">
-        <MudText Typo="Typo.h5" Color="Color.Primary">Machine Details</MudText>
-        <MudText Typo="Typo.body1">Fill the details</MudText>
+    <div>
+        <MudText Typo="Typo.h5" Color="Color.Primary">View Hardware Changes</MudText>
+        <MudText Typo="Typo.body1">View and approve each hardware change here</MudText>
     </div>
     <div class="d-flex gap-x-2">
-        <div>
-            <MudTooltip Delayed="300" Text="Note: Auto Fill cannot fill all the hardware details automatically. User still need to fill the unfilled hardware details manually.">
-                <MudFab Label="Auto Fill" DisableElevation Color="Color.Secondary" StartIcon="@Icons.Filled.Bolt" Size="Size.Small" OnClick="AutoFill"/>
-            </MudTooltip>
-        </div>
-        <MudFab ButtonType="ButtonType.Submit" Label="Save" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
-        <MudFab ButtonType="ButtonType.Reset" Label="Cancel" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.Clear" Size="Size.Small"/>
+        <MudFab OnClick="@(() => navigationManager.NavigateTo("/Hardware-Logs"))" Label="Back" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.ArrowBack" Size="Size.Small"/>
+        <MudFab ButtonType="ButtonType.Submit" Label="Update" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
     </div>
 </div>
 <MudDivider Class="my-4"/>
@@ -22,22 +17,22 @@
         <MudTextField @bind-Value="Model.MachineDetails.AssetTag" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Tag" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudTextField @bind-Value="Model.MachineDetails.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name"/>
+        <MudTextField @bind-Value="Model.MachineDetails.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudTextField @bind-Value="Model.MachineDetails.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer"/>
+        <MudTextField @bind-Value="Model.MachineDetails.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudTextField @bind-Value="Model.MachineDetails.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model"/>
+        <MudTextField @bind-Value="Model.MachineDetails.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudTextField @bind-Value="Model.MachineDetails.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location"/>
+        <MudTextField @bind-Value="Model.MachineDetails.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudTextField @bind-Value="Model.MachineDetails.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch"/>
+        <MudTextField @bind-Value="Model.MachineDetails.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch" ReadOnly/>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudSelect @bind-Value="Model.MachineDetails.MachineType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Machine Type">
+        <MudSelect @bind-Value="Model.MachineDetails.MachineType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Machine Type" ReadOnly>
             @foreach (var value in Enum.GetValues<MachineType>())
             {
                 <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
@@ -45,7 +40,7 @@
         </MudSelect>
     </MudItem>
     <MudItem xs="12" md="3">
-        <MudSelect @bind-Value="Model.MachineDetails.UseType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Use Type">
+        <MudSelect @bind-Value="Model.MachineDetails.UseType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Use Type" ReadOnly>
             @foreach (var value in Enum.GetValues<MachineUseType>())
             {
                 <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
@@ -55,7 +50,7 @@
     @if (Model.MachineDetails.UseType == MachineUseType.PersonUse)
     {
         <MudItem xs="12" md="3">
-            <MudTextField @bind-Value="Model.MachineDetails.AssignedPersonName" Margin=Margin.Dense Variant=Variant.Outlined Label="Assigned Person Name"/>
+            <MudTextField @bind-Value="Model.MachineDetails.AssignedPersonName" Margin=Margin.Dense Variant=Variant.Outlined Label="Assigned Person Name" ReadOnly/>
         </MudItem>
     }
 </MudGrid>
@@ -68,10 +63,6 @@
             <div class="d-flex mr-4">
                 <MudText Typo="Typo.h6">Motherboard</MudText>
                 <MudBadge Class="ml-2" Content="Model.Motherboards.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
-                <div class="ml-auto d-flex gap-x-2">
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMotherboardDialog(new MotherboardInfo()))">Add</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => Model.Motherboards.Clear())">Leave Empty</MudButton>
-                </div>
             </div>
         </TitleContent>
         <ChildContent>
@@ -89,8 +80,8 @@
                     <MudTd>@context.Model</MudTd>
                     <MudTd>@context.Description</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMotherboardDialog(context))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMotherboardInfo(context))">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation>Accept</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation>Ignore</MudButton>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -104,10 +95,6 @@
             <div class="d-flex mr-4">
                 <MudText Typo="Typo.h6">Physical Memories</MudText>
                 <MudBadge Class="ml-2" Content="Model.PhysicalMemories.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
-                <div class="ml-auto d-flex gap-x-2">
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokePhysicalMemoryDialog(new PhysicalMemoryInfo()))">Add</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => Model.PhysicalMemories.Clear())">Leave Empty</MudButton>
-                </div>
             </div>
         </TitleContent>
         <ChildContent>
@@ -131,8 +118,8 @@
                     <MudTd>@context.FormFactor</MudTd>
                     <MudTd>@context.Description</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokePhysicalMemoryDialog(context))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeletePhysicalMemoryInfo(context))">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation>Accept</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation>Ignore</MudButton>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -146,10 +133,6 @@
             <div class="d-flex mr-4">
                 <MudText Typo="Typo.h6">Keyboard</MudText>
                 <MudBadge Class="ml-2" Content="Model.Keyboards.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
-                <div class="ml-auto d-flex gap-x-2">
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeKeyboardDialog(new KeyboardInfo()))">Add</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => Model.Keyboards.Clear())">Leave empty</MudButton>
-                </div>
             </div>
         </TitleContent>
         <ChildContent>
@@ -167,8 +150,8 @@
                     <MudTd>@context.Model</MudTd>
                     <MudTd>@context.Description</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeKeyboardDialog(context))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteKeyboardInfo(context))">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation>Accept</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation>Ignore</MudButton>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -182,10 +165,6 @@
             <div class="d-flex mr-4">
                 <MudText Typo="Typo.h6">Monitor</MudText>
                 <MudBadge Class="ml-2" Content="Model.Monitors.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
-                <div class="ml-auto d-flex gap-x-2">
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMonitorDialog(new MonitorInfo()))">Add</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => Model.Monitors.Clear())">Leave empty</MudButton>
-                </div>
             </div>
         </TitleContent>
         <ChildContent>
@@ -215,8 +194,8 @@
                     <MudTd>@context.VGAPortCount</MudTd>
                     <MudTd>@context.Description</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMonitorDialog(context))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMonitorInfo(context))">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation>Accept</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation>Ignore</MudButton>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -230,10 +209,6 @@
             <div class="d-flex mr-4">
                 <MudText Typo="Typo.h6">Mouse</MudText>
                 <MudBadge Class="ml-2" Content="Model.Mouses.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
-                <div class="ml-auto d-flex gap-x-2">
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMouseDialog(new MouseInfo()))">Add</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => Model.Mouses.Clear())">Leave empty</MudButton>
-                </div>
             </div>
         </TitleContent>
         <ChildContent>
@@ -255,8 +230,8 @@
                     </MudTd>
                     <MudTd>@context.Description</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMouseDialog(context))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMouseInfo(context))">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation>Accept</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation>Ignore</MudButton>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -267,4 +242,3 @@
     </MudExpansionPanel>
 </MudExpansionPanels>
 </MudPaper>
-</EditForm>

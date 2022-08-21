@@ -23,35 +23,78 @@ public class FeedLogService : IFeedLogService
         _currentUserService = currentUserService;
     }
 
-    public async Task<IResult> SaveLog(SystemConfiguration systemConfiguration)
+    public async Task<IResult<FeedLog>> GetById(string id)
     {
         try
         {
-            var feedLogStorage = new FeedLog
-            {
-                AssetTag = systemConfiguration.MachineDetails.AssetTag,
-                AssetBranch = systemConfiguration.MachineDetails.AssetBranch,
-                AssetLocation = systemConfiguration.MachineDetails.AssetLocation,
-                AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName,
-                Id = Guid.NewGuid()
-                    .ToString(),
-                JsonRaw = JsonSerializer.Serialize(systemConfiguration,
-                    typeof(SystemConfiguration)),
-                LogDateTime = DateTime.Now,
-                LogAttendStatus = LogAttendStatus.Unattended,
-                MachineName = systemConfiguration.MachineDetails.MachineName,
-                MachineType = systemConfiguration.MachineDetails.MachineType,
-                Manufacturer = systemConfiguration.MachineDetails.Manufacturer,
-                Model = systemConfiguration.MachineDetails.Model,
-                OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo
-            };
-            await _unitOfWork.GetRepository<FeedLog>().AddAsync(feedLogStorage);
-            await _unitOfWork.Commit();
-            return await Result.SuccessAsync();
+            var feedLog = await _unitOfWork.GetRepository<FeedLog>().GetByIdAsync(id);
+            if (feedLog is null)
+                throw new Exception("The Requested Log record is not found");
+            return await Result<FeedLog>.SuccessAsync(feedLog);
         }
         catch (Exception e)
         {
-            return await Result.FailAsync(e.Message);
+            return await Result<FeedLog>.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult<SystemConfiguration>> SaveLog(SystemConfiguration systemConfiguration)
+    {
+        try
+        {
+            var existingFeedLog = await _unitOfWork.GetRepository<FeedLog>().Entities.FirstOrDefaultAsync(x => x.AssetTag == systemConfiguration.MachineDetails.AssetTag);
+            if (existingFeedLog is null)
+            {
+                var feedLog = new FeedLog
+                {
+                    AssetTag = systemConfiguration.MachineDetails.AssetTag,
+                    AssetBranch = systemConfiguration.MachineDetails.AssetBranch,
+                    AssetLocation = systemConfiguration.MachineDetails.AssetLocation,
+                    AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName,
+                    Id = Guid.NewGuid()
+                        .ToString(),
+                    JsonRaw = JsonSerializer.Serialize(systemConfiguration,
+                        typeof(SystemConfiguration)),
+                    LogDateTime = DateTime.Now,
+                    LogAttendStatus = LogAttendStatus.Unattended,
+                    MachineName = systemConfiguration.MachineDetails.MachineName,
+                    MachineType = systemConfiguration.MachineDetails.MachineType,
+                    Manufacturer = systemConfiguration.MachineDetails.Manufacturer,
+                    Model = systemConfiguration.MachineDetails.Model,
+                    OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo
+                };
+                await _unitOfWork.GetRepository<FeedLog>().AddAsync(feedLog);
+                await _unitOfWork.Commit();
+                return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
+            }
+
+            var existingSysConfig =
+                (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw, typeof(SystemConfiguration));
+            if (systemConfiguration == existingSysConfig)
+            {
+                existingFeedLog.LogDateTime = DateTime.Now;
+            }
+            else
+            {
+                existingFeedLog.AssetBranch = systemConfiguration.MachineDetails.AssetBranch;
+                existingFeedLog.AssetLocation = systemConfiguration.MachineDetails.AssetLocation;
+                existingFeedLog.AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName;
+                existingFeedLog.JsonRaw = JsonSerializer.Serialize(systemConfiguration, typeof(SystemConfiguration));
+                existingFeedLog.LogDateTime = DateTime.Now;
+                existingFeedLog.LogAttendStatus = LogAttendStatus.Unattended;
+                existingFeedLog.MachineName = systemConfiguration.MachineDetails.MachineName;
+                existingFeedLog.MachineType = systemConfiguration.MachineDetails.MachineType;
+                existingFeedLog.Manufacturer = systemConfiguration.MachineDetails.Manufacturer;
+                existingFeedLog.Model = systemConfiguration.MachineDetails.Model;
+                existingFeedLog.OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo;
+            }
+            await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(existingFeedLog, existingFeedLog.Id);
+            await _unitOfWork.Commit();
+            return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
+        }
+        catch (Exception e)
+        {
+            return await Result<SystemConfiguration>.FailAsync(e.Message);
         }
     }
 

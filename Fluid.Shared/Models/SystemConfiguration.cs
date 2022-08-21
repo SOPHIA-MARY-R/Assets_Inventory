@@ -10,20 +10,13 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
         if (ReferenceEquals(this, other)) return true;
         return Equals(MachineDetails,
                    other.MachineDetails) &&
-               Equals(Motherboards,
-                   other.Motherboards) &&
-               Equals(PhysicalMemories,
-                   other.PhysicalMemories) &&
-               Equals(HardDisks,
-                   other.HardDisks) &&
-               Equals(Processors,
-                   other.Processors) &&
-               Equals(Mouses,
-                   other.Mouses) &&
-               Equals(Keyboards,
-                   other.Keyboards) &&
-               Equals(Monitors,
-                   other.Monitors);
+               Motherboards.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Motherboards.OrderBy(x => x.OemSerialNo)) &&
+               PhysicalMemories.OrderBy(x => x.OemSerialNo).SequenceEqual(other.PhysicalMemories.OrderBy(x => x.OemSerialNo)) &&
+               HardDisks.OrderBy(x => x.OemSerialNo).SequenceEqual(other.HardDisks.OrderBy(x => x.OemSerialNo)) &&
+               Processors.OrderBy(x => x.ProcessorId).SequenceEqual(other.Processors.OrderBy(x => x.ProcessorId)) &&
+               Mouses.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Mouses.OrderBy(x => x.OemSerialNo)) &&
+               Keyboards.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Keyboards.OrderBy(x => x.OemSerialNo)) &&
+               Monitors.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Monitors.OrderBy(x => x.OemSerialNo));
     }
 
     public override bool Equals(object obj)

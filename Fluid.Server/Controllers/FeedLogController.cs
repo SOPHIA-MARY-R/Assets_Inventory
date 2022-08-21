@@ -17,6 +17,12 @@ public class FeedLogController : ControllerBase
         _feedLogService = feedLogService;
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync(string id)
+    {
+        return Ok(await _feedLogService.GetById(id));
+    }
+
     [HttpPost]
     public async Task<IActionResult> GetAllAsync(int pageNumber, int pageSize, FeedLogFilter feedLogFilter)
     {

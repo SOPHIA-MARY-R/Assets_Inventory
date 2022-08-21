@@ -17,6 +17,11 @@ public class FeedLogHttpClient
         _periodService = periodService;
     }
 
+    public async Task<Result<FeedLog>> GetByIdAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result<FeedLog>>($"api/feed-log/{id}");
+    }
+
     public async Task<PaginatedResult<FeedLog>> GetAllAsync(int pageNumber, int pageSize, FeedLogFilter feedLogFilter)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/feed-log?pageNumber={pageNumber}&pageSize={pageSize}", feedLogFilter);

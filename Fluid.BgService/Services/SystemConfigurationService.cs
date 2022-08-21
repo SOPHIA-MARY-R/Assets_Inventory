@@ -5,6 +5,7 @@ using System.Text.Json;
 using Fluid.BgService.Extensions;
 using Fluid.BgService.Models;
 using Fluid.Shared.Entities;
+using Fluid.Shared.Enums.Technical;
 
 namespace Fluid.BgService.Services;
 
@@ -98,5 +99,31 @@ public class SystemConfigurationService
         }
 
         return null;
+    }
+
+    public static IEnumerable<PhysicalMemoryInfo> GetPhysicalMemoryInfos()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
+
+            foreach (var obj in searcher.Get())
+            {
+                var physicalMemory = new PhysicalMemoryInfo();
+                physicalMemory.OemSerialNo = obj["SerialNumber"].ToString()?.Trim();
+
+                physicalMemory.Manufacturer = obj["Manufacturer"].ToString()?.Trim();
+
+                physicalMemory.Capacity = Convert.ToInt32(Convert.ToDouble(obj["Capacity"].ToString()?.Trim()) / Math.Pow(2,30));
+
+                physicalMemory.MemoryType = Enum.Parse<MemoryType>(int.Parse(obj["SMBiosMemoryType"].ToString()?.Trim() ?? "1").ToString());
+
+                physicalMemory.Speed = double.Parse(obj["Speed"].ToString()?.Trim() ?? "0.00");
+
+                physicalMemory.FormFactor = Enum.Parse<MemoryFormFactor>(int.Parse(obj["FormFactor"].ToString()?.Trim() ?? "0").ToString());
+
+                yield return physicalMemory;
+            }
+        }
     }
 }
