@@ -57,7 +57,7 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
 
     public MachineInfo MachineDetails { get; set; } = new();
 
-    public List<MotherboardInfo> Motherboards { get; set; } = new() { new MotherboardInfo() };
+    public List<MotherboardInfo> Motherboards { get; set; } = new();
 
     public List<PhysicalMemoryInfo> PhysicalMemories { get; set; } = new();
 

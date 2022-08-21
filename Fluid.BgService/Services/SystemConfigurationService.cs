@@ -35,21 +35,22 @@ public class SystemConfigurationService
         SystemConfiguration = sysConfig;
     }
 
-    public SystemConfiguration SystemConfiguration { get; set; } = new();
+    public SystemConfiguration SystemConfiguration { get; set; }
 
     public bool IsWriting { get; private set; }
 
     public async Task<bool> LogSystemConfiguration()
     {
+        //if (SystemConfiguration is null) return false;
         IsWriting = true;
         var response = await _httpClient.PostAsJsonAsync("api/feed-log/feed", SystemConfiguration);
-        var result = await response.ToResult();
+        var result = await response.ToResult<SystemConfiguration>();
         if (result.Succeeded)
         {
             var fileProvider = _environment.ContentRootFileProvider;
             var fileInfo = fileProvider.GetFileInfo("SystemConfiguration.json");
             var physicalPath = fileInfo.PhysicalPath;
-            var json = JsonSerializer.SerializeToUtf8Bytes(SystemConfiguration, typeof(SystemConfiguration));
+            var json = JsonSerializer.SerializeToUtf8Bytes(result.Data, typeof(SystemConfiguration));
             await File.WriteAllBytesAsync(physicalPath, json);
             _options.Update(logTime =>
             {
@@ -61,18 +62,15 @@ public class SystemConfigurationService
             IsWriting = false;
             return true;
         }
-        else
+        _options.Update(logTime =>
         {
-            _options.Update(logTime =>
-            {
-                logTime.LastLoggedDateTime = _options.Value.LastLoggedDateTime;
-                logTime.NextLogDateTime = DateTime.Now.AddMinutes(_options.Value.RetryCoolDownMinutes);
-                logTime.CoolDownMinutes = _options.Value.CoolDownMinutes;
-                logTime.RetryCoolDownMinutes = _options.Value.RetryCoolDownMinutes;
-            });
-            IsWriting = false;
-            return false;
-        }
+            logTime.LastLoggedDateTime = _options.Value.LastLoggedDateTime;
+            logTime.NextLogDateTime = DateTime.Now.AddMinutes(_options.Value.RetryCoolDownMinutes);
+            logTime.CoolDownMinutes = _options.Value.CoolDownMinutes;
+            logTime.RetryCoolDownMinutes = _options.Value.RetryCoolDownMinutes;
+        });
+        IsWriting = false;
+        return false;
     }
 
     public static MotherboardInfo GetMotherboardDetails()
@@ -80,7 +78,7 @@ public class SystemConfigurationService
         var motherboard = new MotherboardInfo();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            var searcher = new ManagementObjectSearcher("Select * From Win32_BaseBoard");
+            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard");
             foreach (var obj in searcher.Get())
             {
                 motherboard.OemSerialNo = obj["SerialNumber"].ToString();

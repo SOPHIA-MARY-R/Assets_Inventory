@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Fluid.Shared.Entities
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Keyboard</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.OemSerialNo" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Model" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Model" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Description" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Format="DD/MM/YYYY"/>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex">
+                    <MudSwitch @bind-Checked="Model.IsWireless" Color="Color.Info" Label="Wireless" Class="mx-auto" />
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public KeyboardInfo Model { get; set; } = new();
+
+    private void SubmitAsync()
+    {
+        if (string.IsNullOrEmpty(Model.OemSerialNo))
+        {
+            snackbar.Add("Please enter valid OEM Serial No and other keyboard details");
+            return;
+        }
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+}
