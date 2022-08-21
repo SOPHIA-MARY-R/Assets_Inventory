@@ -20,6 +20,9 @@ public partial class SetupDetails
     private async void Submit()
     {
         Model.Motherboards.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
+        Model.PhysicalMemories.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
+        Model.Processors.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
+        Model.HardDisks.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
         Model.Keyboards.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
         Model.Monitors.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
         Model.Mouses.ForEach(x => x.MachineId = Model.MachineDetails.AssetTag);
@@ -50,6 +53,23 @@ public partial class SetupDetails
         if (Model.Motherboards.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
             Model.Motherboards.Remove(Model.Motherboards.First(x => x.OemSerialNo.Trim() == oemSerialNo));
         Model.Motherboards.Add(updatedInfo);
+    }
+
+    private async Task InvokePhysicalMemoryDialog(PhysicalMemoryInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachinePhysicalMemoryDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachinePhysicalMemoryDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as PhysicalMemoryInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (Model.PhysicalMemories.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            Model.PhysicalMemories.Remove(Model.PhysicalMemories.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        Model.PhysicalMemories.Add(updatedInfo);
     }
 
     private async Task InvokeKeyboardDialog(KeyboardInfo info)
@@ -108,6 +128,11 @@ public partial class SetupDetails
         Model.Motherboards.Remove(motherboardInfo);
     }
     
+    private void DeletePhysicalMemoryInfo(PhysicalMemoryInfo physicalMemoryInfo)
+    {
+        Model.PhysicalMemories.Remove(physicalMemoryInfo);
+    }
+    
     private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)
     {
         Model.Keyboards.Remove(keyboardInfo);
@@ -126,5 +151,6 @@ public partial class SetupDetails
     private void AutoFill()
     {
         Model.Motherboards = new List<MotherboardInfo> { SystemConfigurationService.GetMotherboardDetails() };
+        Model.PhysicalMemories = SystemConfigurationService.GetPhysicalMemoryInfos().ToList();
     }
 }
