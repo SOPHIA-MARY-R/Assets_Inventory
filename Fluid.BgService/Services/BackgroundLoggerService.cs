@@ -17,7 +17,8 @@ public class BackgroundLoggerService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (DateTime.Now < _options.Value.NextLogDateTime || _systemConfigurationService.IsWriting) continue;
+            if (DateTime.Now < _options.Value.NextLogDateTime) 
+                await Task.Delay(_options.Value.NextLogDateTime - DateTime.Now, stoppingToken);
             await _systemConfigurationService.LogSystemConfiguration();
         }
     }
