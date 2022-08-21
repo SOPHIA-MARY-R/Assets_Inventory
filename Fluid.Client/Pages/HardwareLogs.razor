@@ -74,6 +74,7 @@
             <MudTh>Asset Location</MudTh>
             <MudTh>Asset Branch</MudTh>
             <MudTh>Assigned Person</MudTh>
+            <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd>@context.LogDateTime.ToString("dd/MM/yyyy h:mm:ss tt")</MudTd>
@@ -81,9 +82,12 @@
             <MudTd>@context.MachineName</MudTd>
             <MudTd>@context.MachineType.ToString()</MudTd>
             <MudTd>@context.LogAttendStatus.ToString()</MudTd>
-            <MudTd>@context.AssetLocation</MudTd>
-            <MudTd>@context.AssetBranch</MudTd>
+            <MudTd>@(!string.IsNullOrEmpty(context.AssetLocation) ? context.AssetLocation : "-")</MudTd>
+            <MudTd>@(!string.IsNullOrEmpty(context.AssetBranch) ? context.AssetBranch : "-")</MudTd>
             <MudTd>@(!string.IsNullOrEmpty(context.AssignedPersonName) ? context.AssignedPersonName : "-")</MudTd>
+            <MudTd>
+                <MudButton DisableElevation Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Fullscreen" OnClick="@(() => navigationManager.NavigateTo($"Hardware-Logs/{context.Id}"))">View Changes</MudButton>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager/>
