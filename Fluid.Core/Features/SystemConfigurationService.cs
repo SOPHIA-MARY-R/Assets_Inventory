@@ -1,4 +1,6 @@
-﻿using Fluid.Shared.Entities;
+﻿using Fluid.Core.Extensions;
+using Fluid.Core.Specifications;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 
 namespace Fluid.Core.Features;
@@ -12,29 +14,43 @@ public class SystemConfigurationService : ISystemConfigurationService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<SystemConfiguration> GetSystemConfiguration(string assetTag)
+    public async Task<Result<SystemConfiguration>> GetSystemConfiguration(string assetTag)
     {
-        var sysConfig = new SystemConfiguration
+        try
         {
-            MachineDetails = await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag),
-            Motherboard = await _unitOfWork.GetRepository<MotherboardInfo>().Entities
-                .FirstOrDefaultAsync(x => x.MachineId == assetTag),
-            PhysicalMemories = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities
-                .Where(x => x.MachineId == assetTag).ToListAsync(),
-            HardDisks = await _unitOfWork.GetRepository<HardDiskInfo>().Entities
-                .Where(x => x.MachineId == assetTag)
-                .ToListAsync(),
-            Processors = await _unitOfWork.GetRepository<ProcessorInfo>().Entities
-                .Where(x => x.MachineId == assetTag)
-                .ToListAsync(),
-            Mouse = await _unitOfWork.GetRepository<MouseInfo>().Entities
-                .FirstOrDefaultAsync(x => x.MachineId == assetTag),
-            Keyboard = await _unitOfWork.GetRepository<KeyboardInfo>().Entities
-                .FirstOrDefaultAsync(x => x.MachineId == assetTag),
-            Monitor = await _unitOfWork.GetRepository<MonitorInfo>().Entities
-                .FirstOrDefaultAsync(x => x.MachineId == assetTag)
-        };
-        return sysConfig;
+            if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
+                throw new Exception($"System with Asset Tag {assetTag} is not found!");
+            var sysConfig = new SystemConfiguration
+            {
+                MachineDetails = await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag),
+                Motherboards = await _unitOfWork.GetRepository<MotherboardInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                PhysicalMemories = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                HardDisks = await _unitOfWork.GetRepository<HardDiskInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Processors = await _unitOfWork.GetRepository<ProcessorInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Mouses = await _unitOfWork.GetRepository<MouseInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Keyboards = await _unitOfWork.GetRepository<KeyboardInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Monitors = await _unitOfWork.GetRepository<MonitorInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync()
+            };
+            return await Result<SystemConfiguration>.SuccessAsync(sysConfig);
+        }
+        catch (Exception e)
+        {
+            return await Result<SystemConfiguration>.FailAsync(e.Message);
+        }
     }
 
     public async Task<IResult> AddSystemConfiguration(SystemConfiguration systemConfiguration)
@@ -47,63 +63,72 @@ public class SystemConfigurationService : ISystemConfigurationService
                 throw new Exception("Machine with the same asset tag already present");
             await _unitOfWork.GetRepository<MachineInfo>().AddAsync(systemConfiguration.MachineDetails);
 
-            var existingMotherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
-                .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if (existingMotherboard is not null)
+            foreach (var motherboard in systemConfiguration.Motherboards)
             {
-                if (!string.IsNullOrEmpty(existingMotherboard.MachineId))
+                var oemSerialNo = motherboard.OemSerialNo;
+                if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(oemSerialNo) is null)
                 {
-                    throw new Exception("The Selected Motherboard is already in use by another machine");
+                    motherboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(motherboard);
                 }
                 else
                 {
-                    existingMotherboard.MachineId = assetTag;
-                    await _unitOfWork.GetRepository<MotherboardInfo>()
-                        .UpdateAsync(existingMotherboard, existingMotherboard.OemSerialNo);
+                    if (!string.IsNullOrEmpty(motherboard.MachineId))
+                        throw new Exception("The Selected Motherboard is already in use by another machine");
+                    motherboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(motherboard, oemSerialNo);
                 }
-            }
-            else
-            {
-                await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(systemConfiguration.Motherboard);
             }
 
-            var existingKeyboard = await _unitOfWork.GetRepository<KeyboardInfo>()
-                .GetByIdAsync(systemConfiguration.Keyboard.OemSerialNo);
-            if (existingKeyboard is not null)
+            foreach (var keyboard in systemConfiguration.Keyboards)
             {
-                if (!string.IsNullOrEmpty(existingKeyboard.MachineId))
+                var oemSerialNo = keyboard.OemSerialNo;
+                if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(oemSerialNo) is null)
                 {
-                    throw new Exception("The Selected Keyboard is already in use by another machine");
+                    keyboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(keyboard);
                 }
                 else
                 {
-                    existingKeyboard.MachineId = assetTag;
-                    await _unitOfWork.GetRepository<KeyboardInfo>()
-                        .UpdateAsync(existingKeyboard, existingKeyboard.OemSerialNo);
+                    if (!string.IsNullOrEmpty(keyboard.MachineId))
+                        throw new Exception("The Selected Keyboard is already in use by another machine");
+                    keyboard.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<KeyboardInfo>().UpdateAsync(keyboard, oemSerialNo);
                 }
-            }
-            else
-            {
-                await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(systemConfiguration.Keyboard);
             }
 
-            var existingMouse = await _unitOfWork.GetRepository<MouseInfo>()
-                .GetByIdAsync(systemConfiguration.Mouse.OemSerialNo);
-            if (existingMouse is not null)
+            foreach (var monitor in systemConfiguration.Monitors)
             {
-                if (!string.IsNullOrEmpty(existingMouse.MachineId))
+                var oemSerialNo = monitor.OemSerialNo;
+                if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(oemSerialNo) is null)
                 {
-                    throw new Exception("The Selected Mouse is already in use by another machine");
+                    monitor.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MonitorInfo>().AddAsync(monitor);
                 }
                 else
                 {
-                    existingMouse.MachineId = assetTag;
-                    await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(existingMouse, existingMouse.OemSerialNo);
+                    if (!string.IsNullOrEmpty(monitor.MachineId))
+                        throw new Exception("The Selected Monitor is already in use by another machine");
+                    monitor.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MonitorInfo>().UpdateAsync(monitor, oemSerialNo);
                 }
             }
-            else
+
+            foreach (var mouse in systemConfiguration.Mouses)
             {
-                await _unitOfWork.GetRepository<MouseInfo>().AddAsync(systemConfiguration.Mouse);
+                var oemSerialNo = mouse.OemSerialNo;
+                if (await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(oemSerialNo) is null)
+                {
+                    mouse.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MouseInfo>().AddAsync(mouse);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(mouse.MachineId))
+                        throw new Exception("The Selected Mouse is already in use by another machine");
+                    mouse.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(mouse, oemSerialNo);
+                }
             }
 
             await _unitOfWork.Commit();
@@ -116,29 +141,122 @@ public class SystemConfigurationService : ISystemConfigurationService
         }
     }
 
-    public async Task<IResult> EditSystemConfiguration(SystemConfiguration systemConfiguration)
+    public async Task<IResult> EditSystemConfiguration(SystemConfiguration systemConfiguration, string assetTag)
     {
         try
         {
-            var assetTag = systemConfiguration.MachineDetails.AssetTag;
             if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
                 throw new Exception("Machine does not exist in database");
             await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(systemConfiguration.MachineDetails, assetTag);
 
-            var motherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
-                .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if (motherboard is not null && string.IsNullOrEmpty(motherboard.MachineId))
-                throw new Exception("The Selected Motherboard is already in use by another machine");
-            //await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync()
-
-            var existingOldMotherboard = await _unitOfWork.GetRepository<MotherboardInfo>()
-                .GetByIdAsync(systemConfiguration.Motherboard.OemSerialNo);
-            if (existingOldMotherboard is not null)
-                existingOldMotherboard.MachineId = assetTag;
-
+            var previousMotherboards = await _unitOfWork.GetRepository<MotherboardInfo>().Entities
+                .Specify(new MotherboardInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousMotherboard in previousMotherboards)
+                previousMotherboard.MachineId = null;
+            foreach (var motherboard in systemConfiguration.Motherboards)
+            {
+                var oemSerialNo = motherboard.OemSerialNo;
+                motherboard.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(motherboard);
+                else
+                    await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(motherboard, oemSerialNo);
+            }
+            
+            var previousKeyboards = await _unitOfWork.GetRepository<KeyboardInfo>().Entities
+                .Specify(new KeyboardInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousKeyboard in previousKeyboards)
+                previousKeyboard.MachineId = null;
+            foreach (var keyboard in systemConfiguration.Keyboards)
+            {
+                var oemSerialNo = keyboard.OemSerialNo;
+                keyboard.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(keyboard.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(keyboard);
+                else
+                    await _unitOfWork.GetRepository<KeyboardInfo>().UpdateAsync(keyboard, oemSerialNo);
+            }
+            
+            var previousMonitors = await _unitOfWork.GetRepository<MonitorInfo>().Entities
+                .Specify(new MonitorInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousMonitor in previousMonitors)
+                previousMonitor.MachineId = null;
+            foreach (var monitor in systemConfiguration.Monitors)
+            {
+                var oemSerialNo = monitor.OemSerialNo;
+                monitor.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(monitor.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<MonitorInfo>().AddAsync(monitor);
+                else
+                    await _unitOfWork.GetRepository<MonitorInfo>().UpdateAsync(monitor, oemSerialNo);
+            }
+            
+            var previousMouses = await _unitOfWork.GetRepository<MouseInfo>().Entities
+                .Specify(new MouseInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousMouse in previousMouses)
+                previousMouse.MachineId = null;
+            foreach (var mouse in systemConfiguration.Mouses)
+            {
+                var oemSerialNo = mouse.OemSerialNo;
+                mouse.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(mouse.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<MouseInfo>().AddAsync(mouse);
+                else
+                    await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(mouse, oemSerialNo);
+            }
 
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Machine updated successfully");
+        }
+        catch (Exception e)
+        {
+            await _unitOfWork.Rollback();
+            return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult> DeleteSystemConfiguration(SystemConfiguration systemConfiguration, string assetTag)
+    {
+        try
+        {
+            if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
+                throw new Exception("Machine does not exist in database");
+            await _unitOfWork.GetRepository<MachineInfo>().DeleteAsync(systemConfiguration.MachineDetails);
+
+            foreach (var motherboard in systemConfiguration.Motherboards)
+            {
+                if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    throw new Exception("Motherboard does not exist to delete");
+                await _unitOfWork.GetRepository<MotherboardInfo>().DeleteAsync(motherboard);
+            }
+
+            foreach (var keyboard in systemConfiguration.Keyboards)
+            {
+                if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(keyboard.OemSerialNo) is null)
+                    throw new Exception("Keyboard does not exist to delete");
+                await _unitOfWork.GetRepository<KeyboardInfo>().DeleteAsync(keyboard);
+            }
+
+            foreach (var monitor in systemConfiguration.Monitors)
+            {
+                if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(monitor.OemSerialNo) is null)
+                    throw new Exception("Monitor does not exist to delete");
+                await _unitOfWork.GetRepository<MonitorInfo>().DeleteAsync(monitor);
+            }
+
+            foreach (var mouse in systemConfiguration.Mouses)
+            {
+                if (await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(mouse.OemSerialNo) is null)
+                    throw new Exception("Mouse does not exist to delete");
+                await _unitOfWork.GetRepository<MouseInfo>().DeleteAsync(mouse);
+            }
+            
+            await _unitOfWork.Commit();
+            return await Result.SuccessAsync("Machine deleted successfully");
         }
         catch (Exception e)
         {

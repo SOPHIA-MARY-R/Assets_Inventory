@@ -10,7 +10,7 @@
                      Icon="@Icons.Filled.Nightlight" Color="@Color.Inherit" Title="Switch to Dark Theme"
                      ToggledIcon="@Icons.Filled.LightMode" ToggledColor="@Color.Inherit" ToggledTitle="Switch to Light Theme"/>
         <MudIconButton Icon="@Icons.Filled.NotificationsActive" Color="Color.Inherit"/>
-        <MudIconButton Icon="@Icons.Filled.AccountCircle" Color="Color.Inherit"/>
+        <MudIconButton Icon="@Icons.Filled.AccountCircle" Color="Color.Inherit" OnClick="(() => LogOut())" />
     </MudAppBar>
     <MudDrawer @bind-Open="@_open" Elevation="1">
         <MudDrawerHeader>
@@ -20,7 +20,7 @@
             <MudNavLink Href="" Icon="@Icons.Filled.Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
             <MudNavLink Href="Machine-Master" Icon="@Icons.Filled.Computer">Machine Master</MudNavLink>
             <MudNavLink Href="Assets" Icon="@Icons.Filled.Category">Asset Categories</MudNavLink>
-            <MudNavLink Href="Hardware-Logs" Icon="@Icons.Filled.Category">Hardware Logs</MudNavLink>
+            <MudNavLink Href="Hardware-Logs" Icon="@Icons.Filled.Alarm">Hardware Logs</MudNavLink>
             <MudNavLink Href="About" Icon="@Icons.Filled.Info">About</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
@@ -44,5 +44,13 @@
         }
     }
 
+    private async Task LogOut()
+    {
+        if (await dialogService.ShowMessageBox("Confirm Logout", "Are you sure want to logout?", yesText: "Log out", cancelText: "Cancel") == true)
+        {
+            await UserHttpClient.Logout();
+            navigationManager.NavigateTo("/", true);
+        }
+    }
 
 }

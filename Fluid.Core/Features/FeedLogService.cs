@@ -91,7 +91,7 @@ public class FeedLogService : IFeedLogService
                 var feedLogs = await _unitOfWork.GetRepository<FeedLog>().Entities
                     .Specify(new FeedLogAssetTagSpecification(assetTag))
                     .ToListAsync();
-                var systemConfiguration = await _systemConfigurationService.GetSystemConfiguration(assetTag);
+                var systemConfiguration = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data;
                 foreach (var feedLog in feedLogs)
                 {
                     var logSysConfig = JsonSerializer.Deserialize(feedLog.JsonRaw, typeof(SystemConfiguration));

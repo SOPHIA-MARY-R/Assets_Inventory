@@ -1,0 +1,237 @@
+﻿@page "/Machine-Master/Add"
+@page "/Machine-Master/{Id}/Edit"
+@using Fluid.Shared.Enums
+@inject MachineMasterHttpClient MasterHttpClient;
+
+<EditForm Model="_model" OnValidSubmit="SubmitAsync" Context="editFormContext">
+    <div class="d-flex flex-wrap">
+        @if (string.IsNullOrEmpty(Id))
+        {
+            <MudText Typo="Typo.h5" Color="Color.Primary">Add Machine Info</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.h5" Color="Color.Primary">Edit Machine Info</MudText>
+        }
+        <div class="ml-auto gap-x-2 d-flex">
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" DisableElevation Label="Save" />
+            <MudFab Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="@(() => navigationManager.NavigateTo("Machine-Master"))" DisableElevation Label="Cancel" />
+        </div>
+    </div>
+    <MudDivider Class="my-4"/>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField Disabled="!string.IsNullOrEmpty(Id)" @bind-Value="_model.MachineDetails.AssetTag" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Tag"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.OemSerialNo" Margin="Margin.Dense" Variant="Variant.Outlined" Label="OEM Serial No"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.MachineName" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Machine Name"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.Manufacturer" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Manufacturer"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.Model" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Model"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.AssetLocation" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Location"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_model.MachineDetails.AssetBranch" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Asset Branch"/>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudSelect @bind-Value="_model.MachineDetails.MachineType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Machine Type">
+                @foreach (var value in Enum.GetValues<MachineType>())
+                {
+                    <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudSelect @bind-Value="_model.MachineDetails.UseType" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Label="Use Type">
+                @foreach (var value in Enum.GetValues<MachineUseType>())
+                {
+                    <MudSelectItem Value="@value">@value.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        @if (_model.MachineDetails.UseType == MachineUseType.PersonUse)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField @bind-Value="_model.MachineDetails.AssignedPersonName" Margin=Margin.Dense Variant=Variant.Outlined Label="Assigned Person Name"/>
+            </MudItem>
+        }
+    </MudGrid>
+    <MudDivider Class="my-4"/>
+    <MudText Typo="Typo.button">HARDWARE COMPONENTS</MudText>
+    <MudPaper Outlined Class="mt-4">
+        <MudExpansionPanels Elevation="0">
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Motherboard</MudText>
+                        <MudBadge Class="ml-2" Content="_model.Motherboards.Count" Color="Color.Secondary" Origin="Origin.CenterRight" />
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMotherboardDialog(false, false, new MotherboardInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMotherboardDialog(true, false, new MotherboardInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Motherboards.Clear())">Leave empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Motherboards">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Model</MudTd>
+                            <MudTd>@context.Description</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMotherboardDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMotherboardInfo(context))" >Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No motherboards added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Keyboard</MudText>
+                        <MudBadge Class="ml-2" Content="_model.Keyboards.Count" Color="Color.Secondary" Origin="Origin.CenterRight" />
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeKeyboardDialog(false, false, new KeyboardInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeKeyboardDialog(true, false, new KeyboardInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Keyboards.Clear())">Leave empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Keyboards">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Model</MudTd>
+                            <MudTd>@context.Description</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeKeyboardDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteKeyboardInfo(context))" >Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No keyboards added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Monitor</MudText>
+                        <MudBadge Class="ml-2" Content="_model.Monitors.Count" Color="Color.Secondary" Origin="Origin.CenterRight" />
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMonitorDialog(false, false, new MonitorInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMonitorDialog(true, false, new MonitorInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Monitors.Clear())">Leave empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Monitors">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>Panel Type</MudTh>
+                            <MudTh>Has Built-In Speakers</MudTh>
+                            <MudTh>Refresh Rate</MudTh>
+                            <MudTh>HDMI Port Count</MudTh>
+                            <MudTh>VGA Port Count</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Model</MudTd>
+                            <MudTd>@context.PanelType</MudTd>
+                            <MudTd>
+                                <MudCheckBox Checked="@context.HasBuiltInSpeakers" ReadOnly/>
+                            </MudTd>
+                            <MudTd>@context.RefreshRate</MudTd>
+                            <MudTd>@context.HDMIPortCount</MudTd>
+                            <MudTd>@context.VGAPortCount</MudTd>
+                            <MudTd>@context.Description</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMonitorDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMonitorInfo(context))" >Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No monitors added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Mouse</MudText>
+                        <MudBadge Class="ml-2" Content="_model.Mouses.Count" Color="Color.Secondary" Origin="Origin.CenterRight" />
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMouseDialog(false, false, new MouseInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeMouseDialog(true, false, new MouseInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.Mouses.Clear())">Leave empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.Mouses">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>IsWireless</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Model</MudTd>
+                            <MudTd>
+                                <MudCheckBox Checked="@context.IsWireless" ReadOnly/>
+                            </MudTd>
+                            <MudTd>@context.Description</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeMouseDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteMouseInfo(context))" >Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No mouses added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudPaper>
+</EditForm>

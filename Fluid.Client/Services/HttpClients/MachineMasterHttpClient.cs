@@ -1,4 +1,5 @@
-﻿using Fluid.Client.Extensions;
+﻿using System.Net;
+using Fluid.Client.Extensions;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
@@ -23,24 +24,24 @@ public class MachineMasterHttpClient
 
     public async Task<Result<SystemConfiguration>> GetByIdAsync(string assetTag)
     {
-        return await _httpClient.GetFromJsonAsync<Result<SystemConfiguration>>($"api/masters/machines/{assetTag}");
+        return await _httpClient.GetFromJsonAsync<Result<SystemConfiguration>>($"api/masters/machines/{WebUtility.UrlEncode(assetTag)}");
     }
 
-    public async Task<IResult<string>> AddAsync(SystemConfiguration model)
+    public async Task<IResult> AddAsync(SystemConfiguration model)
     {
         var response = await _httpClient.PostAsJsonAsync("api/masters/machines", model);
-        return await response.ToResult<string>();
+        return await response.ToResult();
     }
 
-    public async Task<IResult<string>> EditAsync(SystemConfiguration model)
+    public async Task<IResult> EditAsync(SystemConfiguration model)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/masters/machines/{model.MachineDetails.AssetTag}", model);
-        return await response.ToResult<string>();
+        var response = await _httpClient.PutAsJsonAsync($"api/masters/machines/{WebUtility.UrlEncode(model.MachineDetails.AssetTag)}", model);
+        return await response.ToResult();
     }
 
     public async Task<IResult<string>> DeleteAsync(string assetTag)
     {
-        var response = await _httpClient.DeleteAsync($"api/masters/machines/{assetTag}");
+        var response = await _httpClient.DeleteAsync($"api/masters/machines/{WebUtility.UrlEncode(assetTag)}");
         return await response.ToResult<string>();
     }
 }

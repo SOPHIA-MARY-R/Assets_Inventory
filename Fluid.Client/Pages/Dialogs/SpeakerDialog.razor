@@ -1,6 +1,5 @@
-﻿@inject SpeakerMasterHttpClient masterHttpClient
+﻿@inject SpeakerMasterHttpClient MasterHttpClient
 @using MudBlazor.Extensions
-@using Syncfusion.Blazor.DropDowns
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
@@ -51,18 +50,18 @@
     public SpeakerInfo Model { get; set; } = new();
 
     [Parameter]
-    public bool IsEditMode { get; set; } = false;
+    public bool IsEditMode { get; set; }
 
     private async Task SubmitAsync()
     {
         IResult<string> result;
         if (IsEditMode)
         {
-            result = await masterHttpClient.EditAsync(Model);
+            result = await MasterHttpClient.EditAsync(Model);
         }
         else
         {
-            result = await masterHttpClient.AddAsync(Model);
+            result = await MasterHttpClient.AddAsync(Model);
         }
         if (result.Succeeded)
         {

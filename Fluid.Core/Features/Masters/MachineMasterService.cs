@@ -1,7 +1,6 @@
 ﻿using Fluid.Core.Extensions;
 using Fluid.Core.Specifications;
 using Fluid.Shared.Entities;
-using Fluid.Shared.Models;
 
 namespace Fluid.Core.Features.Masters;
 
@@ -50,15 +49,15 @@ public class MachineMasterService : IMachineMasterService
         try
         {
             var machineInfo = await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag);
-            return machineInfo is not null ? Result<MachineInfo>.Success(machineInfo) : throw new Exception("HardDisk not found");
+            return machineInfo is not null ? await Result<MachineInfo>.SuccessAsync(machineInfo) : throw new Exception("HardDisk not found");
         }
         catch (Exception e)
         {
-            return Result<MachineInfo>.Fail(e.Message);
+            return await Result<MachineInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(MachineInfo model)
+    public async Task<IResult> AddAsync(MachineInfo model)
     {
         try
         {
@@ -83,15 +82,15 @@ public class MachineMasterService : IMachineMasterService
             };
             await _unitOfWork.GetRepository<MachineInfo>().AddAsync(machineInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.AssetTag, "Added Machine successfully");
+            return await Result.SuccessAsync("Added Machine successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(MachineInfo model)
+    public async Task<IResult> EditAsync(MachineInfo model, string assetTag)
     {
         try
         {
@@ -116,15 +115,15 @@ public class MachineMasterService : IMachineMasterService
             };
             await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(updatedMachineInfo, model.AssetTag);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.AssetTag, "Updated Machine successfully");
+            return await Result.SuccessAsync("Updated Machine successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> DeleteAsync(string assetTag)
+    public async Task<IResult> DeleteAsync(string assetTag)
     {
         try
         {
@@ -132,11 +131,11 @@ public class MachineMasterService : IMachineMasterService
             if (machineInfo is null) throw new Exception("Machine not found");
             await _unitOfWork.GetRepository<MachineInfo>().DeleteAsync(machineInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(assetTag);
+            return await Result.SuccessAsync();
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result.FailAsync(e.Message);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Fluid.Core.Features;
+﻿using System.Net;
+using Fluid.Core.Features;
 using Fluid.Core.Features.Masters;
-using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,24 +28,24 @@ public class MachineMasterController : ControllerBase
     [HttpGet("{assetTag}")]
     public async Task<IActionResult> GetByIdAsync(string assetTag)
     {
-        return Ok(await _systemConfigurationService.GetSystemConfiguration(assetTag));
+        return Ok(await _systemConfigurationService.GetSystemConfiguration(WebUtility.UrlDecode(assetTag)));
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(MachineInfo model)
+    public async Task<IActionResult> AddAsync(SystemConfiguration systemConfiguration)
     {
-        return Ok(await _machineMasterService.AddAsync(model));
+        return Ok(await _systemConfigurationService.AddSystemConfiguration(systemConfiguration));
     }
 
     [HttpPut("{assetTag}")]
-    public async Task<IActionResult> EditAsync(MachineInfo model)
+    public async Task<IActionResult> EditAsync(SystemConfiguration systemConfiguration, string assetTag)
     {
-        return Ok(await _machineMasterService.EditAsync(model));
+        return Ok(await _systemConfigurationService.EditSystemConfiguration(systemConfiguration, WebUtility.UrlDecode(assetTag)));
     }
 
     [HttpDelete("{assetTag}")]
-    public async Task<IActionResult> DeleteAsync(string assetTag)
+    public async Task<IActionResult> DeleteAsync(SystemConfiguration systemConfiguration, string assetTag)
     {
-        return Ok(await _machineMasterService.DeleteAsync(assetTag));
+        return Ok(await _systemConfigurationService.DeleteSystemConfiguration(systemConfiguration,WebUtility.UrlDecode(assetTag)));
     }
 }

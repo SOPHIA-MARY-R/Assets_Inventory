@@ -10,20 +10,20 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
         if (ReferenceEquals(this, other)) return true;
         return Equals(MachineDetails,
                    other.MachineDetails) &&
-               Equals(Motherboard,
-                   other.Motherboard) &&
+               Equals(Motherboards,
+                   other.Motherboards) &&
                Equals(PhysicalMemories,
                    other.PhysicalMemories) &&
                Equals(HardDisks,
                    other.HardDisks) &&
                Equals(Processors,
                    other.Processors) &&
-               Equals(Mouse,
-                   other.Mouse) &&
-               Equals(Keyboard,
-                   other.Keyboard) &&
-               Equals(Monitor,
-                   other.Monitor);
+               Equals(Mouses,
+                   other.Mouses) &&
+               Equals(Keyboards,
+                   other.Keyboards) &&
+               Equals(Monitors,
+                   other.Monitors);
     }
 
     public override bool Equals(object obj)
@@ -36,13 +36,13 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
     public override int GetHashCode()
     {
         return HashCode.Combine(MachineDetails,
-            Motherboard,
+            Motherboards,
             PhysicalMemories,
             HardDisks,
             Processors,
-            Mouse,
-            Keyboard,
-            Monitor);
+            Mouses,
+            Keyboards,
+            Monitors);
     }
 
     public static bool operator ==(SystemConfiguration left, SystemConfiguration right)
@@ -57,7 +57,7 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
 
     public MachineInfo MachineDetails { get; set; } = new();
 
-    public MotherboardInfo Motherboard { get; set; } = new();
+    public List<MotherboardInfo> Motherboards { get; set; } = new() { new MotherboardInfo() };
 
     public List<PhysicalMemoryInfo> PhysicalMemories { get; set; } = new();
 
@@ -65,9 +65,9 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
 
     public List<ProcessorInfo> Processors { get; set; } = new();
 
-    public MouseInfo Mouse { get; set; } = new();
+    public List<MouseInfo> Mouses { get; set; } = new();
 
-    public KeyboardInfo Keyboard { get; set; } = new();
+    public List<KeyboardInfo> Keyboards { get; set; } = new();
 
-    public MonitorInfo Monitor { get; set; } = new();
+    public List<MonitorInfo> Monitors { get; set; } = new();
 }

@@ -1,4 +1,5 @@
 ﻿@page "/Machine-Master"
+@using System.Net
 @inject MachineMasterHttpClient MasterHttpClient
 <PageTitle>Machine Master | Fluid</PageTitle>
 
@@ -28,6 +29,7 @@
         <MudTd>@context.MachineType</MudTd>
         <MudTd>@context.AssetLocation</MudTd>
         <MudTd>
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => navigationManager.NavigateTo($"Machine-Master/{WebUtility.UrlEncode(context.AssetTag)}/Edit"))" />
             <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.AssetTag))" />
         </MudTd>
     </RowTemplate>

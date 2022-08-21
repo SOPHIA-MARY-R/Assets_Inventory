@@ -1,4 +1,5 @@
 ﻿using Fluid.BgService.Services;
+using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 
 namespace Fluid.BgService.Pages;
@@ -11,9 +12,9 @@ public partial class SetupDetails
     {
         Model = systemConfigurationService.SystemConfiguration;
         Model.MachineDetails.AssetTag = machineIdentifierService.MachineIdentifier.AssetTag;
-        Model.Motherboard.MachineId = Model.MachineDetails.AssetTag;
-        Model.Mouse.MachineId = Model.MachineDetails.AssetTag;
-        Model.Keyboard.MachineId = Model.MachineDetails.AssetTag;
+        Model.Motherboards = new List<MotherboardInfo> { new MotherboardInfo() { MachineId = Model.MachineDetails.AssetTag } };
+        Model.Mouses = new List<MouseInfo> { new MouseInfo() { MachineId = Model.MachineDetails.AssetTag } };
+        Model.Keyboards = new List<KeyboardInfo> { new KeyboardInfo() { MachineId = Model.MachineDetails.AssetTag } };
         return base.OnInitializedAsync();
     }
 
@@ -33,6 +34,6 @@ public partial class SetupDetails
 
     private void AutoFill()
     {
-        Model.Motherboard = SystemConfigurationService.GetMotherboardDetails();
+        Model.Motherboards = new List<MotherboardInfo> { SystemConfigurationService.GetMotherboardDetails() };
     }
 }
