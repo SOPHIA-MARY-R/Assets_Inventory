@@ -27,8 +27,7 @@ public class FeedLogService : IFeedLogService
     {
         try
         {
-            var existingFeedLog = await _unitOfWork.GetRepository<FeedLog>()
-                .GetByIdAsync(systemConfiguration.MachineDetails.AssetTag);
+            var existingFeedLog = await _unitOfWork.GetRepository<FeedLog>().Entities.FirstOrDefaultAsync(x => x.AssetTag == systemConfiguration.MachineDetails.AssetTag);
             if (existingFeedLog is null)
             {
                 var feedLog = new FeedLog
