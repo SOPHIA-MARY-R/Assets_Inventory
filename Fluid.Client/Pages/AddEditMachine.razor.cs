@@ -1,6 +1,5 @@
 ﻿using Fluid.Client.Pages.Dialogs.MachineMasterDialogs;
 using Fluid.Shared.Entities;
-using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -11,53 +10,9 @@ public partial class AddEditMachine
 {
     [Parameter]
     public string Id { get; set; }
-    private SystemConfiguration _model = new(); 
+    private SystemConfiguration _model = new();
 
-    private string _motherboardOemSerialNo;
-    private HardwareSelectionType _motherboardSelectionType = HardwareSelectionType.Existing;
-
-    private async Task LoadMotherboard()
-    {
-        if (string.IsNullOrEmpty(_motherboardOemSerialNo))
-        {
-            snackbar.Add("Please enter a valid Motherboard Serial No");
-            return;
-        }
-        var result = await MotherboardMasterHttpClient.GetByIdAsync(_motherboardOemSerialNo);
-        if (result.Succeeded)
-        {
-            _model.Motherboards = new List<MotherboardInfo>() { result.Data };
-            snackbar.Add("Motherboard found successfully");
-        }
-        else
-        {
-            foreach (var message in result.Messages)
-            {
-                snackbar.Add(message, Severity.Error);
-            }
-        }
-    }
-
-    private async Task OnMotherboardSelectionType(HardwareSelectionType selectionType)
-    {
-        switch (selectionType)
-        {
-            case HardwareSelectionType.Existing:
-                await LoadMotherboard();
-                break;
-            case HardwareSelectionType.New:
-                _model.Motherboards = new List<MotherboardInfo>();
-                break;
-            case HardwareSelectionType.Empty:
-                _model.Motherboards = null;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
-        }
-        _motherboardSelectionType = selectionType;
-    }
-    
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(Id))
         {
@@ -74,8 +29,6 @@ public partial class AddEditMachine
                 }
             }
         }
-
-        _model.Motherboards = new List<MotherboardInfo>();
         await base.OnInitializedAsync();
     }
 
@@ -172,5 +125,41 @@ public partial class AddEditMachine
     private void DeleteMouseInfo(MouseInfo mouseInfo)
     {
         _model.Mouses.Remove(mouseInfo);
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (string.IsNullOrEmpty(Id))
+        {
+            var result = await MasterHttpClient.AddAsync(_model);
+            if (result.Succeeded)
+            {
+                snackbar.Add(result.Messages[0], Severity.Success);
+                navigationManager.NavigateTo("/Machine-Master");
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    snackbar.Add(message, Severity.Error);
+                }
+            }
+        }
+        else
+        {
+            var result = await MasterHttpClient.EditAsync(_model);
+            if (result.Succeeded)
+            {
+                snackbar.Add(result.Messages[0], Severity.Success);
+                navigationManager.NavigateTo("/Machine-Master");
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    snackbar.Add(message, Severity.Error);
+                }
+            }
+        }
     }
 }

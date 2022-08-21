@@ -3,7 +3,7 @@
 @using Fluid.Shared.Enums
 @inject MachineMasterHttpClient MasterHttpClient;
 
-<EditForm Model="_model" OnValidSubmit="SubmitAsync">
+<EditForm Model="_model" OnValidSubmit="SubmitAsync" Context="editFormContext">
     <div class="d-flex flex-wrap">
         @if (string.IsNullOrEmpty(Id))
         {
@@ -15,7 +15,7 @@
         }
         <div class="ml-auto gap-x-2 d-flex">
             <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" DisableElevation Label="Save" />
-            <MudFab Color="Color.Default" StartIcon="@Icons.Material.Filled.Cancel" ButtonType="ButtonType.Reset" DisableElevation Label="Cancel" />
+            <MudFab Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="@(() => navigationManager.NavigateTo("Machine-Master"))" DisableElevation Label="Cancel" />
         </div>
     </div>
     <MudDivider Class="my-4"/>
