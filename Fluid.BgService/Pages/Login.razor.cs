@@ -15,8 +15,8 @@ public partial class Login
             StateHasChanged();
             if (machineIdentifierService.MachineIdentifier.AssetTag != "unset")
             {
-                snackbar.Add(string.Format("Welcome {0}", _requestModel.UserName), Severity.Success);
                 navigationManager.NavigateTo("/", true);
+                snackbar.Add($"Welcome {_requestModel.UserName}", Severity.Success);
             }
             else
             {
