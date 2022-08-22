@@ -14,6 +14,7 @@ public partial class ViewHardwareChanges
     private SystemConfiguration Model { get; set; } = new();
 
     private SystemConfiguration SysConfigFromMaster = new();
+    private bool _isNewMachine; 
 
     protected override async Task OnParametersSetAsync()
     {
@@ -30,6 +31,7 @@ public partial class ViewHardwareChanges
             }
             else
             {
+                _isNewMachine = true;
                 await AddNewMachineNotifier();
             }
         }
