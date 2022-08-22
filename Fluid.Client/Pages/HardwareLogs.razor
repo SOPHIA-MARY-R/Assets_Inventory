@@ -7,13 +7,16 @@
     <div class="d-flex flex-column mb-6">
         <div class="d-flex justify-space-between">
             <div class="d-flex flex-wrap gap-x-4">
-                <MudPaper Elevation="0" Outlined Class="px-4 py-2">36 New Logs</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-2">12 Pending</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-2">8 Changes</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-2">1 New Machine</MudPaper>
+                @if (_countDetails is not null)
+                {
+                    <MudPaper Elevation="0" Outlined Class="px-4 py-2">@_countDetails.NewLogs New Logs</MudPaper>
+                    <MudPaper Elevation="0" Outlined Class="px-4 py-2">@_countDetails.Pending Pending</MudPaper>
+                    <MudPaper Elevation="0" Outlined Class="px-4 py-2">@_countDetails.Accepted Changes</MudPaper>
+                    <MudPaper Elevation="0" Outlined Class="px-4 py-2">@_countDetails.NewMachines New Machine</MudPaper>
+                }
             </div>
             <div class="d-flex flex-wrap">
-                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => FeedLogHttpClient.AutoValidateLogs())" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="AutoValidateLogs" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
                 <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _feedLogTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
             </div>
         </div>
@@ -69,7 +72,6 @@
             <MudTh>Log DateTime</MudTh>
             <MudTh>Asset Tag</MudTh>
             <MudTh>Machine Name</MudTh>
-            <MudTh>Machine Type</MudTh>
             <MudTh>Log Attend Status</MudTh>
             <MudTh>Asset Location</MudTh>
             <MudTh>Asset Branch</MudTh>
@@ -78,15 +80,44 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd>@context.LogDateTime.ToString("dd/MM/yyyy h:mm:ss tt")</MudTd>
-            <MudTd>@context.AssetTag</MudTd>
+            <MudTd>
+                @context.AssetTag
+                <br/>
+                <MudChip Color="Color.Secondary" Size="Size.Small">@context.MachineType</MudChip>
+            </MudTd>
             <MudTd>@context.MachineName</MudTd>
-            <MudTd>@context.MachineType.ToString()</MudTd>
-            <MudTd>@context.LogAttendStatus.ToString()</MudTd>
+            <MudTd>
+                @switch (context.LogAttendStatus)
+                {
+                    case LogAttendStatus.Unattended:
+                        <MudChip Color="Color.Dark" Size="Size.Small">@context.LogAttendStatus.ToString()</MudChip>
+                        break;
+                    case LogAttendStatus.AutoValidated:
+                        <MudChip Color="Color.Info" Size="Size.Small">@context.LogAttendStatus.ToString()</MudChip>
+                        break;
+                    case LogAttendStatus.Accepted:
+                        <MudChip Color="Color.Success" Size="Size.Small">@context.LogAttendStatus.ToString()</MudChip>
+                        break;
+                    case LogAttendStatus.Pending:
+                        <MudChip Color="Color.Warning" Size="Size.Small">@context.LogAttendStatus.ToString()</MudChip>
+                        break;
+                    case LogAttendStatus.Ignored:
+                        <MudChip Color="Color.Default" Size="Size.Small">@context.LogAttendStatus.ToString()</MudChip>
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            </MudTd>
             <MudTd>@(!string.IsNullOrEmpty(context.AssetLocation) ? context.AssetLocation : "-")</MudTd>
             <MudTd>@(!string.IsNullOrEmpty(context.AssetBranch) ? context.AssetBranch : "-")</MudTd>
             <MudTd>@(!string.IsNullOrEmpty(context.AssignedPersonName) ? context.AssignedPersonName : "-")</MudTd>
             <MudTd>
-                <MudButton DisableElevation Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Fullscreen" OnClick="@(() => navigationManager.NavigateTo($"Hardware-Logs/{context.Id}"))">View Changes</MudButton>
+                @if (context.LogAttendStatus != LogAttendStatus.Unattended && context.LogAttendStatus != LogAttendStatus.AutoValidated)
+                {
+                    <MudTooltip Text="View Changes">
+                        <MudIconButton DisableElevation Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Material.Filled.OpenInNew" OnClick="@(() => navigationManager.NavigateTo($"Hardware-Logs/{context.Id}"))" />
+                    </MudTooltip>
+                }
             </MudTd>
         </RowTemplate>
         <PagerContent>
