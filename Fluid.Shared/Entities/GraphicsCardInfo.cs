@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class GraphicsCardInfo : IEntity, IEquatable<GraphicsCardInfo>
+public class GraphicsCardInfo : IHardwareComponentInfo, IEquatable<GraphicsCardInfo>
 {
     public bool Equals(GraphicsCardInfo other)
     {
@@ -41,6 +41,7 @@ public class GraphicsCardInfo : IEntity, IEquatable<GraphicsCardInfo>
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }

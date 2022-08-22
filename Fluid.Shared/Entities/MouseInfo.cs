@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class MouseInfo : IEntity, IEquatable<MouseInfo>
+public class MouseInfo : IHardwareComponentInfo, IEquatable<MouseInfo>
 {
     public bool Equals(MouseInfo other)
     {
@@ -46,6 +46,7 @@ public class MouseInfo : IEntity, IEquatable<MouseInfo>
     public bool IsWireless { get; set; }
 
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
 
     public UseStatus UseStatus { get; set; }
 

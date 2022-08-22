@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class CameraInfo : IEntity, IEquatable<CameraInfo>
+public class CameraInfo : IHardwareComponentInfo, IEquatable<CameraInfo>
 {
     [Key]
     public string OemSerialNo { get; set; }
@@ -8,6 +8,7 @@ public class CameraInfo : IEntity, IEquatable<CameraInfo>
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
     public int MegaPixels { get; set; }
     public CameraResolution Resolution { get; set; }
     public bool HasBuiltInMic { get; set; }

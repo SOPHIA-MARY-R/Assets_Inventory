@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class HardDiskInfo : IEntity, IEquatable<HardDiskInfo>
+public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
 {
     public bool Equals(HardDiskInfo other)
     {
@@ -56,6 +56,7 @@ public class HardDiskInfo : IEntity, IEquatable<HardDiskInfo>
 
     public string Model { get; set; }
 
+    public HardwareChange HardwareChange { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public DriveMediaType MediaType { get; set; }
