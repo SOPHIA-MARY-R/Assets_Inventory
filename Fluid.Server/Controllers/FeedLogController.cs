@@ -46,4 +46,10 @@ public class FeedLogController : ControllerBase
     {
         return Ok(await _feedLogService.AutoValidateLogsAsync());
     }
+    
+    [HttpGet("count-details")]
+    public async Task<IActionResult> GetCountDetails()
+    {
+        return Ok(await _feedLogService.GetCountDetails());
+    }
 }

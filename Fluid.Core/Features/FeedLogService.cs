@@ -162,7 +162,34 @@ public class FeedLogService : IFeedLogService
         }
         catch (Exception e)
         {
-            return await Result.FailAsync();
+            return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<Result<FeedLogCountDetails>> GetCountDetails()
+    {
+        try
+        {
+            var countDetails = new FeedLogCountDetails()
+            {
+                Accepted = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Accepted)).CountAsync(),
+                Ignored = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Ignored)).CountAsync(),
+                NewLogs = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Unattended)).CountAsync(),
+                Pending = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Pending)).CountAsync(),
+                TotalLogs = await _unitOfWork.GetRepository<FeedLog>().CountAsync()
+            };
+            var existingAssetTags = await _unitOfWork.GetRepository<MachineInfo>().Entities.Select(x => x.AssetTag)
+                .ToListAsync();
+            countDetails.NewMachines = await _unitOfWork.GetRepository<FeedLog>().Entities.CountAsync(x => existingAssetTags.Contains(x.AssetTag));
+            return await Result<FeedLogCountDetails>.SuccessAsync(countDetails);
+        }
+        catch (Exception e)
+        {
+            return await Result<FeedLogCountDetails>.FailAsync(e.Message);
         }
     }
 }
