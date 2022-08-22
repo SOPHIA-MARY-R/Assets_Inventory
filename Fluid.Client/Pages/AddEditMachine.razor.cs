@@ -1,4 +1,5 @@
-﻿using Fluid.Client.Pages.Dialogs.MachineMasterDialogs;
+﻿using System.Text.Json;
+using Fluid.Client.Pages.Dialogs.MachineMasterDialogs;
 using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
@@ -8,8 +9,10 @@ namespace Fluid.Client.Pages;
 
 public partial class AddEditMachine
 {
-    [Parameter]
-    public string Id { get; set; }
+    [Parameter] public string Id { get; set; }
+
+    [Parameter] public string FeedLogId { get; set; }
+
     private SystemConfiguration _model = new();
 
     protected override async Task OnInitializedAsync()
@@ -27,6 +30,24 @@ public partial class AddEditMachine
                 {
                     snackbar.Add(message, Severity.Error);
                 }
+                navigationManager.NavigateTo("/Machine-Master");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(FeedLogId))
+        {
+            var result = await FeedLogHttpClient.GetByIdAsync(FeedLogId);
+            if (result.Succeeded)
+            {
+                _model = (SystemConfiguration)JsonSerializer.Deserialize(result.Data.JsonRaw, typeof(SystemConfiguration));
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    snackbar.Add(message, Severity.Error);
+                }
+                navigationManager.NavigateTo("/Machine-Master");
             }
         }
         await base.OnInitializedAsync();
@@ -40,7 +61,8 @@ public partial class AddEditMachine
             { nameof(AddEditMachineMotherboardDialog.IsEdit), isEdit },
             { nameof(AddEditMachineMotherboardDialog.Model), info }
         };
-        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
         var dialog = dialogService.Show<AddEditMachineMotherboardDialog>("", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
@@ -51,6 +73,25 @@ public partial class AddEditMachine
         _model.Motherboards.Add(updatedInfo);
     }
 
+    private async Task InvokePhysicalMemoryDialog(bool isNew, bool isEdit, PhysicalMemoryInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachinePhysicalMemoryDialog.IsNew), isNew },
+            { nameof(AddEditMachinePhysicalMemoryDialog.IsEdit), isEdit },
+            { nameof(AddEditMachinePhysicalMemoryDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachinePhysicalMemoryDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as PhysicalMemoryInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.PhysicalMemories.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.PhysicalMemories.Remove(_model.PhysicalMemories.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.PhysicalMemories.Add(updatedInfo);
+    }
+
     private async Task InvokeKeyboardDialog(bool isNew, bool isEdit, KeyboardInfo info)
     {
         var parameters = new DialogParameters
@@ -59,7 +100,8 @@ public partial class AddEditMachine
             { nameof(AddEditMachineKeyboardDialog.IsEdit), isEdit },
             { nameof(AddEditMachineKeyboardDialog.Model), info }
         };
-        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
         var dialog = dialogService.Show<AddEditMachineKeyboardDialog>("", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
@@ -69,7 +111,7 @@ public partial class AddEditMachine
             _model.Keyboards.Remove(_model.Keyboards.First(x => x.OemSerialNo.Trim() == oemSerialNo));
         _model.Keyboards.Add(updatedInfo);
     }
-    
+
     private async Task InvokeMonitorDialog(bool isNew, bool isEdit, MonitorInfo info)
     {
         var parameters = new DialogParameters
@@ -78,7 +120,8 @@ public partial class AddEditMachine
             { nameof(AddEditMachineMonitorDialog.IsEdit), isEdit },
             { nameof(AddEditMachineMonitorDialog.Model), info }
         };
-        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
         var dialog = dialogService.Show<AddEditMachineMonitorDialog>("", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
@@ -88,7 +131,7 @@ public partial class AddEditMachine
             _model.Monitors.Remove(_model.Monitors.First(x => x.OemSerialNo.Trim() == oemSerialNo));
         _model.Monitors.Add(updatedInfo);
     }
-    
+
     private async Task InvokeMouseDialog(bool isNew, bool isEdit, MouseInfo info)
     {
         var parameters = new DialogParameters
@@ -97,7 +140,8 @@ public partial class AddEditMachine
             { nameof(AddEditMachineMouseDialog.IsEdit), isEdit },
             { nameof(AddEditMachineMouseDialog.Model), info }
         };
-        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
         var dialog = dialogService.Show<AddEditMachineMouseDialog>("", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
@@ -107,21 +151,27 @@ public partial class AddEditMachine
             _model.Mouses.Remove(_model.Mouses.First(x => x.OemSerialNo.Trim() == oemSerialNo));
         _model.Mouses.Add(updatedInfo);
     }
-    
+
     private void DeleteMotherboardInfo(MotherboardInfo motherboardInfo)
     {
         _model.Motherboards.Remove(motherboardInfo);
     }
+
+    private void DeletePhysicalMemoryInfo(PhysicalMemoryInfo physicalMemoryInfo)
+    {
+        _model.PhysicalMemories.Remove(physicalMemoryInfo);
+    }
+    
     private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)
     {
         _model.Keyboards.Remove(keyboardInfo);
     }
-    
+
     private void DeleteMonitorInfo(MonitorInfo monitorInfo)
     {
         _model.Monitors.Remove(monitorInfo);
     }
-    
+
     private void DeleteMouseInfo(MouseInfo mouseInfo)
     {
         _model.Mouses.Remove(mouseInfo);

@@ -1,7 +1,9 @@
 ﻿@page "/Machine-Master/Add"
 @page "/Machine-Master/{Id}/Edit"
+@page "/Machine-Master/{FeedLogId}/Add"
 @using Fluid.Shared.Enums
-@inject MachineMasterHttpClient MasterHttpClient;
+@inject MachineMasterHttpClient MasterHttpClient
+@inject FeedLogHttpClient FeedLogHttpClient
 
 <EditForm Model="_model" OnValidSubmit="SubmitAsync" Context="editFormContext">
     <div class="d-flex flex-wrap">
@@ -101,6 +103,49 @@
                         </RowTemplate>
                         <NoRecordsContent>
                             No motherboards added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Physical Memories</MudText>
+                        <MudBadge Class="ml-2" Content="_model.PhysicalMemories.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokePhysicalMemoryDialog(false,false, new PhysicalMemoryInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokePhysicalMemoryDialog(true, false, new PhysicalMemoryInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.PhysicalMemories.Clear())">Leave Empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.PhysicalMemories">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Capacity</MudTh>
+                            <MudTh>Speed</MudTh>
+                            <MudTh>Memory Type</MudTh>
+                            <MudTh>Form Factor</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Capacity GB</MudTd>
+                            <MudTd>@context.Speed Mhz</MudTd>
+                            <MudTd>@context.MemoryType</MudTd>
+                            <MudTd>@context.FormFactor</MudTd>
+                            <MudTd>@context.Description</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokePhysicalMemoryDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeletePhysicalMemoryInfo(context))">Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No physical memories added!
                         </NoRecordsContent>
                     </MudTable>
                 </ChildContent>
