@@ -19,6 +19,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<MonitorInfo> MonitorMaster { get; set; }
     public DbSet<CameraInfo> CameraMaster { get; set; }
     public DbSet<FeedLog> FeedLogStorage { get; set; }
+    public DbSet<HardwareChangeLog> HardwareChangeLogs { get; set; }
     public DbSet<SpeakerInfo> SpeakerMaster { get; set; }
 
 

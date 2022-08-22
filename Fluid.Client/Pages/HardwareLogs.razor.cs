@@ -1,4 +1,5 @@
 ﻿using Fluid.Shared.Entities;
+using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
 
@@ -12,20 +13,39 @@ public partial class HardwareLogs
     private readonly FeedLogFilter _filterModel = new();
     private DateRange _searchDateRange;
     private int _totalItems;
+    private FeedLogCountDetails _countDetails;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _searchDateRange = new DateRange(periodService.FromDate, periodService.ToDate);
-        base.OnInitialized();
+        var result = await FeedLogHttpClient.GetCountDetails();
+        if (result.Succeeded)
+        {
+            _countDetails = result.Data;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private async Task AutoValidateLogs()
+    {
+        await FeedLogHttpClient.AutoValidateLogs();
+        await _feedLogTable.ReloadServerData();
     }
 
     private async Task<TableData<FeedLog>> OnServerReloadAsync(TableState tableState)
     {
-        await LoadDataAsync(tableState.Page, tableState.PageSize, tableState);
+        await LoadDataAsync(tableState.Page, tableState.PageSize);
         return new TableData<FeedLog> { TotalItems = _totalItems, Items = _feedLogs };
     }
 
-    private async Task LoadDataAsync(int pageNumber, int pageSize, TableState tableState)
+    private async Task LoadDataAsync(int pageNumber, int pageSize)
     {
         _filterModel.FromDateTimeTicks = periodService.FromDate.Ticks;
         _filterModel.ToDateTimeTicks = periodService.ToDate.Ticks;

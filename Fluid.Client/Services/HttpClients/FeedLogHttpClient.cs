@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Fluid.Client.Extensions;
 using Fluid.Shared.Entities;
+using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
 
@@ -37,6 +38,11 @@ public class FeedLogHttpClient
     public async Task<Result> AutoValidateLogs()
     {
         return await _httpClient.GetFromJsonAsync<Result>("api/feed-log/autovalidate");
+    }
+    
+    public async Task<Result<FeedLogCountDetails>> GetCountDetails()
+    {
+        return await _httpClient.GetFromJsonAsync<Result<FeedLogCountDetails>>("api/feed-log/count-details");
     }
 
 }

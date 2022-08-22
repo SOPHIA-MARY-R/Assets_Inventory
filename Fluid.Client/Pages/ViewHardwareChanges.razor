@@ -1,5 +1,6 @@
 ﻿@page "/Hardware-Logs/{Id}"
-@inject FeedLogHttpClient MasterHttpClient
+@inject FeedLogHttpClient FeedLogHttpClient
+@inject MachineMasterHttpClient MachineMasterHttpClient
 @using Fluid.Shared.Enums
 <div class="d-flex justify-space-between">
     <div>
@@ -8,7 +9,14 @@
     </div>
     <div class="d-flex gap-x-2">
         <MudFab OnClick="@(() => navigationManager.NavigateTo("/Hardware-Logs"))" Label="Back" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.ArrowBack" Size="Size.Small"/>
-        <MudFab ButtonType="ButtonType.Submit" Label="Update" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
+        @if (_isNewMachine)
+        {
+            <MudFab OnClick="AddNewMachineNotifier" Label="Add this machine" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Add" Size="Size.Small"/>
+        }
+        else
+        {
+            <MudFab ButtonType="ButtonType.Submit" Label="Update" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
+        }
     </div>
 </div>
 <MudDivider Class="my-4"/>
@@ -55,8 +63,8 @@
     }
 </MudGrid>
 <MudDivider Class="my-4"/>
-<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-4">Hardware Details</MudText>
-<MudPaper Outlined>
+<MudText Typo="Typo.button">HARDWARE COMPONENTS</MudText>
+<MudPaper Outlined Class="mt-4">
 <MudExpansionPanels Elevation="0">
     <MudExpansionPanel>
         <TitleContent>

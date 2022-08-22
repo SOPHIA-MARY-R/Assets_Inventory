@@ -68,18 +68,35 @@ public class FeedLogService : IFeedLogService
                 return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
             }
 
-            var existingSysConfig =
-                (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw, typeof(SystemConfiguration));
-            if (systemConfiguration == existingSysConfig)
+            var assetTag = systemConfiguration.MachineDetails.AssetTag;
+            var machineInfo = await _unitOfWork.GetRepository<MachineInfo>()
+                .GetByIdAsync(assetTag);
+            SystemConfiguration existingSystemConfiguration;
+            var changeConfigAtClient = false;
+            if (machineInfo is not null)
+            {
+                existingSystemConfiguration = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data;
+                changeConfigAtClient = machineInfo.UpdateChangeOnClient;
+                machineInfo.UpdateChangeOnClient = false;
+                await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(machineInfo, assetTag);
+            }
+            else
+            {
+                existingSystemConfiguration =
+                    (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw,
+                        typeof(SystemConfiguration));
+            }
+            if (systemConfiguration == existingSystemConfiguration)
             {
                 existingFeedLog.LogDateTime = DateTime.Now;
             }
             else
             {
+                var expectedFeedLogSysConfig = changeConfigAtClient ? existingSystemConfiguration : systemConfiguration;
                 existingFeedLog.AssetBranch = systemConfiguration.MachineDetails.AssetBranch;
                 existingFeedLog.AssetLocation = systemConfiguration.MachineDetails.AssetLocation;
                 existingFeedLog.AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName;
-                existingFeedLog.JsonRaw = JsonSerializer.Serialize(systemConfiguration, typeof(SystemConfiguration));
+                existingFeedLog.JsonRaw = JsonSerializer.Serialize(expectedFeedLogSysConfig, typeof(SystemConfiguration));
                 existingFeedLog.LogDateTime = DateTime.Now;
                 existingFeedLog.LogAttendStatus = LogAttendStatus.Unattended;
                 existingFeedLog.MachineName = systemConfiguration.MachineDetails.MachineName;
@@ -90,6 +107,10 @@ public class FeedLogService : IFeedLogService
             }
             await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(existingFeedLog, existingFeedLog.Id);
             await _unitOfWork.Commit();
+            if (changeConfigAtClient)
+            {
+                return await Result<SystemConfiguration>.SuccessAsync(existingSystemConfiguration);
+            }
             return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
         }
         catch (Exception e)
@@ -162,7 +183,34 @@ public class FeedLogService : IFeedLogService
         }
         catch (Exception e)
         {
-            return await Result.FailAsync();
+            return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<Result<FeedLogCountDetails>> GetCountDetails()
+    {
+        try
+        {
+            var countDetails = new FeedLogCountDetails()
+            {
+                Accepted = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Accepted)).CountAsync(),
+                Ignored = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Ignored)).CountAsync(),
+                NewLogs = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Unattended)).CountAsync(),
+                Pending = await _unitOfWork.GetRepository<FeedLog>().Entities
+                    .Specify(new FeedLogAttendStatusSpecification(LogAttendStatus.Pending)).CountAsync(),
+                TotalLogs = await _unitOfWork.GetRepository<FeedLog>().CountAsync()
+            };
+            var existingAssetTags = await _unitOfWork.GetRepository<MachineInfo>().Entities.Select(x => x.AssetTag)
+                .ToListAsync();
+            countDetails.NewMachines = await _unitOfWork.GetRepository<FeedLog>().Entities.CountAsync(x => existingAssetTags.Contains(x.AssetTag));
+            return await Result<FeedLogCountDetails>.SuccessAsync(countDetails);
+        }
+        catch (Exception e)
+        {
+            return await Result<FeedLogCountDetails>.FailAsync(e.Message);
         }
     }
 }

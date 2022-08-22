@@ -11,4 +11,5 @@ public interface IFeedLogService
     Task<PaginatedResult<FeedLog>> GetAllAsync(int pageNumber, int pageSize, FeedLogFilter filter);
     Task<IResult> AutoValidateLogsAsync();
     Task<IResult> AttendLog(FeedLog feedLog);
+    Task<Result<FeedLogCountDetails>> GetCountDetails();
 }

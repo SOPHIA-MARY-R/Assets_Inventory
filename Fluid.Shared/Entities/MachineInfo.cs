@@ -79,4 +79,6 @@ public class MachineInfo : IEntity, IEquatable<MachineInfo>
     public DateTime? InitializationDate { get; set; }
 
     public decimal Price { get; set; }
+    
+    public bool UpdateChangeOnClient { get; set; }
 }

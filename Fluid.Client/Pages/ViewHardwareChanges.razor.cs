@@ -2,6 +2,7 @@
 using Fluid.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace Fluid.Client.Pages;
 
@@ -12,13 +13,27 @@ public partial class ViewHardwareChanges
 
     private SystemConfiguration Model { get; set; } = new();
 
+    private SystemConfiguration SysConfigFromMaster = new();
+    private bool _isNewMachine; 
+
     protected override async Task OnParametersSetAsync()
     {
-        var result = await MasterHttpClient.GetByIdAsync(Id);
+        var result = await FeedLogHttpClient.GetByIdAsync(Id);
         if (result.Succeeded)
         {
             var feedLog = result.Data;
             Model = (SystemConfiguration)JsonSerializer.Deserialize(feedLog.JsonRaw, typeof(SystemConfiguration));
+            var assetTag = Model.MachineDetails.AssetTag;
+            var sysConfigResult = await MachineMasterHttpClient.GetByIdAsync(assetTag);
+            if (sysConfigResult.Succeeded)
+            {
+                SysConfigFromMaster = sysConfigResult.Data;
+            }
+            else
+            {
+                _isNewMachine = true;
+                await AddNewMachineNotifier();
+            }
         }
         else
         {
@@ -29,5 +44,15 @@ public partial class ViewHardwareChanges
             navigationManager.NavigateTo("/Hardware-Logs");
         }
         await base.OnParametersSetAsync();
+    }
+
+    private async Task AddNewMachineNotifier()
+    {
+        if (await dialogService.ShowMessageBox("New Machine found",
+                "Would you like to add this machine into the master? This will redirect you to add machine page.",
+                "Yes", "No") == true)
+        {
+            navigationManager.NavigateTo($"Machine-Master/{Id}/Add");
+        }
     }
 }
