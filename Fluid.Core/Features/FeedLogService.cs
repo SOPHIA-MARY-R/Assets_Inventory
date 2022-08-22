@@ -92,10 +92,11 @@ public class FeedLogService : IFeedLogService
             }
             else
             {
+                var expectedFeedLogSysConfig = changeConfigAtClient ? existingSystemConfiguration : systemConfiguration;
                 existingFeedLog.AssetBranch = systemConfiguration.MachineDetails.AssetBranch;
                 existingFeedLog.AssetLocation = systemConfiguration.MachineDetails.AssetLocation;
                 existingFeedLog.AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName;
-                existingFeedLog.JsonRaw = JsonSerializer.Serialize(systemConfiguration, typeof(SystemConfiguration));
+                existingFeedLog.JsonRaw = JsonSerializer.Serialize(expectedFeedLogSysConfig, typeof(SystemConfiguration));
                 existingFeedLog.LogDateTime = DateTime.Now;
                 existingFeedLog.LogAttendStatus = LogAttendStatus.Unattended;
                 existingFeedLog.MachineName = systemConfiguration.MachineDetails.MachineName;
