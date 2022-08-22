@@ -79,6 +79,40 @@ public class SystemConfigurationService : ISystemConfigurationService
                     await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(motherboard, oemSerialNo);
                 }
             }
+            
+            foreach (var physicalMemory in systemConfiguration.PhysicalMemories)
+            {
+                var oemSerialNo = physicalMemory.OemSerialNo;
+                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(oemSerialNo) is null)
+                {
+                    physicalMemory.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalMemory);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(physicalMemory.MachineId))
+                        throw new Exception("The Selected Physical Memory is already in use by another machine");
+                    physicalMemory.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<PhysicalMemoryInfo>().UpdateAsync(physicalMemory, oemSerialNo);
+                }
+            }
+            
+            foreach (var hardDisk in systemConfiguration.HardDisks)
+            {
+                var oemSerialNo = hardDisk.OemSerialNo;
+                if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(oemSerialNo) is null)
+                {
+                    hardDisk.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<HardDiskInfo>().AddAsync(hardDisk);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(hardDisk.MachineId))
+                        throw new Exception("The Selected Hard Disk is already in use by another machine");
+                    hardDisk.MachineId = assetTag;
+                    await _unitOfWork.GetRepository<HardDiskInfo>().UpdateAsync(hardDisk, oemSerialNo);
+                }
+            }
 
             foreach (var keyboard in systemConfiguration.Keyboards)
             {
@@ -162,6 +196,36 @@ public class SystemConfigurationService : ISystemConfigurationService
                     await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(motherboard);
                 else
                     await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(motherboard, oemSerialNo);
+            }
+            
+            var previousPhysicalMemories = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities
+                .Specify(new PhysicalMemoryInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var physicalMemoryInfo in previousPhysicalMemories)
+                physicalMemoryInfo.MachineId = null;
+            foreach (var physicalMemory in systemConfiguration.PhysicalMemories)
+            {
+                var oemSerialNo = physicalMemory.OemSerialNo;
+                physicalMemory.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(physicalMemory.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalMemory);
+                else
+                    await _unitOfWork.GetRepository<PhysicalMemoryInfo>().UpdateAsync(physicalMemory, oemSerialNo);
+            }
+            
+            var previousHardDisks = await _unitOfWork.GetRepository<HardDiskInfo>().Entities
+                .Specify(new HardDiskInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var hardDisk in previousHardDisks)
+                hardDisk.MachineId = null;
+            foreach (var hardDisk in systemConfiguration.HardDisks)
+            {
+                var oemSerialNo = hardDisk.OemSerialNo;
+                hardDisk.MachineId = assetTag;
+                if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(hardDisk.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<HardDiskInfo>().AddAsync(hardDisk);
+                else
+                    await _unitOfWork.GetRepository<HardDiskInfo>().UpdateAsync(hardDisk, oemSerialNo);
             }
             
             var previousKeyboards = await _unitOfWork.GetRepository<KeyboardInfo>().Entities
