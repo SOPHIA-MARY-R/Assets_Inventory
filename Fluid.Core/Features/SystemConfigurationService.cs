@@ -164,6 +164,7 @@ public class SystemConfigurationService : ISystemConfigurationService
                     await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(mouse, oemSerialNo);
                 }
             }
+            systemConfiguration.MachineDetails.UpdateChangeOnClient = true;
 
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Machine added successfully");
@@ -272,6 +273,7 @@ public class SystemConfigurationService : ISystemConfigurationService
                 else
                     await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(mouse, oemSerialNo);
             }
+            systemConfiguration.MachineDetails.UpdateChangeOnClient = true;
 
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Machine updated successfully");

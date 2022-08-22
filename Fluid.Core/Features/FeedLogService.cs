@@ -68,9 +68,25 @@ public class FeedLogService : IFeedLogService
                 return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
             }
 
-            var existingSysConfig =
-                (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw, typeof(SystemConfiguration));
-            if (systemConfiguration == existingSysConfig)
+            var assetTag = systemConfiguration.MachineDetails.AssetTag;
+            var machineInfo = await _unitOfWork.GetRepository<MachineInfo>()
+                .GetByIdAsync(assetTag);
+            SystemConfiguration existingSystemConfiguration;
+            var changeConfigAtClient = false;
+            if (machineInfo is not null)
+            {
+                existingSystemConfiguration = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data;
+                changeConfigAtClient = machineInfo.UpdateChangeOnClient;
+                machineInfo.UpdateChangeOnClient = false;
+                await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(machineInfo, assetTag);
+            }
+            else
+            {
+                existingSystemConfiguration =
+                    (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw,
+                        typeof(SystemConfiguration));
+            }
+            if (systemConfiguration == existingSystemConfiguration)
             {
                 existingFeedLog.LogDateTime = DateTime.Now;
             }
@@ -90,6 +106,10 @@ public class FeedLogService : IFeedLogService
             }
             await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(existingFeedLog, existingFeedLog.Id);
             await _unitOfWork.Commit();
+            if (changeConfigAtClient)
+            {
+                return await Result<SystemConfiguration>.SuccessAsync(existingSystemConfiguration);
+            }
             return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
         }
         catch (Exception e)
