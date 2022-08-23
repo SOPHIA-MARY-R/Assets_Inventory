@@ -10,6 +10,8 @@ public interface IHardwareComponentInfo : IEntity
     
     HardwareChange HardwareChange { get; set; }
     
+    HardwareChangeMode HardwareChangeMode { get; set; }
+    
     UseStatus UseStatus { get; set; }
     
     MachineInfo? Machine { get; set; }
