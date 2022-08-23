@@ -16,8 +16,8 @@
     </div>
     <div class="d-flex gap-x-2">
         <MudFab OnClick="@(() => navigationManager.NavigateTo("/Hardware-Logs"))" Label="Back" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.ArrowBack" Size="Size.Small"/>
-        <MudFab OnClick="SubmitAsync" Label="Update" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
-        <MudFab Label="Ignore" DisableElevation Color="Color.Default" StartIcon="@Icons.Filled.RemoveDone" Size="Size.Small"/>
+        <MudFab OnClick="SubmitAsync" Label="Accept" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
+        <MudFab OnClick="IgnoreAsync" Label="Ignore" DisableElevation Color="Color.Default" StartIcon="@Icons.Filled.RemoveDone" Size="Size.Small"/>
     </div>
 </div>
 <MudDivider Class="my-4"/>

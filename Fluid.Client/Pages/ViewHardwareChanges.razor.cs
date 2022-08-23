@@ -14,9 +14,9 @@ public partial class ViewHardwareChanges
 
     private SystemConfiguration SysConfigFromFeedLog { get; set; } = new SystemConfiguration();
 
-    private SystemConfiguration SysConfigFromMaster = new SystemConfiguration();
+    private SystemConfiguration SysConfigFromMaster { get; set; } = new SystemConfiguration();
     
-    private SystemConfiguration Model = new SystemConfiguration();
+    private SystemConfiguration Model { get; set; } = new SystemConfiguration();
     
     private bool _isNewMachine; 
 
@@ -32,7 +32,7 @@ public partial class ViewHardwareChanges
             if (sysConfigResult.Succeeded)
             {
                 SysConfigFromMaster = sysConfigResult.Data;
-                Model.MachineDetails = SysConfigFromFeedLog.MachineDetails;
+                Model.MachineDetails = SysConfigFromFeedLog?.MachineDetails;
                 await FillModelMotherboards();
                 await FillModelPhysicalMemories();
                 await FillModelHardDisks();
@@ -62,9 +62,13 @@ public partial class ViewHardwareChanges
     {
         if (await dialogService.ShowMessageBox("New Machine found",
                 "Would you like to add this machine into the master? This will redirect you to add machine page.",
-                "Yes", "No") == true)
+                "Proceed", cancelText:"Cancel") == true)
         {
-            navigationManager.NavigateTo($"Machine-Master/{Id}/Add");
+            navigationManager.NavigateTo($"/Machine-Master/{Id}/Add");
+        }
+        else
+        {
+            navigationManager.NavigateTo("/Hardware-Logs");
         }
     }
 
@@ -214,7 +218,36 @@ public partial class ViewHardwareChanges
         }
         else
         {
-            
+            var result = await FeedLogHttpClient.AcceptAsync(Id);
+            if (result.Succeeded)
+            {
+                snackbar.Add(result.Messages[0], Severity.Success);
+                navigationManager.NavigateTo("/Hardware-Logs");
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    snackbar.Add(message, Severity.Error);
+                }
+            }
+        }
+    }
+
+    private async Task IgnoreAsync()
+    {
+        var result = await FeedLogHttpClient.IgnoreAsync(Id);
+        if (result.Succeeded)
+        {
+            snackbar.Add(result.Messages[0], Severity.Info);
+            navigationManager.NavigateTo("/Hardware-Logs");
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
         }
     }
 }
