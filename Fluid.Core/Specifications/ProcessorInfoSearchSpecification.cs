@@ -16,8 +16,8 @@ public class ProcessorInfoSearchSpecification : BaseSpecification<ProcessorInfo>
             searchString = searchString.ToLower();
             FilterCondition = p => p.ProcessorId.Contains(searchString)
                                 || p.Manufacturer.ToLower().Contains(searchString)
-                                || p.Architecture.ToString().ToLower().Contains(searchString)
-                                || p.Family.ToString().Contains(searchString)
+                                //|| p.Architecture.ToString().ToLower().Contains(searchString)
+                                //|| p.Family.ToString().Contains(searchString)
                                 || p.NumberOfCores.ToString().Contains(searchString)
                                 || p.NumberOfLogicalProcessors.ToString().Contains(searchString)
                                 || p.MaxClockSpeed.ToString().Contains(searchString)
