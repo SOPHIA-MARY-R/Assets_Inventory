@@ -15,23 +15,12 @@ public class KeyboardMasterService : IKeyboardMasterService
     {
         try
         {
-            Expression<Func<KeyboardInfo, KeyboardInfo>> expressionMap = info => new KeyboardInfo
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Model = info.Model,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                IsWireless = info.IsWireless,
-                Description = info.Description,
-            };
             var specification = new KeyboardInfoSearchSpecification(searchString);
             if(orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<KeyboardInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<KeyboardInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<KeyboardInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<KeyboardInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch(Exception e)
         {
@@ -44,65 +33,43 @@ public class KeyboardMasterService : IKeyboardMasterService
         try
         {
             var keyboardInfo = await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(oemSerialNo);
-            return keyboardInfo is not null ? Result<KeyboardInfo>.Success(keyboardInfo) : throw new Exception("Keyboard not found");
+            return keyboardInfo is not null ? await Result<KeyboardInfo>.SuccessAsync(keyboardInfo) : throw new Exception("Keyboard not found");
         }
         catch (Exception e)
         {
-            return Result<KeyboardInfo>.Fail(e.Message);
+            return await Result<KeyboardInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(KeyboardInfo model)
+    public async Task<Result<string>> AddAsync(KeyboardInfo keyboardInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(model.OemSerialNo) is not null)
-                throw new Exception($"Keyboard with OEM Serial Number {model.OemSerialNo} already exists");
-            var keyboardInfo = new KeyboardInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                IsWireless = model.IsWireless,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
+            if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(keyboardInfo.OemSerialNo) is not null)
+                throw new Exception($"Keyboard with OEM Serial Number {keyboardInfo.OemSerialNo} already exists");
             await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(keyboardInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added Keyboard successfully");
+            return await Result<string>.SuccessAsync(keyboardInfo.OemSerialNo, "Added Keyboard successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(KeyboardInfo model)
+    public async Task<Result<string>> EditAsync(KeyboardInfo keyboardInfo)
     {
         try
         {
-            var oldKeyboardInfo = await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldKeyboardInfo = await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(keyboardInfo.OemSerialNo);
             if (oldKeyboardInfo is null) throw new Exception("Keyboard not found");
-            var updatedKeyboardInfo = new KeyboardInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineId = model.MachineId,
-                IsWireless = model.IsWireless,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<KeyboardInfo>().UpdateAsync(updatedKeyboardInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<KeyboardInfo>().UpdateAsync(keyboardInfo, keyboardInfo.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated Keyboard successfully");
+            return await Result<string>.SuccessAsync(keyboardInfo.OemSerialNo, "Updated Keyboard successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -114,11 +81,11 @@ public class KeyboardMasterService : IKeyboardMasterService
             if (keyboardInfo is null) throw new Exception("Keyboard not found");
             await _unitOfWork.GetRepository<KeyboardInfo>().DeleteAsync(keyboardInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

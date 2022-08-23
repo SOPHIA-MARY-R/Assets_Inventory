@@ -44,8 +44,8 @@ public class MachineMasterController : ControllerBase
     }
 
     [HttpDelete("{assetTag}")]
-    public async Task<IActionResult> DeleteAsync(SystemConfiguration systemConfiguration, string assetTag)
+    public async Task<IActionResult> DeleteAsync(string assetTag)
     {
-        return Ok(await _systemConfigurationService.DeleteSystemConfiguration(systemConfiguration,WebUtility.UrlDecode(assetTag)));
+        return Ok(await _systemConfigurationService.DeleteSystemConfiguration(WebUtility.UrlDecode(assetTag)));
     }
 }

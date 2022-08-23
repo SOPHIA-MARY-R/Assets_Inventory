@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class KeyboardInfo : IEntity, IEquatable<KeyboardInfo>
+public class KeyboardInfo : IHardwareComponentInfo, IEquatable<KeyboardInfo>
 {
     public bool Equals(KeyboardInfo other)
     {
@@ -46,6 +46,8 @@ public class KeyboardInfo : IEntity, IEquatable<KeyboardInfo>
     public bool IsWireless { get; set; }
 
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
 
     public UseStatus UseStatus { get; set; }
 

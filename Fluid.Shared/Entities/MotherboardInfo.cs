@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class MotherboardInfo : IEntity, IEquatable<MotherboardInfo>
+public class MotherboardInfo : IHardwareComponentInfo, IEquatable<MotherboardInfo>
 {
     public bool Equals(MotherboardInfo other)
     {
@@ -41,6 +41,7 @@ public class MotherboardInfo : IEntity, IEquatable<MotherboardInfo>
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }
@@ -51,4 +52,6 @@ public class MotherboardInfo : IEntity, IEquatable<MotherboardInfo>
     public decimal Price { get; set; }
 
     public ComponentType ComponentType => ComponentType.Motherboard;
+    
+    public HardwareChange HardwareChange { get; set; }
 }

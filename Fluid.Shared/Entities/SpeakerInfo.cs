@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class SpeakerInfo : IEntity, IEquatable<SpeakerInfo>
+public class SpeakerInfo : IHardwareComponentInfo, IEquatable<SpeakerInfo>
 {
     public bool Equals(SpeakerInfo other)
     {
@@ -45,6 +45,8 @@ public class SpeakerInfo : IEntity, IEquatable<SpeakerInfo>
     public bool IsBlueTooth { get; set; }
 
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }

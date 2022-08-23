@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class MonitorInfo : IEntity, IEquatable<MonitorInfo>
+public class MonitorInfo : IHardwareComponentInfo, IEquatable<MonitorInfo>
 {
     public bool Equals(MonitorInfo other)
     {
@@ -62,6 +62,8 @@ public class MonitorInfo : IEntity, IEquatable<MonitorInfo>
     public int HDMIPortCount { get; set; }
     public int VGAPortCount { get; set; }
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public string Version { get; set; }
     public UseStatus UseStatus { get; set; }
 

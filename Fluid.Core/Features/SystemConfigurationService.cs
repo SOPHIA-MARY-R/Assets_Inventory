@@ -1,6 +1,7 @@
 ﻿using Fluid.Core.Extensions;
 using Fluid.Core.Specifications;
 using Fluid.Shared.Entities;
+using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 
 namespace Fluid.Core.Features;
@@ -188,26 +189,36 @@ public class SystemConfigurationService : ISystemConfigurationService
                 .Specify(new MotherboardInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var previousMotherboard in previousMotherboards)
+            {
                 previousMotherboard.MachineId = null;
+                previousMotherboard.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var motherboard in systemConfiguration.Motherboards)
             {
                 var oemSerialNo = motherboard.OemSerialNo;
                 motherboard.MachineId = assetTag;
+                motherboard.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<MotherboardInfo>().AddAsync(motherboard);
                 else
                     await _unitOfWork.GetRepository<MotherboardInfo>().UpdateAsync(motherboard, oemSerialNo);
             }
-            
+
             var previousPhysicalMemories = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities
                 .Specify(new PhysicalMemoryInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var physicalMemoryInfo in previousPhysicalMemories)
+            {
                 physicalMemoryInfo.MachineId = null;
+                physicalMemoryInfo.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var physicalMemory in systemConfiguration.PhysicalMemories)
             {
                 var oemSerialNo = physicalMemory.OemSerialNo;
                 physicalMemory.MachineId = assetTag;
+                physicalMemory.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(physicalMemory.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalMemory);
                 else
@@ -218,11 +229,16 @@ public class SystemConfigurationService : ISystemConfigurationService
                 .Specify(new HardDiskInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var hardDisk in previousHardDisks)
+            {
                 hardDisk.MachineId = null;
+                hardDisk.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var hardDisk in systemConfiguration.HardDisks)
             {
                 var oemSerialNo = hardDisk.OemSerialNo;
                 hardDisk.MachineId = assetTag;
+                hardDisk.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(hardDisk.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<HardDiskInfo>().AddAsync(hardDisk);
                 else
@@ -233,11 +249,16 @@ public class SystemConfigurationService : ISystemConfigurationService
                 .Specify(new KeyboardInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var previousKeyboard in previousKeyboards)
+            {
                 previousKeyboard.MachineId = null;
+                previousKeyboard.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var keyboard in systemConfiguration.Keyboards)
             {
                 var oemSerialNo = keyboard.OemSerialNo;
                 keyboard.MachineId = assetTag;
+                keyboard.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<KeyboardInfo>().GetByIdAsync(keyboard.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<KeyboardInfo>().AddAsync(keyboard);
                 else
@@ -248,11 +269,16 @@ public class SystemConfigurationService : ISystemConfigurationService
                 .Specify(new MonitorInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var previousMonitor in previousMonitors)
+            {
                 previousMonitor.MachineId = null;
+                previousMonitor.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var monitor in systemConfiguration.Monitors)
             {
                 var oemSerialNo = monitor.OemSerialNo;
                 monitor.MachineId = assetTag;
+                monitor.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(monitor.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<MonitorInfo>().AddAsync(monitor);
                 else
@@ -263,11 +289,16 @@ public class SystemConfigurationService : ISystemConfigurationService
                 .Specify(new MouseInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
             foreach (var previousMouse in previousMouses)
+            {
                 previousMouse.MachineId = null;
+                previousMouse.UseStatus = UseStatus.UnderSpare;
+            }
+
             foreach (var mouse in systemConfiguration.Mouses)
             {
                 var oemSerialNo = mouse.OemSerialNo;
                 mouse.MachineId = assetTag;
+                mouse.UseStatus = UseStatus.InUse;
                 if (await _unitOfWork.GetRepository<MouseInfo>().GetByIdAsync(mouse.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<MouseInfo>().AddAsync(mouse);
                 else
@@ -285,12 +316,13 @@ public class SystemConfigurationService : ISystemConfigurationService
         }
     }
 
-    public async Task<IResult> DeleteSystemConfiguration(SystemConfiguration systemConfiguration, string assetTag)
+    public async Task<IResult> DeleteSystemConfiguration(string assetTag)
     {
         try
         {
             if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
                 throw new Exception("Machine does not exist in database");
+            var systemConfiguration = (await GetSystemConfiguration(assetTag)).Data;
             await _unitOfWork.GetRepository<MachineInfo>().DeleteAsync(systemConfiguration.MachineDetails);
 
             foreach (var motherboard in systemConfiguration.Motherboards)
@@ -298,6 +330,24 @@ public class SystemConfigurationService : ISystemConfigurationService
                 if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
                     throw new Exception("Motherboard does not exist to delete");
                 await _unitOfWork.GetRepository<MotherboardInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.PhysicalMemories)
+            {
+                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    throw new Exception("Physical Memory does not exist to delete");
+                await _unitOfWork.GetRepository<PhysicalMemoryInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.HardDisks)
+            {
+                if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    throw new Exception("Hard Disk does not exist to delete");
+                await _unitOfWork.GetRepository<HardDiskInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.Processors)
+            {
+                if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(motherboard.ProcessorId) is null)
+                    throw new Exception("Processor does not exist to delete");
+                await _unitOfWork.GetRepository<ProcessorInfo>().DeleteAsync(motherboard);
             }
 
             foreach (var keyboard in systemConfiguration.Keyboards)

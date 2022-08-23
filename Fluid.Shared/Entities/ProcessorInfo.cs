@@ -62,6 +62,7 @@ public class ProcessorInfo : IEntity, IEquatable<ProcessorInfo>
     public int ThreadCount { get; set; }
     public int MaxClockSpeed { get; set; }
     public string Description { get; set; }
+    public HardwareChange HardwareChange { get; set; }
 
     public UseStatus UseStatus { get; set; }
 

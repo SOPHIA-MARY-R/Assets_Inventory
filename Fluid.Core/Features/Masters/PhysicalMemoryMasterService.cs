@@ -15,26 +15,12 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
     {
         try
         {
-            Expression<Func<PhysicalMemoryInfo, PhysicalMemoryInfo>> expressionMap = info => new PhysicalMemoryInfo
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-                UseStatus = info.UseStatus,
-                Capacity = info.Capacity,
-                Speed = info.Speed,
-                MemoryType = info.MemoryType,
-                FormFactor = info.FormFactor
-            };
             var specification = new PhysicalMemoryInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<PhysicalMemoryInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -46,72 +32,44 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
     {
         try
         {
-            var physicalmemoryInfo = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(oemSerialNo);
-            return physicalmemoryInfo is not null ? Result<PhysicalMemoryInfo>.Success(physicalmemoryInfo) : throw new Exception("PhysicalMemory not found");
+            var physicalMemoryInfo = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(oemSerialNo);
+            return physicalMemoryInfo is not null ? await Result<PhysicalMemoryInfo>.SuccessAsync(physicalMemoryInfo) : throw new Exception("PhysicalMemory not found");
         }
         catch (Exception e)
         {
-            return Result<PhysicalMemoryInfo>.Fail(e.Message);
+            return await Result<PhysicalMemoryInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(PhysicalMemoryInfo model)
+    public async Task<Result<string>> AddAsync(PhysicalMemoryInfo physicalMemoryInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(model.OemSerialNo) is not null)
-                throw new Exception($"PhysicalMemory with OEM Serial Number {model.OemSerialNo} already exists");
-            var physicalmemoryInfo = new PhysicalMemoryInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                UseStatus = model.UseStatus,
-                Capacity = model.Capacity,
-                Speed = model.Speed,
-                MemoryType = model.MemoryType,
-                FormFactor = model.FormFactor,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalmemoryInfo);
+            if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(physicalMemoryInfo.OemSerialNo) is not null)
+                throw new Exception($"PhysicalMemory with OEM Serial Number {physicalMemoryInfo.OemSerialNo} already exists");
+            await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalMemoryInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added PhysicalMemory successfully");
+            return await Result<string>.SuccessAsync(physicalMemoryInfo.OemSerialNo, "Added PhysicalMemory successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(PhysicalMemoryInfo model)
+    public async Task<Result<string>> EditAsync(PhysicalMemoryInfo physicalMemoryInfo)
     {
         try
         {
-            var oldPhysicalMemoryInfo = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldPhysicalMemoryInfo = await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(physicalMemoryInfo.OemSerialNo);
             if (oldPhysicalMemoryInfo is null) throw new Exception("PhysicalMemory not found");
-            var updatedPhysicalMemoryInfo = new PhysicalMemoryInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                UseStatus = model.UseStatus,
-                Capacity = model.Capacity,
-                Speed = model.Speed,
-                MemoryType = model.MemoryType,
-                FormFactor = model.FormFactor,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<PhysicalMemoryInfo>().UpdateAsync(updatedPhysicalMemoryInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<PhysicalMemoryInfo>().UpdateAsync(physicalMemoryInfo, physicalMemoryInfo.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated PhysicalMemory successfully");
+            return await Result<string>.SuccessAsync(physicalMemoryInfo.OemSerialNo, "Updated PhysicalMemory successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -123,11 +81,11 @@ public class PhysicalMemoryMasterService : IPhysicalMemoryMasterService
             if (physicalmemoryInfo is null) throw new Exception("PhysicalMemory not found");
             await _unitOfWork.GetRepository<PhysicalMemoryInfo>().DeleteAsync(physicalmemoryInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

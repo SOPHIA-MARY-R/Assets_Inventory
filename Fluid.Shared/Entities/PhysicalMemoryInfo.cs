@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class PhysicalMemoryInfo : IEntity, IEquatable<PhysicalMemoryInfo>
+public class PhysicalMemoryInfo : IHardwareComponentInfo, IEquatable<PhysicalMemoryInfo>
 {
     public bool Equals(PhysicalMemoryInfo other)
     {
@@ -43,6 +43,8 @@ public class PhysicalMemoryInfo : IEntity, IEquatable<PhysicalMemoryInfo>
 
     public string Manufacturer { get; set; }
 
+    public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public int Capacity { get; set; }
