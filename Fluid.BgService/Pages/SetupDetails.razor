@@ -13,7 +13,7 @@
             </MudTooltip>
         </div>
         <MudFab ButtonType="ButtonType.Submit" Label="Save" DisableElevation Color="Color.Primary" StartIcon="@Icons.Filled.Save" Size="Size.Small"/>
-        <MudFab ButtonType="ButtonType.Reset" Label="Cancel" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.Clear" Size="Size.Small"/>
+        <MudFab OnClick="@(() => navigationManager.NavigateTo("/"))" Label="Cancel" DisableElevation Color="Color.Dark" StartIcon="@Icons.Filled.Clear" Size="Size.Small"/>
     </div>
 </div>
 <MudDivider Class="my-4"/>
