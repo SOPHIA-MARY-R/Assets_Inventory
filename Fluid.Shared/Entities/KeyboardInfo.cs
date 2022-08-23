@@ -47,6 +47,7 @@ public class KeyboardInfo : IHardwareComponentInfo, IEquatable<KeyboardInfo>
 
     public string Description { get; set; }
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
 
     public UseStatus UseStatus { get; set; }
 

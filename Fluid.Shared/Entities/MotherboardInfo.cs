@@ -41,6 +41,7 @@ public class MotherboardInfo : IHardwareComponentInfo, IEquatable<MotherboardInf
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }

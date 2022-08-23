@@ -44,6 +44,7 @@ public class PhysicalMemoryInfo : IHardwareComponentInfo, IEquatable<PhysicalMem
     public string Manufacturer { get; set; }
 
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public int Capacity { get; set; }

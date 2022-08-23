@@ -57,6 +57,7 @@ public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
     public string Model { get; set; }
 
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public DriveMediaType MediaType { get; set; }

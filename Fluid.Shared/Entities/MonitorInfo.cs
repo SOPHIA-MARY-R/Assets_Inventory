@@ -63,6 +63,7 @@ public class MonitorInfo : IHardwareComponentInfo, IEquatable<MonitorInfo>
     public int VGAPortCount { get; set; }
     public string Description { get; set; }
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public string Version { get; set; }
     public UseStatus UseStatus { get; set; }
 

@@ -42,6 +42,7 @@ public class GraphicsCardInfo : IHardwareComponentInfo, IEquatable<GraphicsCardI
     public string Model { get; set; }
     public string Description { get; set; }
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }

@@ -9,6 +9,7 @@ public class CameraInfo : IHardwareComponentInfo, IEquatable<CameraInfo>
     public string Model { get; set; }
     public string Description { get; set; }
     public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
     public int MegaPixels { get; set; }
     public CameraResolution Resolution { get; set; }
     public bool HasBuiltInMic { get; set; }
