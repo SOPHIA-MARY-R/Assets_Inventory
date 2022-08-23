@@ -285,12 +285,13 @@ public class SystemConfigurationService : ISystemConfigurationService
         }
     }
 
-    public async Task<IResult> DeleteSystemConfiguration(SystemConfiguration systemConfiguration, string assetTag)
+    public async Task<IResult> DeleteSystemConfiguration(string assetTag)
     {
         try
         {
             if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(assetTag) is null)
                 throw new Exception("Machine does not exist in database");
+            var systemConfiguration = (await GetSystemConfiguration(assetTag)).Data;
             await _unitOfWork.GetRepository<MachineInfo>().DeleteAsync(systemConfiguration.MachineDetails);
 
             foreach (var motherboard in systemConfiguration.Motherboards)
@@ -298,6 +299,24 @@ public class SystemConfigurationService : ISystemConfigurationService
                 if (await _unitOfWork.GetRepository<MotherboardInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
                     throw new Exception("Motherboard does not exist to delete");
                 await _unitOfWork.GetRepository<MotherboardInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.PhysicalMemories)
+            {
+                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    throw new Exception("Physical Memory does not exist to delete");
+                await _unitOfWork.GetRepository<PhysicalMemoryInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.HardDisks)
+            {
+                if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
+                    throw new Exception("Hard Disk does not exist to delete");
+                await _unitOfWork.GetRepository<HardDiskInfo>().DeleteAsync(motherboard);
+            }
+            foreach (var motherboard in systemConfiguration.Processors)
+            {
+                if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(motherboard.ProcessorId) is null)
+                    throw new Exception("Processor does not exist to delete");
+                await _unitOfWork.GetRepository<ProcessorInfo>().DeleteAsync(motherboard);
             }
 
             foreach (var keyboard in systemConfiguration.Keyboards)

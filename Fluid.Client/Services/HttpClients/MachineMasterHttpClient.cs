@@ -39,9 +39,9 @@ public class MachineMasterHttpClient
         return await response.ToResult();
     }
 
-    public async Task<IResult<string>> DeleteAsync(string assetTag)
+    public async Task<IResult> DeleteAsync(string assetTag)
     {
         var response = await _httpClient.DeleteAsync($"api/masters/machines/{WebUtility.UrlEncode(assetTag)}");
-        return await response.ToResult<string>();
+        return await response.ToResult();
     }
 }
