@@ -14,29 +14,12 @@ public class MachineMasterService : IMachineMasterService
     {
         try
         {
-            Expression<Func<MachineInfo, MachineInfo>> expressionMap = info => new MachineInfo
-            {
-                AssetTag = info.AssetTag,
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Model = info.Model,
-                MachineType = info.MachineType,
-                MachineName = info.MachineName,
-                UseType = info.UseType,
-                UseStatus = info.UseStatus,
-                AssetBranch = info.AssetBranch,
-                AssetLocation = info.AssetLocation,
-                AssignedPersonName = info.AssignedPersonName,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                InitializationDate = info.InitializationDate,
-            };
             var specification = new MachineInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<MachineInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<MachineInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<MachineInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<MachineInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -57,29 +40,12 @@ public class MachineMasterService : IMachineMasterService
         }
     }
 
-    public async Task<IResult> AddAsync(MachineInfo model)
+    public async Task<IResult> AddAsync(MachineInfo machineInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(model.AssetTag) is not null)
-                throw new Exception($"Machine with Asset Tag {model.AssetTag} already exists");
-            var machineInfo = new MachineInfo
-            {
-                AssetTag = model.AssetTag,
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineType = model.MachineType,
-                MachineName = model.MachineName,
-                UseType = model.UseType,
-                UseStatus = model.UseStatus,
-                AssetBranch = model.AssetBranch,
-                AssetLocation = model.AssetLocation,
-                AssignedPersonName = model.AssignedPersonName,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate,
-                InitializationDate = model.InitializationDate,
-            };
+            if (await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(machineInfo.AssetTag) is not null)
+                throw new Exception($"Machine with Asset Tag {machineInfo.AssetTag} already exists");
             await _unitOfWork.GetRepository<MachineInfo>().AddAsync(machineInfo);
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Added Machine successfully");
@@ -90,30 +56,13 @@ public class MachineMasterService : IMachineMasterService
         }
     }
 
-    public async Task<IResult> EditAsync(MachineInfo model, string assetTag)
+    public async Task<IResult> EditAsync(MachineInfo machineInfo, string assetTag)
     {
         try
         {
-            var oldMachineInfo = await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldMachineInfo = await _unitOfWork.GetRepository<MachineInfo>().GetByIdAsync(machineInfo.OemSerialNo);
             if (oldMachineInfo is null) throw new Exception("Machine not found");
-            var updatedMachineInfo = new MachineInfo
-            {
-                AssetTag = model.AssetTag,
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MachineType = model.MachineType,
-                MachineName = model.MachineName,
-                UseType = model.UseType,
-                UseStatus = model.UseStatus,
-                AssetBranch = model.AssetBranch,
-                AssetLocation = model.AssetLocation,
-                AssignedPersonName = model.AssignedPersonName,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate,
-                InitializationDate = model.InitializationDate,
-            };
-            await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(updatedMachineInfo, model.AssetTag);
+            await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(machineInfo, machineInfo.AssetTag);
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Updated Machine successfully");
         }

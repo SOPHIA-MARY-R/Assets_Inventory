@@ -15,27 +15,12 @@ public class MonitorMasterService : IMonitorMasterService
     {
         try
         {
-            Expression<Func<MonitorInfo, MonitorInfo>> expressionMap = info => new MonitorInfo
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                PanelType = info.PanelType,
-                RefreshRate = info.RefreshRate,
-                HasBuiltInSpeakers = info.HasBuiltInSpeakers,
-                HDMIPortCount = info.HDMIPortCount,
-                VGAPortCount = info.VGAPortCount,
-                Model = info.Model,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-            };
             var specification = new MonitorInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<MonitorInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<MonitorInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<MonitorInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<MonitorInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -48,73 +33,43 @@ public class MonitorMasterService : IMonitorMasterService
         try
         {
             var monitorInfo = await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(oemSerialNo);
-            return monitorInfo is not null ? Result<MonitorInfo>.Success(monitorInfo) : throw new Exception("Monitor not found");
+            return monitorInfo is not null ? await Result<MonitorInfo>.SuccessAsync(monitorInfo) : throw new Exception("Monitor not found");
         }
         catch (Exception e)
         {
-            return Result<MonitorInfo>.Fail(e.Message);
+            return await Result<MonitorInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(MonitorInfo model)
+    public async Task<Result<string>> AddAsync(MonitorInfo monitorInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(model.OemSerialNo) is not null)
-                throw new Exception($"Monitor with OEM Serial Number {model.OemSerialNo} already exists");
-            var monitorInfo = new MonitorInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                PanelType = model.PanelType,
-                HasBuiltInSpeakers = model.HasBuiltInSpeakers,
-                HDMIPortCount = model.HDMIPortCount,
-                VGAPortCount = model.VGAPortCount,
-                RefreshRate = model.RefreshRate,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
+            if (await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(monitorInfo.OemSerialNo) is not null)
+                throw new Exception($"Monitor with OEM Serial Number {monitorInfo.OemSerialNo} already exists");
             await _unitOfWork.GetRepository<MonitorInfo>().AddAsync(monitorInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added Monitor successfully");
+            return await Result<string>.SuccessAsync(monitorInfo.OemSerialNo, "Added Monitor successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(MonitorInfo model)
+    public async Task<Result<string>> EditAsync(MonitorInfo monitorInfo)
     {
         try
         {
-            var oldMonitorInfo = await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldMonitorInfo = await _unitOfWork.GetRepository<MonitorInfo>().GetByIdAsync(monitorInfo.OemSerialNo);
             if (oldMonitorInfo is null) throw new Exception("Monitor not found");
-            var updatedMonitorInfo = new MonitorInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                PanelType = model.PanelType,
-                HasBuiltInSpeakers = model.HasBuiltInSpeakers,
-                HDMIPortCount = model.HDMIPortCount,
-                VGAPortCount = model.VGAPortCount,
-                RefreshRate = model.RefreshRate,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<MonitorInfo>().UpdateAsync(updatedMonitorInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<MonitorInfo>().UpdateAsync(monitorInfo, monitorInfo.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated Monitor successfully");
+            return await Result<string>.SuccessAsync(monitorInfo.OemSerialNo, "Updated Monitor successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -126,11 +81,11 @@ public class MonitorMasterService : IMonitorMasterService
             if (monitorInfo is null) throw new Exception("Monitor not found");
             await _unitOfWork.GetRepository<MonitorInfo>().DeleteAsync(monitorInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

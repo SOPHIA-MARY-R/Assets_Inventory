@@ -15,26 +15,12 @@ public class HardDiskMasterService : IHardDiskMasterService
     {
         try
         {
-            Expression<Func<HardDiskInfo, HardDiskInfo>> expressionMap = info => new HardDiskInfo
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                Model = info.Model,
-                MediaType = info.MediaType,
-                BusType = info.BusType,
-                HealthCondition = info.HealthCondition,
-                Size = info.Size,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-            };
             var specification = new HardDiskInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<HardDiskInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<HardDiskInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<HardDiskInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<HardDiskInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -47,71 +33,43 @@ public class HardDiskMasterService : IHardDiskMasterService
         try
         {
             var harddiskInfo = await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(oemSerialNo);
-            return harddiskInfo is not null ? Result<HardDiskInfo>.Success(harddiskInfo) : throw new Exception("HardDisk not found");
+            return harddiskInfo is not null ? await Result<HardDiskInfo>.SuccessAsync(harddiskInfo) : throw new Exception("HardDisk not found");
         }
         catch (Exception e)
         {
-            return Result<HardDiskInfo>.Fail(e.Message);
+            return await Result<HardDiskInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(HardDiskInfo model)
+    public async Task<Result<string>> AddAsync(HardDiskInfo hardDiskInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(model.OemSerialNo) is not null)
-                throw new Exception($"HardDisk with OEM Serial Number {model.OemSerialNo} already exists");
-            var harddiskInfo = new HardDiskInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MediaType = model.MediaType,
-                BusType = model.BusType,
-                HealthCondition = model.HealthCondition,
-                Size = model.Size,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<HardDiskInfo>().AddAsync(harddiskInfo);
+            if (await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(hardDiskInfo.OemSerialNo) is not null)
+                throw new Exception($"HardDisk with OEM Serial Number {hardDiskInfo.OemSerialNo} already exists");
+            await _unitOfWork.GetRepository<HardDiskInfo>().AddAsync(hardDiskInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added HardDisk successfully");
+            return await Result<string>.SuccessAsync(hardDiskInfo.OemSerialNo, "Added HardDisk successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(HardDiskInfo model)
+    public async Task<Result<string>> EditAsync(HardDiskInfo hardDiskInfo)
     {
         try
         {
-            var oldHardDiskInfo = await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldHardDiskInfo = await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(hardDiskInfo.OemSerialNo);
             if (oldHardDiskInfo is null) throw new Exception("HardDisk not found");
-            var updatedHardDiskInfo = new HardDiskInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                MediaType=model.MediaType,
-                BusType=model.BusType,
-                HealthCondition=model.HealthCondition,
-                Size=model.Size,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<HardDiskInfo>().UpdateAsync(updatedHardDiskInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<HardDiskInfo>().UpdateAsync(hardDiskInfo, hardDiskInfo.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated HardDisk successfully");
+            return await Result<string>.SuccessAsync(hardDiskInfo.OemSerialNo, "Updated HardDisk successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -119,15 +77,15 @@ public class HardDiskMasterService : IHardDiskMasterService
     {
         try
         {
-            var harddiskInfo = await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(oemSerialNo);
-            if (harddiskInfo is null) throw new Exception("HardDisk not found");
-            await _unitOfWork.GetRepository<HardDiskInfo>().DeleteAsync(harddiskInfo);
+            var hardDiskInfo = await _unitOfWork.GetRepository<HardDiskInfo>().GetByIdAsync(oemSerialNo);
+            if (hardDiskInfo is null) throw new Exception("HardDisk not found");
+            await _unitOfWork.GetRepository<HardDiskInfo>().DeleteAsync(hardDiskInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

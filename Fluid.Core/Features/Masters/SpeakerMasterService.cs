@@ -15,24 +15,12 @@ public class SpeakerMasterService : ISpeakerMasterService
     {
         try
         {
-            Expression<Func<SpeakerInfo, SpeakerInfo>> expressionMap = info => new SpeakerInfo
-            {
-                OemSerialNo = info.OemSerialNo,
-                Manufacturer = info.Manufacturer,
-                InputPorts = info.InputPorts,
-                IsBlueTooth = info.IsBlueTooth,
-                Model = info.Model,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-            };
             var specification = new SpeakerInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<SpeakerInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<SpeakerInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<SpeakerInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<SpeakerInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -45,67 +33,43 @@ public class SpeakerMasterService : ISpeakerMasterService
         try
         {
             var speakerInfo = await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(oemSerialNo);
-            return speakerInfo is not null ? Result<SpeakerInfo>.Success(speakerInfo) : throw new Exception("Speaker not found");
+            return speakerInfo is not null ? await Result<SpeakerInfo>.SuccessAsync(speakerInfo) : throw new Exception("Speaker not found");
         }
         catch (Exception e)
         {
-            return Result<SpeakerInfo>.Fail(e.Message);
+            return await Result<SpeakerInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(SpeakerInfo model)
+    public async Task<Result<string>> AddAsync(SpeakerInfo speakerInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(model.OemSerialNo) is not null)
-                throw new Exception($"Speaker with OEM Serial Number {model.OemSerialNo} already exists");
-            var speakerInfo = new SpeakerInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                InputPorts = model.InputPorts,
-                IsBlueTooth = model.IsBlueTooth,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
+            if (await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(speakerInfo.OemSerialNo) is not null)
+                throw new Exception($"Speaker with OEM Serial Number {speakerInfo.OemSerialNo} already exists");
             await _unitOfWork.GetRepository<SpeakerInfo>().AddAsync(speakerInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Added Speaker successfully");
+            return await Result<string>.SuccessAsync(speakerInfo.OemSerialNo, "Added Speaker successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(SpeakerInfo model)
+    public async Task<Result<string>> EditAsync(SpeakerInfo speakerInfo)
     {
         try
         {
-            var oldSpeakerInfo = await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(model.OemSerialNo);
+            var oldSpeakerInfo = await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(speakerInfo.OemSerialNo);
             if (oldSpeakerInfo is null) throw new Exception("Speaker not found");
-            var updatedSpeakerInfo = new SpeakerInfo
-            {
-                OemSerialNo = model.OemSerialNo,
-                Manufacturer = model.Manufacturer,
-                Model = model.Model,
-                InputPorts=model.InputPorts,
-                IsBlueTooth=model.IsBlueTooth,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<SpeakerInfo>().UpdateAsync(updatedSpeakerInfo, model.OemSerialNo);
+            await _unitOfWork.GetRepository<SpeakerInfo>().UpdateAsync(speakerInfo, speakerInfo.OemSerialNo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.OemSerialNo, "Updated Speaker successfully");
+            return await Result<string>.SuccessAsync(speakerInfo.OemSerialNo, "Updated Speaker successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -117,11 +81,11 @@ public class SpeakerMasterService : ISpeakerMasterService
             if (speakerInfo is null) throw new Exception("Speaker not found");
             await _unitOfWork.GetRepository<SpeakerInfo>().DeleteAsync(speakerInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(oemSerialNo);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }

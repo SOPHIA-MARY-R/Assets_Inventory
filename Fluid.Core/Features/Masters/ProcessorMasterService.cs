@@ -15,29 +15,12 @@ public class ProcessorMasterService : IProcessorMasterService
     {
         try
         {
-            Expression<Func<ProcessorInfo, ProcessorInfo>> expressionMap = info => new ProcessorInfo
-            {
-                ProcessorId = info.ProcessorId,
-                Name = info.Name,
-                Manufacturer = info.Manufacturer,
-                Architecture = info.Architecture,
-                Family = info.Family,
-                NumberOfLogicalProcessors = info.NumberOfLogicalProcessors,
-                NumberOfCores = info.NumberOfCores,
-                ThreadCount = info.ThreadCount,
-                MaxClockSpeed = info.MaxClockSpeed,
-                Price = info.Price,
-                PurchaseDate = info.PurchaseDate,
-                MachineId = info.MachineId,
-                Description = info.Description,
-                UseStatus = info.UseStatus,
-            };
             var specification = new ProcessorInfoSearchSpecification(searchString);
             if (orderBy?.Any() != true)
             {
-                return await _unitOfWork.GetRepository<ProcessorInfo>().Entities.Specify(specification).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+                return await _unitOfWork.GetRepository<ProcessorInfo>().Entities.Specify(specification).ToPaginatedListAsync(pageNumber, pageSize);
             }
-            return await _unitOfWork.GetRepository<ProcessorInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).Select(expressionMap).ToPaginatedListAsync(pageNumber, pageSize);
+            return await _unitOfWork.GetRepository<ProcessorInfo>().Entities.Specify(specification).OrderBy(string.Join(",", orderBy)).ToPaginatedListAsync(pageNumber, pageSize);
         }
         catch (Exception e)
         {
@@ -50,77 +33,43 @@ public class ProcessorMasterService : IProcessorMasterService
         try
         {
             var processorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processorId);
-            return processorInfo is not null ? Result<ProcessorInfo>.Success(processorInfo) : throw new Exception("Processor not found");
+            return processorInfo is not null ? await Result<ProcessorInfo>.SuccessAsync(processorInfo) : throw new Exception("Processor not found");
         }
         catch (Exception e)
         {
-            return Result<ProcessorInfo>.Fail(e.Message);
+            return await Result<ProcessorInfo>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> AddAsync(ProcessorInfo model)
+    public async Task<Result<string>> AddAsync(ProcessorInfo processorInfo)
     {
         try
         {
-            if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(model.ProcessorId) is not null)
-                throw new Exception($"Processor with ProcessorId {model.ProcessorId} already exists");
-            var processorInfo = new ProcessorInfo
-            {
-                ProcessorId = model.ProcessorId,
-                Name = model.Name,
-                Architecture = model.Architecture,
-                Family = model.Family,
-                NumberOfCores = model.NumberOfCores,
-                NumberOfLogicalProcessors = model.NumberOfLogicalProcessors,
-                ThreadCount = model.ThreadCount,
-                MaxClockSpeed = model.MaxClockSpeed,
-                Manufacturer = model.Manufacturer,
-                UseStatus = model.UseStatus,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
+            if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processorInfo.ProcessorId) is not null)
+                throw new Exception($"Processor with ProcessorId {processorInfo.ProcessorId} already exists");
             await _unitOfWork.GetRepository<ProcessorInfo>().AddAsync(processorInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.ProcessorId, "Added Processor successfully");
+            return await Result<string>.SuccessAsync(processorInfo.ProcessorId, "Added Processor successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
-    public async Task<Result<string>> EditAsync(ProcessorInfo model)
+    public async Task<Result<string>> EditAsync(ProcessorInfo processorInfo)
     {
         try
         {
-            var oldProcessorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(model.ProcessorId);
+            var oldProcessorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processorInfo.ProcessorId);
             if (oldProcessorInfo is null) throw new Exception("Processor not found");
-            var updatedProcessorInfo = new ProcessorInfo
-            {
-                ProcessorId = model.ProcessorId,
-                Manufacturer = model.Manufacturer,
-                UseStatus = model.UseStatus,
-                Name = model.Name,
-                Family = model.Family,
-                Architecture = model.Architecture,
-                NumberOfCores = model.NumberOfCores,
-                NumberOfLogicalProcessors = model.NumberOfLogicalProcessors,
-                MaxClockSpeed = model.MaxClockSpeed,
-                ThreadCount = model.ThreadCount,
-                MachineId = model.MachineId,
-                Description = model.Description,
-                Price = model.Price,
-                PurchaseDate = model.PurchaseDate
-            };
-            await _unitOfWork.GetRepository<ProcessorInfo>().UpdateAsync(updatedProcessorInfo, model.ProcessorId);
+            await _unitOfWork.GetRepository<ProcessorInfo>().UpdateAsync(processorInfo, processorInfo.ProcessorId);
             await _unitOfWork.Commit();
-            return Result<string>.Success(model.ProcessorId, "Updated Processor successfully");
+            return await Result<string>.SuccessAsync(processorInfo.ProcessorId, "Updated Processor successfully");
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 
@@ -132,11 +81,11 @@ public class ProcessorMasterService : IProcessorMasterService
             if (processorInfo is null) throw new Exception("Processor not found");
             await _unitOfWork.GetRepository<ProcessorInfo>().DeleteAsync(processorInfo);
             await _unitOfWork.Commit();
-            return Result<string>.Success(processorId);
+            return await Result<string>.SuccessAsync(processorId);
         }
         catch (Exception e)
         {
-            return Result<string>.Fail(e.Message);
+            return await Result<string>.FailAsync(e.Message);
         }
     }
 }
