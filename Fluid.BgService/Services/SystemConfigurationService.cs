@@ -48,6 +48,7 @@ public class SystemConfigurationService
         var result = await response.ToResult<SystemConfiguration>();
         if (result.Succeeded)
         {
+            SystemConfiguration = result.Data;
             var fileProvider = _environment.ContentRootFileProvider;
             var fileInfo = fileProvider.GetFileInfo("SystemConfiguration.json");
             var physicalPath = fileInfo.PhysicalPath;
