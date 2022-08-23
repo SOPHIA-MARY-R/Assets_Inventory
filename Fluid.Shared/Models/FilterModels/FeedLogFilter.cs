@@ -1,4 +1,4 @@
-﻿namespace Fluid.Shared.Requests;
+﻿namespace Fluid.Shared.Models.FilterModels;
 
 public class FeedLogFilter
 {

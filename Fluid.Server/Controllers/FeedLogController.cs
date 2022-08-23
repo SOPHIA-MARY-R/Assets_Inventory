@@ -1,6 +1,7 @@
 ﻿using Fluid.Core.Features;
 using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
+using Fluid.Shared.Models.FilterModels;
 using Fluid.Shared.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,12 +35,6 @@ public class FeedLogController : ControllerBase
     {
         return Ok(await _feedLogService.SaveLog(systemConfiguration));
     }
-
-    [HttpPost("{id}/attend")]
-    public async Task<IActionResult> Attend(string id, FeedLog feedLog)
-    {
-        return Ok(await _feedLogService.AttendLog(feedLog));
-    }
     
     [HttpGet("autovalidate")]
     public async Task<IActionResult> AutoValidateLogs()
@@ -51,5 +46,17 @@ public class FeedLogController : ControllerBase
     public async Task<IActionResult> GetCountDetails()
     {
         return Ok(await _feedLogService.GetCountDetails());
+    }
+
+    [HttpGet("{id}/accept")]
+    public async Task<IActionResult> AcceptLog(string id)
+    {
+        return Ok(await _feedLogService.AcceptLog(id));
+    }
+
+    [HttpGet("{id}/ignore")]
+    public async Task<IActionResult> IgnoreLog(string id)
+    {
+        return Ok(await _feedLogService.IgnoreLog(id));
     }
 }

@@ -2,6 +2,7 @@
 using Fluid.Client.Extensions;
 using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
+using Fluid.Shared.Models.FilterModels;
 using Fluid.Shared.Requests;
 using Fluid.Shared.Wrapper;
 
@@ -29,12 +30,6 @@ public class FeedLogHttpClient
         return await response.ToPaginatedResult<FeedLog>();
     }
 
-    public async Task<IResult> AttendLog(FeedLog feedLog)
-    {
-        var response = await _httpClient.PostAsJsonAsync($"api/feed-log/{feedLog.Id}/attend", feedLog);
-        return await response.ToResult();
-    }
-    
     public async Task<Result> AutoValidateLogs()
     {
         return await _httpClient.GetFromJsonAsync<Result>("api/feed-log/autovalidate");
@@ -45,4 +40,13 @@ public class FeedLogHttpClient
         return await _httpClient.GetFromJsonAsync<Result<FeedLogCountDetails>>("api/feed-log/count-details");
     }
 
+    public async Task<Result> AcceptAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/feed-log/{id}/accept");
+    }
+
+    public async Task<Result> IgnoreAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/feed-log/{id}/ignore");
+    }
 }
