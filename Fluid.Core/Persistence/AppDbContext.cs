@@ -41,6 +41,6 @@ public class AppDbContext : IdentityDbContext<AppUser>
         modelBuilder.Entity<ProcessorInfo>().Ignore(x => x.HardwareChange);
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             if (entityType.ClrType.GetInterface(nameof(IHardwareComponentInfo)) != null)
-                modelBuilder.Entity(entityType.ClrType).Ignore(nameof(IHardwareComponentInfo.HardwareChange));
+                modelBuilder.Entity(entityType.ClrType).Ignore(nameof(IHardwareComponentInfo.HardwareChange)).Ignore(nameof(IHardwareComponentInfo.HardwareChangeMode));
     }
 }
