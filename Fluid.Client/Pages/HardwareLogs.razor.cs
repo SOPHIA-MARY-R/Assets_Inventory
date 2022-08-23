@@ -1,6 +1,6 @@
 ﻿using Fluid.Shared.Entities;
 using Fluid.Shared.Models;
-using Fluid.Shared.Requests;
+using Fluid.Shared.Models.FilterModels;
 using MudBlazor;
 
 namespace Fluid.Client.Pages;
