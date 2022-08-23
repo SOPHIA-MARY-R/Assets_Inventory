@@ -1,5 +1,5 @@
 ﻿@page "/"
-
+@inject FeedLogHttpClient FeedLogHttpClient
 <PageTitle>Home</PageTitle>
 
 <MudText Typo="Typo.h3" Class="ma-4" Color=Color.Primary>Hardware info harvester</MudText>
@@ -16,9 +16,11 @@
 <MudText Typo="@Typo.h4" Class="mt-4">Recent Logs</MudText>
 <MudCard>
     <MudCardContent Class="pa-5 ma-6">
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2">23/08/2022 9:52:15 am	PC Unattended</MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2">23/08/2022 9:52:15 am	PC Unattended</MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2">23/08/2022 9:52:15 am	PC Unattended</MudPaper>
+       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/> 23/08/2022 9:52:15 am <MudChip Size="Size.Small" Color="Color.Secondary">PC</MudChip> <MudChip Size="Size.Small" Color="Color.Error">Unattended</MudChip></MudPaper>
+       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/> 23/08/2022 11:50:15 am <MudChip Size="Size.Small" Color="Color.Secondary">Laptop</MudChip> <MudChip Size="Size.Small" Color="Color.Success">Attended</MudChip></MudPaper>
+       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 01:45:13 pm <MudChip Size="Size.Small" Color="Color.Secondary">Workstation</MudChip> <MudChip Size="Size.Small" Color="Color.Warning">Pending</MudChip></MudPaper>
+       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 02:00:13 pm <MudChip Size="Size.Small" Color="Color.Secondary">Workstation</MudChip> <MudChip Size="Size.Small" Color="Color.Success">Attended</MudChip></MudPaper>
+       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 02:30:18 pm <MudChip Size="Size.Small" Color="Color.Secondary">PC</MudChip> <MudChip Size="Size.Small" Color="Color.Warning">Pending</MudChip></MudPaper>
     </MudCardContent>
 </MudCard>
 
