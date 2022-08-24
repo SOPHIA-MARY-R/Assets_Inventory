@@ -89,9 +89,9 @@
                 <MudChip Color="Color.Primary" Size="Size.Small">Old: @context.OldMachineName</MudChip>
             </MudTd>
             <MudTd>
-                @(string.IsNullOrEmpty(context.AssignedPersonName) ? context.AssignedPersonName : "None")
+                @(!string.IsNullOrEmpty(context.AssignedPersonName) ? context.AssignedPersonName : "None")
                 <br/>
-                <MudChip Color="Color.Primary" Size="Size.Small">Old: @(string.IsNullOrEmpty(context.OldAssignedPersonName) ? context.OldAssignedPersonName : "None")</MudChip>
+                <MudChip Color="Color.Primary" Size="Size.Small">Old: @(!string.IsNullOrEmpty(context.OldAssignedPersonName) ? context.OldAssignedPersonName : "None")</MudChip>
             </MudTd>
             <MudTd>
                 @context.AssetLocation
