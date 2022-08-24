@@ -10,13 +10,26 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
         if (ReferenceEquals(this, other)) return true;
         return Equals(MachineDetails,
                    other.MachineDetails) &&
-               Motherboards.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Motherboards.OrderBy(x => x.OemSerialNo)) &&
-               PhysicalMemories.OrderBy(x => x.OemSerialNo).SequenceEqual(other.PhysicalMemories.OrderBy(x => x.OemSerialNo)) &&
-               HardDisks.OrderBy(x => x.OemSerialNo).SequenceEqual(other.HardDisks.OrderBy(x => x.OemSerialNo)) &&
+               CompareLists(Motherboards, other.Motherboards) &&
+               CompareLists(PhysicalMemories, other.PhysicalMemories) &&
+               CompareLists(HardDisks, other.HardDisks) &&
                Processors.OrderBy(x => x.ProcessorId).SequenceEqual(other.Processors.OrderBy(x => x.ProcessorId)) &&
-               Mouses.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Mouses.OrderBy(x => x.OemSerialNo)) &&
-               Keyboards.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Keyboards.OrderBy(x => x.OemSerialNo)) &&
-               Monitors.OrderBy(x => x.OemSerialNo).SequenceEqual(other.Monitors.OrderBy(x => x.OemSerialNo));
+               CompareLists(Mouses, other.Mouses) &&
+               CompareLists(Keyboards, other.Keyboards) &&
+               CompareLists(Monitors, other.Monitors);
+    }
+
+    private static bool CompareLists(IEnumerable<IHardwareComponentInfo> list1, IEnumerable<IHardwareComponentInfo> list2)
+    {
+        var hardwareComponentInfos1 = list1.ToList();
+        var hardwareComponentInfos2 = list2.ToList();
+        foreach (var serialNo in hardwareComponentInfos1.Select(x => x.OemSerialNo))
+            if (hardwareComponentInfos2.Count(x => x.OemSerialNo == serialNo) != 1)
+                return false;
+        foreach (var serialNo in hardwareComponentInfos2.Select(x => x.OemSerialNo))
+            if (hardwareComponentInfos1.Count(x => x.OemSerialNo == serialNo) != 1)
+                return false;
+        return true;
     }
 
     public override bool Equals(object obj)
