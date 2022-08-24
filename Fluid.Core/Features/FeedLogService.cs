@@ -8,7 +8,6 @@ using Fluid.Shared.Entities;
 using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Fluid.Shared.Models.FilterModels;
-using Fluid.Shared.Requests;
 
 namespace Fluid.Core.Features;
 
@@ -213,7 +212,19 @@ public class FeedLogService : IFeedLogService
             if (systemConfiguration is null)
                 throw new Exception("Unable to parse System Configuration from the hardware log");
             var assetTag = feedLog.AssetTag;
-            var oldSystemConfigurationCopy = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data; 
+            var oldSystemConfigurationCopy = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data;
+            
+            var hardwareChangeLog = new HardwareChangeLog
+            {
+                Id = Guid.NewGuid()
+                    .ToString(),
+                OldMachineName = oldSystemConfigurationCopy.MachineDetails.MachineName,
+                OldAssignedPersonName = oldSystemConfigurationCopy.MachineDetails.AssignedPersonName,
+                OldAssetLocation = oldSystemConfigurationCopy.MachineDetails.AssetLocation,
+                OldAssetBranch = oldSystemConfigurationCopy.MachineDetails.AssetBranch,
+                OldConfigJsonRaw = JsonSerializer.Serialize(oldSystemConfigurationCopy)
+            };
+
             await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(systemConfiguration.MachineDetails, assetTag);
 
             var previousMotherboards = await _unitOfWork.GetRepository<MotherboardInfo>().Entities
@@ -334,27 +345,17 @@ public class FeedLogService : IFeedLogService
             feedLog.AttendingTechnicianId = _currentUserService.UserId;
             await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(feedLog, feedLog.Id);
 
-            var hardwareChangeLog = new HardwareChangeLog
-            {
-                Id = Guid.NewGuid()
-                    .ToString(),
-                AssetTag = assetTag,
-                OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo,
-                Manufacturer = systemConfiguration.MachineDetails.Manufacturer,
-                OldMachineName = oldSystemConfigurationCopy.MachineDetails.MachineName,
-                OldAssignedPersonName = oldSystemConfigurationCopy.MachineDetails.AssignedPersonName,
-                OldAssetLocation = oldSystemConfigurationCopy.MachineDetails.AssetLocation,
-                OldAssetBranch = oldSystemConfigurationCopy.MachineDetails.AssetBranch,
-                AssetBranch = systemConfiguration.MachineDetails.AssetBranch,
-                AssetLocation = systemConfiguration.MachineDetails.AssetLocation,
-                AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName,
-                ChangeDateTime = DateTime.Now,
-                MachineName = systemConfiguration.MachineDetails.MachineName,
-                MachineType = systemConfiguration.MachineDetails.MachineType,
-                OldConfigJsonRaw = JsonSerializer.Serialize(oldSystemConfigurationCopy),
-                NewConfigJsonRaw = feedLog.JsonRaw,
-                Model = systemConfiguration.MachineDetails.Model
-            };
+            hardwareChangeLog.AssetTag = assetTag;
+            hardwareChangeLog.OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo;
+            hardwareChangeLog.Manufacturer = systemConfiguration.MachineDetails.Manufacturer;
+            hardwareChangeLog.AssetBranch = systemConfiguration.MachineDetails.AssetBranch;
+            hardwareChangeLog.AssetLocation = systemConfiguration.MachineDetails.AssetLocation;
+            hardwareChangeLog.AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName;
+            hardwareChangeLog.ChangeDateTime = DateTime.Now;
+            hardwareChangeLog.MachineName = systemConfiguration.MachineDetails.MachineName;
+            hardwareChangeLog.MachineType = systemConfiguration.MachineDetails.MachineType;
+            hardwareChangeLog.NewConfigJsonRaw = feedLog.JsonRaw;
+            hardwareChangeLog.Model = systemConfiguration.MachineDetails.Model;
             await _unitOfWork.GetRepository<HardwareChangeLog>().AddAsync(hardwareChangeLog);
             
             await _unitOfWork.Commit();
