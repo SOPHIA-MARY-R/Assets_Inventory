@@ -133,6 +133,11 @@ public partial class SetupDetails
         Model.PhysicalMemories.Remove(physicalMemoryInfo);
     }
     
+    private void DeleteHardDiskInfo(HardDiskInfo hardDiskInfo)
+    {
+        Model.HardDisks.Remove(hardDiskInfo);
+    }
+    
     private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)
     {
         Model.Keyboards.Remove(keyboardInfo);
@@ -150,7 +155,8 @@ public partial class SetupDetails
 
     private void AutoFill()
     {
-        Model.Motherboards = new List<MotherboardInfo> { SystemConfigurationService.GetMotherboardDetails() };
+        Model.Motherboards = SystemConfigurationService.GetMotherboardsDetails().ToList();
+        Model.HardDisks = SystemConfigurationService.GetHardDisksInfo().ToList();
         Model.PhysicalMemories = SystemConfigurationService.GetPhysicalMemoryInfos().ToList();
     }
 }
