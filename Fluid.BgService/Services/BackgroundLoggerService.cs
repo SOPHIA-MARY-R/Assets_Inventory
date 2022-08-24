@@ -19,6 +19,10 @@ public class BackgroundLoggerService : BackgroundService
         {
             if (DateTime.Now < _options.Value.NextLogDateTime) 
                 await Task.Delay(_options.Value.NextLogDateTime - DateTime.Now, stoppingToken);
+            
+            _systemConfigurationService.SystemConfiguration.Motherboards = SystemConfigurationService.GetMotherboardsDetails().ToList();
+            _systemConfigurationService.SystemConfiguration.PhysicalMemories = SystemConfigurationService.GetPhysicalMemoryInfos().ToList();
+            _systemConfigurationService.SystemConfiguration.HardDisks = SystemConfigurationService.GetHardDisksInfo().ToList();
             await _systemConfigurationService.LogSystemConfiguration();
         }
     }
