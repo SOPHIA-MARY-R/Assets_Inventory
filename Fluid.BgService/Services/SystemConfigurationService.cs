@@ -38,12 +38,9 @@ public class SystemConfigurationService
 
     public SystemConfiguration SystemConfiguration { get; set; }
 
-    public bool IsWriting { get; private set; }
-
     public async Task<bool> LogSystemConfiguration()
     {
         //if (SystemConfiguration is null) return false;
-        IsWriting = true;
         var response = await _httpClient.PostAsJsonAsync("api/feed-log/feed", SystemConfiguration);
         var result = await response.ToResult<SystemConfiguration>();
         if (result.Succeeded)
@@ -61,9 +58,9 @@ public class SystemConfigurationService
                 logTime.CoolDownMinutes = _options.Value.CoolDownMinutes;
                 logTime.RetryCoolDownMinutes = _options.Value.RetryCoolDownMinutes;
             });
-            IsWriting = false;
             return true;
         }
+
         _options.Update(logTime =>
         {
             logTime.LastLoggedDateTime = _options.Value.LastLoggedDateTime;
@@ -71,35 +68,32 @@ public class SystemConfigurationService
             logTime.CoolDownMinutes = _options.Value.CoolDownMinutes;
             logTime.RetryCoolDownMinutes = _options.Value.RetryCoolDownMinutes;
         });
-        IsWriting = false;
         return false;
     }
 
-    public static MotherboardInfo GetMotherboardDetails()
+    public static IEnumerable<MotherboardInfo> GetMotherboardsDetails()
     {
-        var motherboard = new MotherboardInfo();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard");
             foreach (var obj in searcher.Get())
             {
-                motherboard.OemSerialNo = obj["SerialNumber"].ToString();
-
-                motherboard.Manufacturer = obj["Manufacturer"].ToString();
-
-                motherboard.Model = obj["Product"].ToString();
+                var motherboard = new MotherboardInfo
+                {
+                    OemSerialNo = obj["SerialNumber"].ToString(),
+                    Manufacturer = obj["Manufacturer"].ToString(),
+                    Model = obj["Product"].ToString()
+                };
 
                 //motherboard.Version = obj["Version"].ToString();
 
                 //motherboard.Status = obj["Status"].ToString();
-                return motherboard;
+                yield return motherboard;
             }
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
         }
-
-        return null;
     }
 
     public static IEnumerable<PhysicalMemoryInfo> GetPhysicalMemoryInfos()
@@ -110,21 +104,53 @@ public class SystemConfigurationService
 
             foreach (var obj in searcher.Get())
             {
-                var physicalMemory = new PhysicalMemoryInfo();
-                physicalMemory.OemSerialNo = obj["SerialNumber"].ToString()?.Trim();
-
-                physicalMemory.Manufacturer = obj["Manufacturer"].ToString()?.Trim();
-
-                physicalMemory.Capacity = Convert.ToInt32(Convert.ToDouble(obj["Capacity"].ToString()?.Trim()) / Math.Pow(2,30));
-
-                physicalMemory.MemoryType = Enum.Parse<MemoryType>(int.Parse(obj["SMBiosMemoryType"].ToString()?.Trim() ?? "1").ToString());
-
-                physicalMemory.Speed = double.Parse(obj["Speed"].ToString()?.Trim() ?? "0.00");
-
-                physicalMemory.FormFactor = Enum.Parse<MemoryFormFactor>(int.Parse(obj["FormFactor"].ToString()?.Trim() ?? "0").ToString());
+                var physicalMemory = new PhysicalMemoryInfo
+                {
+                    OemSerialNo = obj["SerialNumber"].ToString()?.Trim(),
+                    Manufacturer = obj["Manufacturer"].ToString()?.Trim(),
+                    Capacity = Convert.ToInt32(Convert.ToDouble(obj["Capacity"].ToString()?.Trim()) / Math.Pow(2, 30)),
+                    MemoryType =
+                        Enum.Parse<MemoryType>(int.Parse(obj["SMBiosMemoryType"].ToString()?.Trim() ?? "1").ToString()),
+                    Speed = double.Parse(obj["Speed"].ToString()?.Trim() ?? "0.00"),
+                    FormFactor =
+                        Enum.Parse<MemoryFormFactor>(int.Parse(obj["FormFactor"].ToString()?.Trim() ?? "0").ToString())
+                };
 
                 yield return physicalMemory;
             }
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+        }
+    }
+
+    public static IEnumerable<HardDiskInfo> GetHardDisksInfo()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var scope = new ManagementScope(@"\\.\root\microsoft\windows\storage");
+
+            scope.Connect();
+
+            var searcher = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM MSFT_PhysicalDisk"));
+            foreach (var obj in searcher.Get())
+            {
+                var hardDisk = new HardDiskInfo
+                {
+                    Model = obj["Model"].ToString()?.Trim(),
+                    MediaType = Enum.Parse<DriveMediaType>(Convert.ToInt32(obj["MediaType"].ToString()?.Trim() ?? "0").ToString()),
+                    BusType = Enum.Parse<DriveBusType>(Convert.ToInt32(obj["BusType"].ToString()?.Trim()).ToString()),
+                    HealthCondition = Enum.Parse<DriveHealthCondition>(Convert.ToInt32(obj["HealthStatus"].ToString()?.Trim() ?? "0").ToString()),
+                    //Caption = obj["FriendlyName"].ToString()?.Trim();
+                    Size = Convert.ToInt32(Convert.ToDouble(obj["Size"]) / Math.Pow(2,30)),
+                    OemSerialNo = obj.GetPropertyValue("SerialNumber").ToString()?.Trim()
+                };
+
+                yield return hardDisk;
+            }
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
         }
     }
 }
