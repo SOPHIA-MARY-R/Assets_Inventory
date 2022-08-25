@@ -50,8 +50,4 @@ public class MotherboardInfo : IHardwareComponentInfo, IEquatable<MotherboardInf
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Motherboard;
-    
-    public HardwareChange HardwareChange { get; set; }
 }

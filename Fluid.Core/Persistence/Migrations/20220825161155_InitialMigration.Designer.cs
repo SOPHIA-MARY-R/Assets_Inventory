@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fluid.Core.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220822084325_AddedHardwareChangeLogs")]
-    partial class AddedHardwareChangeLogs
+    [Migration("20220825161155_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -197,6 +197,9 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("HardwareChange")
+                        .HasColumnType("int");
+
                     b.Property<string>("MachineId")
                         .HasColumnType("nvarchar(450)");
 
@@ -318,6 +321,9 @@ namespace Fluid.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OldMachineName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -577,7 +583,7 @@ namespace Fluid.Core.Persistence.Migrations
 
             modelBuilder.Entity("Fluid.Shared.Entities.ProcessorInfo", b =>
                 {
-                    b.Property<string>("ProcessorId")
+                    b.Property<string>("OemSerialNo")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("Architecture")
@@ -610,6 +616,9 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("ProcessorId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("datetime2");
 
@@ -619,7 +628,7 @@ namespace Fluid.Core.Persistence.Migrations
                     b.Property<byte>("UseStatus")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("ProcessorId");
+                    b.HasKey("OemSerialNo");
 
                     b.HasIndex("MachineId");
 

@@ -13,7 +13,6 @@ public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
                BusType == other.BusType &&
                HealthCondition == other.HealthCondition &&
                Size == other.Size &&
-               Description == other.Description &&
                MachineId == other.MachineId;
     }
 
@@ -34,7 +33,6 @@ public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
         hashCode.Add((int)BusType);
         hashCode.Add((int)HealthCondition);
         hashCode.Add(Size);
-        hashCode.Add(Description);
         hashCode.Add(MachineId);
         return hashCode.ToHashCode();
     }
@@ -55,8 +53,6 @@ public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
     public string Manufacturer { get; set; }
 
     public string Model { get; set; }
-
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
@@ -74,6 +70,4 @@ public class HardDiskInfo : IHardwareComponentInfo, IEquatable<HardDiskInfo>
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.HardDisk;
 }

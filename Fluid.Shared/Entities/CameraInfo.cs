@@ -8,7 +8,6 @@ public class CameraInfo : IHardwareComponentInfo, IEquatable<CameraInfo>
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public string Description { get; set; }
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
     public int MegaPixels { get; set; }
     public CameraResolution Resolution { get; set; }
@@ -23,13 +22,11 @@ public class CameraInfo : IHardwareComponentInfo, IEquatable<CameraInfo>
 
     public decimal Price { get; set; }
 
-    public ComponentType ComponentType => ComponentType.Camera;
-
     public bool Equals(CameraInfo other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return OemSerialNo == other.OemSerialNo && Manufacturer == other.Manufacturer && Model == other.Model && Description == other.Description && MegaPixels == other.MegaPixels && Resolution == other.Resolution && HasBuiltInMic == other.HasBuiltInMic && IsWireLess == other.IsWireLess && MachineId == other.MachineId;
+        return OemSerialNo == other.OemSerialNo && Manufacturer == other.Manufacturer && Model == other.Model && MegaPixels == other.MegaPixels && Resolution == other.Resolution && HasBuiltInMic == other.HasBuiltInMic && IsWireLess == other.IsWireLess && MachineId == other.MachineId;
     }
 
     public static bool operator ==(CameraInfo left, CameraInfo right)
@@ -56,7 +53,6 @@ public class CameraInfo : IHardwareComponentInfo, IEquatable<CameraInfo>
         hashCode.Add(OemSerialNo);
         hashCode.Add(Manufacturer);
         hashCode.Add(Model);
-        hashCode.Add(Description);
         hashCode.Add(MegaPixels);
         hashCode.Add((int)Resolution);
         hashCode.Add(HasBuiltInMic);

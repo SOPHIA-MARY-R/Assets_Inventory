@@ -13,6 +13,58 @@ namespace Fluid.Core.Persistence.Migrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
+                name: "FeedLogStorage",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AssetTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OemSerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MachineName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MachineType = table.Column<byte>(type: "tinyint", nullable: false),
+                    AssignedPersonName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssetLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssetBranch = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JsonRaw = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LogAttendStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    AttendingTechnicianId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeedLogStorage", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HardwareChangeLogs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ChangeDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AssetTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OemSerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldMachineName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldAssignedPersonName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldAssetLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldAssetBranch = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MachineName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssignedPersonName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssetLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssetBranch = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MachineType = table.Column<byte>(type: "tinyint", nullable: false),
+                    OldConfigJsonRaw = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NewConfigJsonRaw = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HardwareChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MachineMaster",
                 columns: table => new
                 {
@@ -29,7 +81,8 @@ namespace Fluid.Core.Persistence.Migrations
                     AssetBranch = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     InitializationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UpdateChangeOnClient = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,6 +118,33 @@ namespace Fluid.Core.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CameraMaster",
+                columns: table => new
+                {
+                    OemSerialNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MegaPixels = table.Column<int>(type: "int", nullable: false),
+                    Resolution = table.Column<byte>(type: "tinyint", nullable: false),
+                    HasBuiltInMic = table.Column<bool>(type: "bit", nullable: false),
+                    IsWireLess = table.Column<bool>(type: "bit", nullable: false),
+                    UseStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    MachineId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CameraMaster", x => x.OemSerialNo);
+                    table.ForeignKey(
+                        name: "FK_CameraMaster_MachineMaster_MachineId",
+                        column: x => x.MachineId,
+                        principalTable: "MachineMaster",
+                        principalColumn: "AssetTag");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GraphicsCardMaster",
                 columns: table => new
                 {
@@ -72,6 +152,7 @@ namespace Fluid.Core.Persistence.Migrations
                     Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HardwareChange = table.Column<int>(type: "int", nullable: false),
                     UseStatus = table.Column<byte>(type: "tinyint", nullable: false),
                     MachineId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -133,6 +214,35 @@ namespace Fluid.Core.Persistence.Migrations
                     table.PrimaryKey("PK_KeyboardMaster", x => x.OemSerialNo);
                     table.ForeignKey(
                         name: "FK_KeyboardMaster_MachineMaster_MachineId",
+                        column: x => x.MachineId,
+                        principalTable: "MachineMaster",
+                        principalColumn: "AssetTag");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MonitorMaster",
+                columns: table => new
+                {
+                    OemSerialNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PanelType = table.Column<byte>(type: "tinyint", nullable: false),
+                    RefreshRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HasBuiltInSpeakers = table.Column<bool>(type: "bit", nullable: false),
+                    HDMIPortCount = table.Column<int>(type: "int", nullable: false),
+                    VGAPortCount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Version = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UseStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    MachineId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonitorMaster", x => x.OemSerialNo);
+                    table.ForeignKey(
+                        name: "FK_MonitorMaster_MachineMaster_MachineId",
                         column: x => x.MachineId,
                         principalTable: "MachineMaster",
                         principalColumn: "AssetTag");
@@ -215,7 +325,8 @@ namespace Fluid.Core.Persistence.Migrations
                 name: "ProcessorMaster",
                 columns: table => new
                 {
-                    ProcessorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OemSerialNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProcessorId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Architecture = table.Column<byte>(type: "tinyint", nullable: false),
@@ -232,13 +343,43 @@ namespace Fluid.Core.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProcessorMaster", x => x.ProcessorId);
+                    table.PrimaryKey("PK_ProcessorMaster", x => x.OemSerialNo);
                     table.ForeignKey(
                         name: "FK_ProcessorMaster_MachineMaster_MachineId",
                         column: x => x.MachineId,
                         principalTable: "MachineMaster",
                         principalColumn: "AssetTag");
                 });
+
+            migrationBuilder.CreateTable(
+                name: "SpeakerMaster",
+                columns: table => new
+                {
+                    OemSerialNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InputPorts = table.Column<byte>(type: "tinyint", nullable: false),
+                    IsBlueTooth = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UseStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    MachineId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpeakerMaster", x => x.OemSerialNo);
+                    table.ForeignKey(
+                        name: "FK_SpeakerMaster_MachineMaster_MachineId",
+                        column: x => x.MachineId,
+                        principalTable: "MachineMaster",
+                        principalColumn: "AssetTag");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CameraMaster_MachineId",
+                table: "CameraMaster",
+                column: "MachineId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GraphicsCardMaster_MachineId",
@@ -253,6 +394,11 @@ namespace Fluid.Core.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_KeyboardMaster_MachineId",
                 table: "KeyboardMaster",
+                column: "MachineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MonitorMaster_MachineId",
+                table: "MonitorMaster",
                 column: "MachineId");
 
             migrationBuilder.CreateIndex(
@@ -276,6 +422,11 @@ namespace Fluid.Core.Persistence.Migrations
                 column: "MachineId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SpeakerMaster_MachineId",
+                table: "SpeakerMaster",
+                column: "MachineId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "dbo",
                 table: "Technicians",
@@ -293,13 +444,25 @@ namespace Fluid.Core.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CameraMaster");
+
+            migrationBuilder.DropTable(
+                name: "FeedLogStorage");
+
+            migrationBuilder.DropTable(
                 name: "GraphicsCardMaster");
 
             migrationBuilder.DropTable(
                 name: "HardDiskMaster");
 
             migrationBuilder.DropTable(
+                name: "HardwareChangeLogs");
+
+            migrationBuilder.DropTable(
                 name: "KeyboardMaster");
+
+            migrationBuilder.DropTable(
+                name: "MonitorMaster");
 
             migrationBuilder.DropTable(
                 name: "MotherboardMaster");
@@ -312,6 +475,9 @@ namespace Fluid.Core.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProcessorMaster");
+
+            migrationBuilder.DropTable(
+                name: "SpeakerMaster");
 
             migrationBuilder.DropTable(
                 name: "Technicians",
