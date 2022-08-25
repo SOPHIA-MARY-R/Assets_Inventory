@@ -1,0 +1,50 @@
+﻿
+<EditForm Model="Model">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add PurchaseItem</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField Label="HSN" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.HSN" ReadOnly=@IsEditMode />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.SerialNumber" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Manufacturer" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Manufacturer" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Item Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.ItemName" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Quantity" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Quantity" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Net Rate" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.NetRate"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Price" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Price"/>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="me-2" OnClick="MudDialog.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public PurchaseItem Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    
+}
