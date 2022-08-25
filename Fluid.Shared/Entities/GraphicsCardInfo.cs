@@ -9,7 +9,6 @@ public class GraphicsCardInfo : IHardwareComponentInfo, IEquatable<GraphicsCardI
         return OemSerialNo == other.OemSerialNo &&
                Manufacturer == other.Manufacturer &&
                Model == other.Model &&
-               Description == other.Description &&
                MachineId == other.MachineId;
     }
 
@@ -51,6 +50,4 @@ public class GraphicsCardInfo : IHardwareComponentInfo, IEquatable<GraphicsCardI
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.GraphicsCard;
 }

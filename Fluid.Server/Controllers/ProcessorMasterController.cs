@@ -22,10 +22,10 @@ public class ProcessorMasterController : ControllerBase
         return Ok(await _processorMasterService.GetAllAsync(pageNumber, pageSize, searchString, orderBy));
     }
 
-    [HttpGet("{processorId}")]
-    public async Task<IActionResult> GetByIdAsync(string processorId)
+    [HttpGet("{oemSerialNo}")]
+    public async Task<IActionResult> GetByIdAsync(string oemSerialNo)
     {
-        return Ok(await _processorMasterService.GetByIdAsync(processorId));
+        return Ok(await _processorMasterService.GetByIdAsync(oemSerialNo));
     }
 
     [HttpPost]
@@ -40,9 +40,9 @@ public class ProcessorMasterController : ControllerBase
         return Ok(await _processorMasterService.EditAsync(model));
     }
 
-    [HttpDelete("{processorId}")]
-    public async Task<IActionResult> DeleteAsync(string processorId)
+    [HttpDelete("{oemSerialNo}")]
+    public async Task<IActionResult> DeleteAsync(string oemSerialNo)
     {
-        return Ok(await _processorMasterService.DeleteAsync(processorId));
+        return Ok(await _processorMasterService.DeleteAsync(oemSerialNo));
     }
 }

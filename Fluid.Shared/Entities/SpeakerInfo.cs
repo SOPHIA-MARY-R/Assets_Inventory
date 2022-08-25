@@ -45,8 +45,8 @@ public class SpeakerInfo : IHardwareComponentInfo, IEquatable<SpeakerInfo>
     public bool IsBlueTooth { get; set; }
 
     public string Description { get; set; }
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
+    
     public UseStatus UseStatus { get; set; }
 
     public MachineInfo? Machine { get; set; }
@@ -55,6 +55,4 @@ public class SpeakerInfo : IHardwareComponentInfo, IEquatable<SpeakerInfo>
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Speaker;
 }

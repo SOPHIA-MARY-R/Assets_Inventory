@@ -62,7 +62,6 @@ public class MonitorInfo : IHardwareComponentInfo, IEquatable<MonitorInfo>
     public int HDMIPortCount { get; set; }
     public int VGAPortCount { get; set; }
     public string Description { get; set; }
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
     public string Version { get; set; }
     public UseStatus UseStatus { get; set; }
@@ -73,6 +72,4 @@ public class MonitorInfo : IHardwareComponentInfo, IEquatable<MonitorInfo>
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Monitor;
 }

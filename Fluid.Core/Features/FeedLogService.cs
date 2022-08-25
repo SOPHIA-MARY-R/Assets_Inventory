@@ -8,6 +8,7 @@ using Fluid.Shared.Entities;
 using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Fluid.Shared.Models.FilterModels;
+using Fluid.Shared.Requests;
 
 namespace Fluid.Core.Features;
 
@@ -201,10 +202,12 @@ public class FeedLogService : IFeedLogService
         }
     }
 
-    public async Task<IResult> AcceptLog(string id)
+    public async Task<IResult> AcceptLog(string id, AcceptChangeRequest acceptChangeRequest)
     {
         try
         {
+            if (string.IsNullOrEmpty(acceptChangeRequest.Remarks))
+                throw new Exception("Reason cannot be empty");
             var feedLog = await _unitOfWork.GetRepository<FeedLog>().GetByIdAsync(id);
             if (feedLog is null)
                 throw new Exception("FeedLog not found");
@@ -222,7 +225,8 @@ public class FeedLogService : IFeedLogService
                 OldAssignedPersonName = oldSystemConfigurationCopy.MachineDetails.AssignedPersonName,
                 OldAssetLocation = oldSystemConfigurationCopy.MachineDetails.AssetLocation,
                 OldAssetBranch = oldSystemConfigurationCopy.MachineDetails.AssetBranch,
-                OldConfigJsonRaw = JsonSerializer.Serialize(oldSystemConfigurationCopy)
+                OldConfigJsonRaw = JsonSerializer.Serialize(oldSystemConfigurationCopy),
+                Remarks = acceptChangeRequest.Remarks
             };
 
             await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(systemConfiguration.MachineDetails, assetTag);

@@ -49,9 +49,9 @@ public class FeedLogController : ControllerBase
     }
 
     [HttpGet("{id}/accept")]
-    public async Task<IActionResult> AcceptLog(string id)
+    public async Task<IActionResult> AcceptLog(string id, AcceptChangeRequest changeRequest)
     {
-        return Ok(await _feedLogService.AcceptLog(id));
+        return Ok(await _feedLogService.AcceptLog(id, changeRequest));
     }
 
     [HttpGet("{id}/ignore")]

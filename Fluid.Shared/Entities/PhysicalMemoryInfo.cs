@@ -12,8 +12,7 @@ public class PhysicalMemoryInfo : IHardwareComponentInfo, IEquatable<PhysicalMem
                Speed.Equals(other.Speed) &&
                MemoryType == other.MemoryType &&
                FormFactor == other.FormFactor &&
-               MachineId == other.MachineId &&
-               Description == other.Description;
+               MachineId == other.MachineId;
     }
 
     public override bool Equals(object obj)
@@ -42,8 +41,6 @@ public class PhysicalMemoryInfo : IHardwareComponentInfo, IEquatable<PhysicalMem
     public string OemSerialNo { get; set; }
 
     public string Manufacturer { get; set; }
-
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
     public UseStatus UseStatus { get; set; }
 
@@ -63,6 +60,4 @@ public class PhysicalMemoryInfo : IHardwareComponentInfo, IEquatable<PhysicalMem
     public decimal Price { get; set; }
 
     public string Description { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Memory;
 }
