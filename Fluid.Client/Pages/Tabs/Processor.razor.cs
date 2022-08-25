@@ -50,16 +50,17 @@ public partial class Processor
         }
     }
 
-    private async void InvokeModal(string processorId)
+    private async void InvokeModal(string oemSerialNo)
     {
         var parameters = new DialogParameters();
-        if (!string.IsNullOrEmpty(processorId))
+        if (!string.IsNullOrEmpty(oemSerialNo))
         {
-            var item = _processors.FirstOrDefault(c => c.ProcessorId == processorId);
+            var item = _processors.FirstOrDefault(c => c.ProcessorId == oemSerialNo);
             if (item != null)
             {
                 parameters.Add(nameof(ProcessorDialog.Model), new ProcessorInfo
                 {
+                    OemSerialNo = item.OemSerialNo,
                     ProcessorId = item.ProcessorId,
                     Name = item.Name,
                     Manufacturer = item.Manufacturer,
@@ -77,7 +78,7 @@ public partial class Processor
             }
         }
         var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
-        var dialog = dialogService.Show<ProcessorDialog>(string.IsNullOrEmpty(processorId) ? "Add" : "Update", parameters, options);
+        var dialog = dialogService.Show<ProcessorDialog>(string.IsNullOrEmpty(oemSerialNo) ? "Add" : "Update", parameters, options);
         if (!(await dialog.Result).Cancelled)
         {
             OnSearch("");

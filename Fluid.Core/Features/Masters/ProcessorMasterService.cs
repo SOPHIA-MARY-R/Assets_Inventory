@@ -28,11 +28,11 @@ public class ProcessorMasterService : IProcessorMasterService
         }
     }
 
-    public async Task<Result<ProcessorInfo>> GetByIdAsync(string processorId)
+    public async Task<Result<ProcessorInfo>> GetByIdAsync(string oemSerialNo)
     {
         try
         {
-            var processorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processorId);
+            var processorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(oemSerialNo);
             return processorInfo is not null ? await Result<ProcessorInfo>.SuccessAsync(processorInfo) : throw new Exception("Processor not found");
         }
         catch (Exception e)
@@ -73,15 +73,15 @@ public class ProcessorMasterService : IProcessorMasterService
         }
     }
 
-    public async Task<Result<string>> DeleteAsync(string processorId)
+    public async Task<Result<string>> DeleteAsync(string oemSerialNo)
     {
         try
         {
-            var processorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processorId);
+            var processorInfo = await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(oemSerialNo);
             if (processorInfo is null) throw new Exception("Processor not found");
             await _unitOfWork.GetRepository<ProcessorInfo>().DeleteAsync(processorInfo);
             await _unitOfWork.Commit();
-            return await Result<string>.SuccessAsync(processorId);
+            return await Result<string>.SuccessAsync(oemSerialNo);
         }
         catch (Exception e)
         {

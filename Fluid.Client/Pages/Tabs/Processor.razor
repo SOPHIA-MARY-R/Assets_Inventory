@@ -9,6 +9,7 @@
         <MudTextField T="string" Value="_searchString" ValueChanged="OnSearch" DebounceInterval="500" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
+        <MudTh>Serial Number</MudTh>
         <MudTh>Processor ID</MudTh>
         <MudTh>Name</MudTh>
         <MudTh>Manufacturer</MudTh>
@@ -21,6 +22,7 @@
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd>@context.OemSerialNo</MudTd>
         <MudTd>@context.ProcessorId</MudTd>
         <MudTd>@context.Name</MudTd>
         <MudTd>@context.Manufacturer</MudTd>
@@ -31,10 +33,10 @@
         <MudTd>@context.ThreadCount</MudTd>
         <MudTd>@context.MaxClockSpeed</MudTd>
         <MudTd Style="text-align:center">
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.ProcessorId))" />
+            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
         </MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.ProcessorId))" />
+            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
