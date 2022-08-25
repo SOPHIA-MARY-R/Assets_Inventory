@@ -11,6 +11,8 @@ public partial class ViewHardwareChanges
 {
     [Parameter]
     public string Id { get; set; }
+    
+    private string Remarks { get; set; }
 
     private SystemConfiguration SysConfigFromFeedLog { get; set; } = new SystemConfiguration();
 
@@ -218,7 +220,7 @@ public partial class ViewHardwareChanges
         }
         else
         {
-            var result = await FeedLogHttpClient.AcceptAsync(Id);
+            var result = await FeedLogHttpClient.AcceptAsync(Id, Remarks);
             if (result.Succeeded)
             {
                 snackbar.Add(result.Messages[0], Severity.Success);

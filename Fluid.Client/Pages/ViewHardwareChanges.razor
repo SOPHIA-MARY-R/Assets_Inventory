@@ -22,6 +22,9 @@
 </div>
 <MudDivider Class="my-4"/>
 <MudGrid>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="Remarks" Margin="Margin.Dense" HelperText="Unchanged" Variant="Variant.Outlined" Label="Reason for this hardware change" ReadOnly/>
+    </MudItem>
     <MudItem xs="12" md="3">
         <MudTextField @bind-Value="Model.MachineDetails.AssetTag" Margin="Margin.Dense" HelperText="Unchanged" Variant="Variant.Outlined" Label="Asset Tag" ReadOnly/>
     </MudItem>
