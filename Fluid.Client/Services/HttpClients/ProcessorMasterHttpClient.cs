@@ -19,9 +19,9 @@ public class ProcessorMasterHttpClient
         return await response.ToPaginatedResult<ProcessorInfo>();
     }
 
-    public async Task<IResult<ProcessorInfo>> GetByIdAsync(string processorId)
+    public async Task<IResult<ProcessorInfo>> GetByIdAsync(string oemSerialNo)
     {
-        var response = await _httpClient.GetAsync($"api/masters/processors/{processorId}");
+        var response = await _httpClient.GetAsync($"api/masters/processors/{oemSerialNo}");
         return await response.ToResult<ProcessorInfo>();
     }
 
@@ -37,9 +37,9 @@ public class ProcessorMasterHttpClient
         return await response.ToResult<string>();
     }
 
-    public async Task<IResult<string>> DeleteAsync(string processorId)
+    public async Task<IResult<string>> DeleteAsync(string oemSerialNo)
     {
-        var response = await _httpClient.DeleteAsync($"api/masters/processors/{processorId}");
+        var response = await _httpClient.DeleteAsync($"api/masters/processors/{oemSerialNo}");
         return await response.ToResult<string>();
     }
 }

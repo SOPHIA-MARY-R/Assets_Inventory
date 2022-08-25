@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class ProcessorInfo : IEntity, IEquatable<ProcessorInfo>
+public class ProcessorInfo : IHardwareComponentInfo, IEquatable<ProcessorInfo>
 {
     public bool Equals(ProcessorInfo other)
     {
@@ -52,6 +52,7 @@ public class ProcessorInfo : IEntity, IEquatable<ProcessorInfo>
     }
 
     [Key]
+    public string OemSerialNo { get; set; }
     public string ProcessorId { get; set; }
     public string Name { get; set; }
     public string Manufacturer { get; set; }
@@ -62,7 +63,7 @@ public class ProcessorInfo : IEntity, IEquatable<ProcessorInfo>
     public int ThreadCount { get; set; }
     public int MaxClockSpeed { get; set; }
     public string Description { get; set; }
-    public HardwareChange HardwareChange { get; set; }
+    public HardwareChangeMode HardwareChangeMode { get; set; }
 
     public UseStatus UseStatus { get; set; }
 
@@ -72,6 +73,4 @@ public class ProcessorInfo : IEntity, IEquatable<ProcessorInfo>
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Processor;
 }

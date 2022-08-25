@@ -8,8 +8,6 @@ public interface IHardwareComponentInfo : IEntity
     
     string Description { get; set; }
     
-    HardwareChange HardwareChange { get; set; }
-    
     HardwareChangeMode HardwareChangeMode { get; set; }
     
     UseStatus UseStatus { get; set; }

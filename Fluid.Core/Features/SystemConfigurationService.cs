@@ -345,7 +345,7 @@ public class SystemConfigurationService : ISystemConfigurationService
             }
             foreach (var motherboard in systemConfiguration.Processors)
             {
-                if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(motherboard.ProcessorId) is null)
+                if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(motherboard.OemSerialNo) is null)
                     throw new Exception("Processor does not exist to delete");
                 await _unitOfWork.GetRepository<ProcessorInfo>().DeleteAsync(motherboard);
             }

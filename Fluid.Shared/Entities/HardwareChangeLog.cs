@@ -26,4 +26,6 @@ public class HardwareChangeLog : IEntity
     public string OldConfigJsonRaw { get; set; }
     
     public string NewConfigJsonRaw { get; set; }
+    
+    public string Remarks { get; set; }
 }

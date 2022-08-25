@@ -10,7 +10,6 @@ public class MouseInfo : IHardwareComponentInfo, IEquatable<MouseInfo>
                Manufacturer == other.Manufacturer &&
                Model == other.Model &&
                IsWireless == other.IsWireless &&
-               Description == other.Description &&
                MachineId == other.MachineId;
     }
 
@@ -46,7 +45,6 @@ public class MouseInfo : IHardwareComponentInfo, IEquatable<MouseInfo>
     public bool IsWireless { get; set; }
 
     public string Description { get; set; }
-    public HardwareChange HardwareChange { get; set; }
     public HardwareChangeMode HardwareChangeMode { get; set; }
 
     public UseStatus UseStatus { get; set; }
@@ -57,6 +55,4 @@ public class MouseInfo : IHardwareComponentInfo, IEquatable<MouseInfo>
     public DateTime? PurchaseDate { get; set; }
 
     public decimal Price { get; set; }
-
-    public ComponentType ComponentType => ComponentType.Mouse;
 }

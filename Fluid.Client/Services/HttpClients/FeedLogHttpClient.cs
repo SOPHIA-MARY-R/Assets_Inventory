@@ -26,7 +26,8 @@ public class FeedLogHttpClient
 
     public async Task<PaginatedResult<FeedLog>> GetAllAsync(int pageNumber, int pageSize, FeedLogFilter feedLogFilter)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/feed-log?pageNumber={pageNumber}&pageSize={pageSize}", feedLogFilter);
+        var response = await _httpClient.PostAsJsonAsync($"api/feed-log?pageNumber={pageNumber}&pageSize={pageSize}",
+            feedLogFilter);
         return await response.ToPaginatedResult<FeedLog>();
     }
 
@@ -34,15 +35,17 @@ public class FeedLogHttpClient
     {
         return await _httpClient.GetFromJsonAsync<Result>("api/feed-log/autovalidate");
     }
-    
+
     public async Task<Result<FeedLogCountDetails>> GetCountDetails()
     {
         return await _httpClient.GetFromJsonAsync<Result<FeedLogCountDetails>>("api/feed-log/count-details");
     }
 
-    public async Task<Result> AcceptAsync(string id)
+    public async Task<IResult> AcceptAsync(string id, string remarks)
     {
-        return await _httpClient.GetFromJsonAsync<Result>($"api/feed-log/{id}/accept");
+        var response = await _httpClient.PostAsJsonAsync($"api/feed-log/{id}/accept",
+            new AcceptChangeRequest() { Id = id, Remarks = remarks });
+        return await response.ToResult();
     }
 
     public async Task<Result> IgnoreAsync(string id)
