@@ -14,7 +14,7 @@ public class SystemConfigurationService : ISystemConfigurationService
     {
         _unitOfWork = unitOfWork;
     }
-
+ 
     public async Task<Result<SystemConfiguration>> GetSystemConfiguration(string assetTag)
     {
         try
