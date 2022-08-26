@@ -18,7 +18,8 @@ public class FeedLogService : IFeedLogService
     private readonly ISystemConfigurationService _systemConfigurationService;
     private readonly ICurrentUserService _currentUserService;
 
-    public FeedLogService(IUnitOfWork unitOfWork, ISystemConfigurationService systemConfigurationService, ICurrentUserService currentUserService)
+    public FeedLogService(IUnitOfWork unitOfWork, ISystemConfigurationService systemConfigurationService,
+        ICurrentUserService currentUserService)
     {
         _unitOfWork = unitOfWork;
         _systemConfigurationService = systemConfigurationService;
@@ -44,7 +45,8 @@ public class FeedLogService : IFeedLogService
     {
         try
         {
-            var existingFeedLog = await _unitOfWork.GetRepository<FeedLog>().Entities.FirstOrDefaultAsync(x => x.AssetTag == systemConfiguration.MachineDetails.AssetTag);
+            var existingFeedLog = await _unitOfWork.GetRepository<FeedLog>().Entities
+                .FirstOrDefaultAsync(x => x.AssetTag == systemConfiguration.MachineDetails.AssetTag);
             if (existingFeedLog is null)
             {
                 var feedLog = new FeedLog
@@ -88,6 +90,7 @@ public class FeedLogService : IFeedLogService
                     (SystemConfiguration)JsonSerializer.Deserialize(existingFeedLog.JsonRaw,
                         typeof(SystemConfiguration));
             }
+
             if (systemConfiguration == existingSystemConfiguration)
             {
                 existingFeedLog.LogDateTime = DateTime.Now;
@@ -98,7 +101,8 @@ public class FeedLogService : IFeedLogService
                 existingFeedLog.AssetBranch = systemConfiguration.MachineDetails.AssetBranch;
                 existingFeedLog.AssetLocation = systemConfiguration.MachineDetails.AssetLocation;
                 existingFeedLog.AssignedPersonName = systemConfiguration.MachineDetails.AssignedPersonName;
-                existingFeedLog.JsonRaw = JsonSerializer.Serialize(expectedFeedLogSysConfig, typeof(SystemConfiguration));
+                existingFeedLog.JsonRaw =
+                    JsonSerializer.Serialize(expectedFeedLogSysConfig, typeof(SystemConfiguration));
                 existingFeedLog.LogDateTime = DateTime.Now;
                 existingFeedLog.LogAttendStatus = LogAttendStatus.Unattended;
                 existingFeedLog.MachineName = systemConfiguration.MachineDetails.MachineName;
@@ -107,12 +111,14 @@ public class FeedLogService : IFeedLogService
                 existingFeedLog.Model = systemConfiguration.MachineDetails.Model;
                 existingFeedLog.OemSerialNo = systemConfiguration.MachineDetails.OemSerialNo;
             }
+
             await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(existingFeedLog, existingFeedLog.Id);
             await _unitOfWork.Commit();
             if (changeConfigAtClient)
             {
                 return await Result<SystemConfiguration>.SuccessAsync(existingSystemConfiguration);
             }
+
             return await Result<SystemConfiguration>.SuccessAsync(systemConfiguration);
         }
         catch (Exception e)
@@ -130,7 +136,8 @@ public class FeedLogService : IFeedLogService
                 .Specify(new FeedLogAssetLocationSpecification(filter.AssetLocation))
                 .Specify(new FeedLogAssetTagSpecification(filter.AssetTag))
                 .Specify(new FeedLogAttendStatusSpecification(filter.LogAttendStatus))
-                .Specify(new FeedLogDateRangeSpecification(new DateTime(filter.FromDateTimeTicks), new DateTime(filter.ToDateTimeTicks)))
+                .Specify(new FeedLogDateRangeSpecification(new DateTime(filter.FromDateTimeTicks),
+                    new DateTime(filter.ToDateTimeTicks)))
                 .Specify(new FeedLogMachineNameSpecification(filter.MachineName))
                 .Specify(new FeedLogMachineTypeSpecification(filter.MachineType))
                 .Specify(new FeedLogAssignedPersonNameSpecification(filter.AssignedPersonName))
@@ -161,12 +168,15 @@ public class FeedLogService : IFeedLogService
                 foreach (var feedLog in feedLogs)
                 {
                     var logSysConfig = JsonSerializer.Deserialize(feedLog.JsonRaw, typeof(SystemConfiguration));
-                    feedLog.LogAttendStatus = (SystemConfiguration)logSysConfig == systemConfiguration && systemConfiguration != null
+                    feedLog.LogAttendStatus = (SystemConfiguration)logSysConfig == systemConfiguration &&
+                                              systemConfiguration != null
                         ? LogAttendStatus.AutoValidated
                         : LogAttendStatus.Pending;
                 }
+
                 await _unitOfWork.AppDbContext.BulkUpdateAsync(feedLogs);
             }
+
             return await Result.SuccessAsync();
         }
         catch (Exception e)
@@ -193,7 +203,8 @@ public class FeedLogService : IFeedLogService
             };
             var existingAssetTags = await _unitOfWork.GetRepository<MachineInfo>().Entities.Select(x => x.AssetTag)
                 .ToListAsync();
-            countDetails.NewMachines = await _unitOfWork.GetRepository<FeedLog>().Entities.CountAsync(x => existingAssetTags.Contains(x.AssetTag));
+            countDetails.NewMachines = await _unitOfWork.GetRepository<FeedLog>().Entities
+                .CountAsync(x => existingAssetTags.Contains(x.AssetTag));
             return await Result<FeedLogCountDetails>.SuccessAsync(countDetails);
         }
         catch (Exception e)
@@ -216,7 +227,7 @@ public class FeedLogService : IFeedLogService
                 throw new Exception("Unable to parse System Configuration from the hardware log");
             var assetTag = feedLog.AssetTag;
             var oldSystemConfigurationCopy = (await _systemConfigurationService.GetSystemConfiguration(assetTag)).Data;
-            
+
             var hardwareChangeLog = new HardwareChangeLog
             {
                 Id = Guid.NewGuid()
@@ -231,6 +242,26 @@ public class FeedLogService : IFeedLogService
 
             await _unitOfWork.GetRepository<MachineInfo>().UpdateAsync(systemConfiguration.MachineDetails, assetTag);
 
+            var previousProcessors = await _unitOfWork.GetRepository<ProcessorInfo>().Entities
+                .Specify(new ProcessorInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousProcessor in previousProcessors)
+            {
+                previousProcessor.MachineId = null;
+                previousProcessor.UseStatus = UseStatus.UnderSpare;
+            }
+
+            foreach (var processor in systemConfiguration.Processors)
+            {
+                var oemSerialNo = processor.OemSerialNo;
+                processor.MachineId = assetTag;
+                processor.UseStatus = UseStatus.InUse;
+                if (await _unitOfWork.GetRepository<ProcessorInfo>().GetByIdAsync(processor.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<ProcessorInfo>().AddAsync(processor);
+                else
+                    await _unitOfWork.GetRepository<ProcessorInfo>().UpdateAsync(processor, oemSerialNo);
+            }
+            
             var previousMotherboards = await _unitOfWork.GetRepository<MotherboardInfo>().Entities
                 .Specify(new MotherboardInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
@@ -239,6 +270,7 @@ public class FeedLogService : IFeedLogService
                 previousMotherboard.MachineId = null;
                 previousMotherboard.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var motherboard in systemConfiguration.Motherboards)
             {
                 var oemSerialNo = motherboard.OemSerialNo;
@@ -258,17 +290,19 @@ public class FeedLogService : IFeedLogService
                 physicalMemoryInfo.MachineId = null;
                 physicalMemoryInfo.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var physicalMemory in systemConfiguration.PhysicalMemories)
             {
                 var oemSerialNo = physicalMemory.OemSerialNo;
                 physicalMemory.MachineId = assetTag;
                 physicalMemory.UseStatus = UseStatus.InUse;
-                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>().GetByIdAsync(physicalMemory.OemSerialNo) is null)
+                if (await _unitOfWork.GetRepository<PhysicalMemoryInfo>()
+                        .GetByIdAsync(physicalMemory.OemSerialNo) is null)
                     await _unitOfWork.GetRepository<PhysicalMemoryInfo>().AddAsync(physicalMemory);
                 else
                     await _unitOfWork.GetRepository<PhysicalMemoryInfo>().UpdateAsync(physicalMemory, oemSerialNo);
             }
-            
+
             var previousHardDisks = await _unitOfWork.GetRepository<HardDiskInfo>().Entities
                 .Specify(new HardDiskInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
@@ -277,6 +311,7 @@ public class FeedLogService : IFeedLogService
                 hardDisk.MachineId = null;
                 hardDisk.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var hardDisk in systemConfiguration.HardDisks)
             {
                 var oemSerialNo = hardDisk.OemSerialNo;
@@ -287,7 +322,7 @@ public class FeedLogService : IFeedLogService
                 else
                     await _unitOfWork.GetRepository<HardDiskInfo>().UpdateAsync(hardDisk, oemSerialNo);
             }
-            
+
             var previousKeyboards = await _unitOfWork.GetRepository<KeyboardInfo>().Entities
                 .Specify(new KeyboardInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
@@ -296,6 +331,7 @@ public class FeedLogService : IFeedLogService
                 previousKeyboard.MachineId = null;
                 previousKeyboard.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var keyboard in systemConfiguration.Keyboards)
             {
                 var oemSerialNo = keyboard.OemSerialNo;
@@ -306,7 +342,7 @@ public class FeedLogService : IFeedLogService
                 else
                     await _unitOfWork.GetRepository<KeyboardInfo>().UpdateAsync(keyboard, oemSerialNo);
             }
-            
+
             var previousMonitors = await _unitOfWork.GetRepository<MonitorInfo>().Entities
                 .Specify(new MonitorInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
@@ -315,6 +351,7 @@ public class FeedLogService : IFeedLogService
                 previousMonitor.MachineId = null;
                 previousMonitor.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var monitor in systemConfiguration.Monitors)
             {
                 var oemSerialNo = monitor.OemSerialNo;
@@ -325,7 +362,7 @@ public class FeedLogService : IFeedLogService
                 else
                     await _unitOfWork.GetRepository<MonitorInfo>().UpdateAsync(monitor, oemSerialNo);
             }
-            
+
             var previousMouses = await _unitOfWork.GetRepository<MouseInfo>().Entities
                 .Specify(new MouseInfoAssetTagSpecification(assetTag))
                 .ToListAsync();
@@ -334,6 +371,7 @@ public class FeedLogService : IFeedLogService
                 previousMouse.MachineId = null;
                 previousMouse.UseStatus = UseStatus.UnderSpare;
             }
+
             foreach (var mouse in systemConfiguration.Mouses)
             {
                 var oemSerialNo = mouse.OemSerialNo;
@@ -344,7 +382,47 @@ public class FeedLogService : IFeedLogService
                 else
                     await _unitOfWork.GetRepository<MouseInfo>().UpdateAsync(mouse, oemSerialNo);
             }
-            
+
+            var previousCameras = await _unitOfWork.GetRepository<CameraInfo>().Entities
+                .Specify(new  CameraInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousCamera in previousCameras)
+            {
+                previousCamera.MachineId = null;
+                previousCamera.UseStatus = UseStatus.UnderSpare;
+            }
+
+            foreach (var camera in systemConfiguration.Cameras)
+            {
+                var oemSerialNo = camera.OemSerialNo;
+                camera.MachineId = assetTag;
+                camera.UseStatus = UseStatus.InUse;
+                if (await _unitOfWork.GetRepository<CameraInfo>().GetByIdAsync(camera.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<CameraInfo>().AddAsync(camera);
+                else
+                    await _unitOfWork.GetRepository<CameraInfo>().UpdateAsync(camera, oemSerialNo);
+            }
+
+            var previousSpeakers = await _unitOfWork.GetRepository<SpeakerInfo>().Entities
+                .Specify(new  SpeakerInfoAssetTagSpecification(assetTag))
+                .ToListAsync();
+            foreach (var previousSpeaker in previousSpeakers)
+            {
+                previousSpeaker.MachineId = null;
+                previousSpeaker.UseStatus = UseStatus.UnderSpare;
+            }
+
+            foreach (var speaker in systemConfiguration.Speakers)
+            {
+                var oemSerialNo = speaker.OemSerialNo;
+                speaker.MachineId = assetTag;
+                speaker.UseStatus = UseStatus.InUse;
+                if (await _unitOfWork.GetRepository<SpeakerInfo>().GetByIdAsync(speaker.OemSerialNo) is null)
+                    await _unitOfWork.GetRepository<SpeakerInfo>().AddAsync(speaker);
+                else
+                    await _unitOfWork.GetRepository<SpeakerInfo>().UpdateAsync(speaker, oemSerialNo);
+            }
+
             feedLog.LogAttendStatus = LogAttendStatus.Accepted;
             feedLog.AttendingTechnicianId = _currentUserService.UserId;
             await _unitOfWork.GetRepository<FeedLog>().UpdateAsync(feedLog, feedLog.Id);
@@ -361,7 +439,7 @@ public class FeedLogService : IFeedLogService
             hardwareChangeLog.NewConfigJsonRaw = feedLog.JsonRaw;
             hardwareChangeLog.Model = systemConfiguration.MachineDetails.Model;
             await _unitOfWork.GetRepository<HardwareChangeLog>().AddAsync(hardwareChangeLog);
-            
+
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Hardware Accepted successfully!");
         }

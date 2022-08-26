@@ -1,0 +1,42 @@
+﻿@using Fluid.Shared.Contracts
+@using Fluid.Shared.Enums
+<EditForm Model="HardwareComponent" OnSubmit="Submit">
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h5">Change Use Status</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="HardwareComponent.OemSerialNo" Label="Serial Number" Variant="Variant.Outlined" Margin="Margin.Dense" ReadOnly/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect Dense @bind-Value="HardwareComponent.UseStatus" Label="" Variant="Variant.Outlined" Margin="Margin.Dense">
+                        <MudSelectItem Value="UseStatus.UnderSpare">Under Spare</MudSelectItem>
+                        <MudSelectItem Value="UseStatus.UnderRepair">Under Repair</MudSelectItem>
+                        <MudSelectItem Value="UseStatus.ToBeScrapped">To be scrapped</MudSelectItem>
+                        <MudSelectItem Value="UseStatus.Disposed">Disposed</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton DisableElevation Variant="Variant.Text" Color="Color.Default" OnClick="MudDialog.Cancel" Class="ml-2">Cancel</MudButton>
+            <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="ml-2">Save Changes</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code
+{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public IHardwareComponentInfo HardwareComponent { get; set; }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(HardwareComponent));
+    }
+}

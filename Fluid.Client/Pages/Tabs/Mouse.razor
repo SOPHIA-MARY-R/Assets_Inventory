@@ -1,4 +1,5 @@
 ﻿@using Fluid.Client.Pages.Dialogs
+@using Fluid.Shared.Enums
 @inject MouseMasterHttpClient masterHttpClient
 <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<MouseInfo>>>(OnServerReloadAsync))" @ref="_mouseTable">
     <ToolBarContent>
@@ -23,8 +24,15 @@
             <MudCheckBox Checked=@context.IsWireless ReadOnly/>
         </MudTd>
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
+            <MudTooltip Text="Change Use Status">
+                <MudIconButton Color="Color.Info" Disabled="@(context.UseStatus == UseStatus.InUse)" Variant="Variant.Filled" Icon="@Icons.Filled.TrackChanges" OnClick="@(() => InvokeChangeUseStatus(context))"/>                
+            </MudTooltip>
+            <MudTooltip Text="Edit">
+                <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />                
+            </MudTooltip>
+            <MudTooltip Text="Delete">
+                <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />    
+            </MudTooltip>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

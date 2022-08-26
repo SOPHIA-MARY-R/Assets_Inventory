@@ -73,6 +73,9 @@ public class SystemConfiguration : IEquatable<SystemConfiguration>
 
     public List<MouseInfo> Mouses { get; set; } = new();
 
+    public List<CameraInfo> Cameras { get; set; } = new();
+
+    public List<SpeakerInfo> Speakers { get; set; } = new();
     public List<KeyboardInfo> Keyboards { get; set; } = new();
 
     public List<MonitorInfo> Monitors { get; set; } = new();
