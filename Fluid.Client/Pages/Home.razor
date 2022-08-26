@@ -1,29 +1,82 @@
 ﻿@page "/"
 @inject FeedLogHttpClient FeedLogHttpClient
+@attribute [AllowAnonymous]
 <PageTitle>Home</PageTitle>
 
 <MudText Typo="Typo.h3" Class="ma-4" Color=Color.Primary>Hardware info harvester</MudText>
-<div class="d-flex flex-column mb-6">
-        <div class="d-flex justify-space-between">
-            <div class="d-flex flex-wrap gap-x-4">
-                <MudPaper Elevation="0" Outlined Class="px-4 py-4"><MudAvatar Size="Size.Small" Color="Color.Primary">3</MudAvatar> New Logs</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-4"><MudAvatar Size="Size.Small" Color="Color.Primary">3</MudAvatar> Pending</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-4"><MudAvatar Size="Size.Small" Color="Color.Primary">2</MudAvatar> Changes</MudPaper>
-                <MudPaper Elevation="0" Outlined Class="px-4 py-4"><MudAvatar Size="Size.Small" Color="Color.Primary">1</MudAvatar> New Machine</MudPaper>
-            </div>
-        </div>
-</div>
-<MudText Typo="@Typo.h4" Class="mt-4">Recent Logs</MudText>
-<MudCard>
-    <MudCardContent Class="pa-5 ma-6">
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/> 23/08/2022 9:52:15 am <MudChip Size="Size.Small" Color="Color.Secondary">PC</MudChip> <MudChip Size="Size.Small" Color="Color.Error">Unattended</MudChip></MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/> 23/08/2022 11:50:15 am <MudChip Size="Size.Small" Color="Color.Secondary">Laptop</MudChip> <MudChip Size="Size.Small" Color="Color.Success">Attended</MudChip></MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 01:45:13 pm <MudChip Size="Size.Small" Color="Color.Secondary">Workstation</MudChip> <MudChip Size="Size.Small" Color="Color.Warning">Pending</MudChip></MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 02:00:13 pm <MudChip Size="Size.Small" Color="Color.Secondary">Workstation</MudChip> <MudChip Size="Size.Small" Color="Color.Success">Attended</MudChip></MudPaper>
-       <MudPaper Elevation="0" Outlined Class="pa-4 ma-2"><MudIconButton Icon="@Icons.Outlined.NotificationsActive"/>23/08/2022 02:30:18 pm <MudChip Size="Size.Small" Color="Color.Secondary">PC</MudChip> <MudChip Size="Size.Small" Color="Color.Warning">Pending</MudChip></MudPaper>
-    </MudCardContent>
-</MudCard>
 
+ <MudGrid Class="my-4">
+     @if (_countDetails is not null)
+    {
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="0" Outlined Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudAvatar Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;">
+                    <MudIcon Icon="@Icons.Material.Filled.FiberNew" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">New Logs</MudText>
+                    <MudText Typo="Typo.h4">@_countDetails.NewLogs</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="0" Outlined Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudAvatar Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Pending" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Pending Logs</MudText>
+                    <MudText Typo="Typo.h4">@_countDetails.Pending</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="0" Outlined Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudAvatar Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;">
+                    <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Asset Changes</MudText>
+                    <MudText Typo="Typo.h4">@_countDetails.Accepted</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="0" Outlined Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudAvatar Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Computer" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">New Machines</MudText>
+                    <MudText Typo="Typo.h4">@_countDetails.NewMachines</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        }
+    </MudGrid>
+    <MudDivider Class="my-6" />
+
+@code{
+    private FeedLogCountDetails _countDetails;
+    private DateRange _searchDateRange;
+    protected override async Task OnInitializedAsync()
+    {
+        _searchDateRange = new DateRange(periodService.FromDate, periodService.ToDate);
+        var result = await FeedLogHttpClient.GetCountDetails();
+        if (result.Succeeded)
+        {
+            _countDetails = result.Data;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                snackbar.Add(message, Severity.Error);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+}
 
 
 
