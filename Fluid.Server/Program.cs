@@ -5,7 +5,7 @@ using Fluid.Server;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Logging.ClearProviders().AddConsole();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddDatabase(builder.Configuration, "DefaultConnection");
