@@ -40,7 +40,7 @@ public class SystemConfigurationService
 
     public async Task<bool> LogSystemConfiguration()
     {
-        //if (SystemConfiguration is null) return false;
+        if (SystemConfiguration.MachineDetails.AssetTag == "unset") return false;
         var response = await _httpClient.PostAsJsonAsync("api/feed-log/feed", SystemConfiguration);
         var result = await response.ToResult<SystemConfiguration>();
         if (result.Succeeded)
