@@ -15,13 +15,12 @@
                 <MudTextField Label="Invoice No" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.InvoiceNo"/>
             </MudItem>
             <MudItem xs="12" sm="6" md="3">
-                <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
-                <!--<MudDatePicker PickerVariant=PickerVariant.Dialog @ref=picker @bind-Date=Model.PurchaseDate Label="Purchase Date">
+                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Margin="Margin.Dense" Label="Purchase Date">
                         <PickerActions Context="date">
-                            <MudButton OnClick=@(() => picker.Close(false))>Cancel</MudButton>
-                            <MudButton Color=Color.Primary OnClick=@(() => picker.Close())>Ok</MudButton>
+                             <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                             <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
                         </PickerActions>
-                    </MudDatePicker>-->
+                    </MudDatePicker>
             </MudItem>
             <MudItem xs="12" sm="6" md="3">
                 <MudTextField Label="Vendor Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.VendorName" />
@@ -34,7 +33,7 @@
             </MudItem>
         </MudGrid>
     <MudDivider Class="my-4"/>
-     <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add" @onclick="OpenDialog">Add</MudButton>
+     <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add" @onclick="(() => OpenDialog(new PurchaseItem()))">Add</MudButton>
    
     <div style="margin-top:10px">
           <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar Items="Model.PurchaseItems">
@@ -67,11 +66,21 @@
 
     [Parameter]
     public bool IsEditMode { get; set; } = false;
-     private MudDatePicker picker;
-     private void OpenDialog()
+    private MudDatePicker _picker;
+    private async void OpenDialog(PurchaseItem purchaseItem)
     {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<PurchaseItemDialog>("", options);
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(PurchaseItemDialog.Model), purchaseItem);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = DialogService.Show<PurchaseItemDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if(!result.Cancelled)
+        {
+            var resultItem = result.Data as PurchaseItem;
+            if(Model.PurchaseItems.Any(x => x.HSN == resultItem.HSN))
+                Model.PurchaseItems.Remove(Model.PurchaseItems.First(x => x.HSN == purchaseItem.HSN));
+            Model.PurchaseItems.Add(resultItem);
+        }
     }
 
 }
