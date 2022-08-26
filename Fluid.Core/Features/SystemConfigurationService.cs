@@ -14,7 +14,7 @@ public class SystemConfigurationService : ISystemConfigurationService
     {
         _unitOfWork = unitOfWork;
     }
-
+ 
     public async Task<Result<SystemConfiguration>> GetSystemConfiguration(string assetTag)
     {
         try
@@ -43,6 +43,12 @@ public class SystemConfigurationService : ISystemConfigurationService
                     .Where(x => x.MachineId == assetTag)
                     .ToListAsync(),
                 Monitors = await _unitOfWork.GetRepository<MonitorInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Cameras = await _unitOfWork.GetRepository<CameraInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Speakers = await _unitOfWork.GetRepository<SpeakerInfo>().Entities
                     .Where(x => x.MachineId == assetTag)
                     .ToListAsync()
             };

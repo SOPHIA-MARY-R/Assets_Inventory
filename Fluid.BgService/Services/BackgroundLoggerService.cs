@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Fluid.BgService.Models;
 using Fluid.Shared.Models;
+using static System.Threading.Tasks.Task;
 
 namespace Fluid.BgService.Services;
 
@@ -20,10 +21,10 @@ public class BackgroundLoggerService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             if (DateTime.Now < _options.Value.NextLogDateTime)
-                await Task.Delay(_options.Value.NextLogDateTime - DateTime.Now, stoppingToken);
+                await Delay(_options.Value.NextLogDateTime - DateTime.Now);            
             _systemConfigurationService.SystemConfiguration.Motherboards = SystemConfigurationService.GetMotherboardsDetails().ToList();
             _systemConfigurationService.SystemConfiguration.PhysicalMemories = SystemConfigurationService.GetPhysicalMemoryInfos().ToList();
-            _systemConfigurationService.SystemConfiguration.HardDisks = SystemConfigurationService.GetHardDisksInfo().ToList();
+            _systemConfigurationService.SystemConfiguration.HardDisks = SystemConfigurationService.GetHardDisksInfo().ToList();  
             await _systemConfigurationService.LogSystemConfiguration();
         }
     }

@@ -7,6 +7,7 @@
     <div class="d-flex flex-column mb-6">
         <div>
             <MudButton Class="ml-auto" DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _mudTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
+            <MudButton Class="ml-2" DisableElevation Variant="Variant.Filled" Color="Color.Dark" OnClick="(() => _mudTable.ReloadServerData())" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Surface">Export to Excel</MudButton>
         </div>    
         <div class="d-flex pt-6 pb-4">
             <MudGrid>

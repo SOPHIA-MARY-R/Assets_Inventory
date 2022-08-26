@@ -35,6 +35,7 @@ public static class DependencyInjection
         services.AddTransient<IFeedLogService, FeedLogService>();
         services.AddTransient<IHardwareChangeLogService, HardwareChangeLogService>();
         services.AddTransient<ISystemConfigurationService, SystemConfigurationService>();
+        services.AddTransient<IReportService, ReportService>();
         services.AddTransient<ISpeakerMasterService, SpeakerMasterService>();
         return services;
     }

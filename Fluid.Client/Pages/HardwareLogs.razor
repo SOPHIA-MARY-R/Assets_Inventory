@@ -16,6 +16,7 @@
                 }
             </div>
             <div class="d-flex flex-wrap">
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateReport" StartIcon="@Icons.Custom.FileFormats.FileExcel" Class="me-2">Export</MudButton>
                 <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="AutoValidateLogs" StartIcon="@Icons.Material.Filled.Autorenew" Class="me-2">Autovalidate</MudButton>
                 <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Secondary" OnClick="(() => _feedLogTable.ReloadServerData())" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface">Reload</MudButton>
             </div>
