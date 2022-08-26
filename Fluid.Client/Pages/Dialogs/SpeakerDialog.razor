@@ -3,7 +3,7 @@
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
     <MudDialog>
         <TitleContent>
-            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />Add Speaker</MudText>
+            <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Filled.Speaker" Class="mr-3 mb-n1" />Add Speaker</MudText>
         </TitleContent>
         <DialogContent>
             <MudGrid>
@@ -31,7 +31,7 @@
                     <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
                 </MudItem>
                 <MudItem xs="12" Class="d-flex">
-                    <MudSwitch @bind-Checked="Model.IsBlueTooth" Color="Color.Info" Label="IsBlueTooth" Class="mx-auto" />
+                    <MudSwitch @bind-Checked="Model.IsBlueTooth" Color="Color.Info" Label="Bluetooth" Class="mx-auto" />
                 </MudItem>
             </MudGrid>
         </DialogContent>

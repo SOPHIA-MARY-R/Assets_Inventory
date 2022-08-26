@@ -44,6 +44,12 @@ public class SystemConfigurationService : ISystemConfigurationService
                     .ToListAsync(),
                 Monitors = await _unitOfWork.GetRepository<MonitorInfo>().Entities
                     .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Cameras = await _unitOfWork.GetRepository<CameraInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
+                    .ToListAsync(),
+                Speakers = await _unitOfWork.GetRepository<SpeakerInfo>().Entities
+                    .Where(x => x.MachineId == assetTag)
                     .ToListAsync()
             };
             return await Result<SystemConfiguration>.SuccessAsync(sysConfig);
