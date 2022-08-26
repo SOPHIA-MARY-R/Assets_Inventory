@@ -1,35 +1,63 @@
 ﻿@page "/Purchase-Order"
+@inject IDialogService DialogService
 @using Fluid.Shared.Entities
+<MudText Typo="@Typo.h5" Color="@Color.Primary">Purchase Order</MudText>
 <EditForm Model="Model">
-    <MudButton Class="me-2">Cancel</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" DisableElevation>Submit</MudButton>
-    <MudGrid>
-        <MudItem xs="12">
-            <MudTextField Label="Invoice No" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.InvoiceNo"/>
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField Label="Vendor Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.VendorName" />
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField Label="Sales man" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Salesman" />
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField Label="Bought Through" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.BoughtThrough"/>
-        </MudItem>
-    </MudGrid>
-
-      <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add">Create</MudButton>
-      <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar Items="Model.PurchaseItems">
-       <HeaderContent>
-            <MudTh>HSN</MudTh>
-        </HeaderContent>
-        <RowTemplate Context="row">
-            <MudTd>@row.HSN</MudTd>
-        </RowTemplate>
-    </MudTable>
+     <div class="d-flex flex-wrap">
+        <div class="ml-auto gap-x-2 d-flex">
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" DisableElevation Label="Save" />
+            <MudFab Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="@(() => navigationManager.NavigateTo("Machine-Master"))" DisableElevation Label="Cancel" />
+        </div>
+    </div>
+    <MudDivider Class="my-4"/>
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField Label="Invoice No" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.InvoiceNo"/>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField Label="Purchase Date" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.PurchaseDate" Placeholder="DD/MM/YYYY"/>
+                <!--<MudDatePicker PickerVariant=PickerVariant.Dialog @ref=picker @bind-Date=Model.PurchaseDate Label="Purchase Date">
+                        <PickerActions Context="date">
+                            <MudButton OnClick=@(() => picker.Close(false))>Cancel</MudButton>
+                            <MudButton Color=Color.Primary OnClick=@(() => picker.Close())>Ok</MudButton>
+                        </PickerActions>
+                    </MudDatePicker>-->
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField Label="Vendor Name" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.VendorName" />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField Label="Sales man" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.Salesman" />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField Label="Bought Through" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="Model.BoughtThrough"/>
+            </MudItem>
+        </MudGrid>
+    <MudDivider Class="my-4"/>
+     <MudButton Color=Color.Success Variant=Variant.Filled DisableElevation StartIcon="@Icons.Material.Filled.Add" @onclick="OpenDialog">Add</MudButton>
+   
+    <div style="margin-top:10px">
+          <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar Items="Model.PurchaseItems">
+           <HeaderContent>
+                <MudTh>HSN</MudTh>
+                <MudTh>Serial Number</MudTh>
+                <MudTh>Manufacturer</MudTh>
+                <MudTh>Item Name</MudTh>
+                <MudTh>Quantity</MudTh>
+                <MudTh>Net Rate</MudTh>
+                <MudTh>Price</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="row">
+                <MudTd>@row.HSN</MudTd>
+                <MudTd>@row.SerialNumber</MudTd>
+                <MudTd>@row.Manufacturer</MudTd>
+                <MudTd>@row.ItemName</MudTd>
+                <MudTd>@row.Quantity</MudTd>
+                <MudTd>@row.NetRate</MudTd>
+                <MudTd>@row.Price</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
 </EditForm>
 @code
 {
@@ -39,5 +67,11 @@
 
     [Parameter]
     public bool IsEditMode { get; set; } = false;
+     private MudDatePicker picker;
+     private void OpenDialog()
+    {
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<PurchaseItemDialog>("", options);
+    }
 
 }
