@@ -202,7 +202,27 @@
                     <MudTh>Size</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd>@context.OemSerialNo</MudTd>
+                    <MudTd>
+                        @context.OemSerialNo
+                        <br/>
+                        @switch (context.HardwareChangeMode)
+                        {
+                            case HardwareChangeMode.Unchanged:
+                                <MudChip Color="Color.Success" Size="Size.Small">@context.HardwareChangeMode.ToDescriptionString()</MudChip>
+                                break;
+                            case HardwareChangeMode.AddedExisting:
+                                <MudChip Color="Color.Primary" Size="Size.Small">@context.HardwareChangeMode.ToDescriptionString()</MudChip>
+                                break;
+                            case HardwareChangeMode.AddedNew:
+                                <MudChip Color="Color.Info" Size="Size.Small">@context.HardwareChangeMode.ToDescriptionString()</MudChip>
+                                break;
+                            case HardwareChangeMode.Deleted:
+                                <MudChip Color="Color.Error" Size="Size.Small">@context.HardwareChangeMode.ToDescriptionString()</MudChip>
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    </MudTd>
                     <MudTd>@context.Manufacturer</MudTd>
                     <MudTd>@context.Model</MudTd>
                     <MudTd>@context.MediaType</MudTd>
