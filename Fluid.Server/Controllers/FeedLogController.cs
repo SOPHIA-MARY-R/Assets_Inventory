@@ -48,7 +48,7 @@ public class FeedLogController : ControllerBase
         return Ok(await _feedLogService.GetCountDetails());
     }
 
-    [HttpGet("{id}/accept")]
+    [HttpPost("{id}/accept")]
     public async Task<IActionResult> AcceptLog(string id, AcceptChangeRequest changeRequest)
     {
         return Ok(await _feedLogService.AcceptLog(id, changeRequest));

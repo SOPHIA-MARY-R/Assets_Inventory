@@ -12,7 +12,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration, string connectionStringKey)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(connectionStringKey)));
+        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(connectionStringKey), builder => builder.EnableRetryOnFailure(5)));
         services.AddTransient<IUnitOfWork, UnitOfWork>();
         services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
         services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppDbContext>();
