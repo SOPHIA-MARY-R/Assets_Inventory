@@ -19,14 +19,11 @@ public class BackgroundLoggerService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var jsonRaw = JsonSerializer.Serialize(_systemConfigurationService.SystemConfiguration,
-                typeof(SystemConfiguration));
-            var previousSysConfig = JsonSerializer.Deserialize(jsonRaw, typeof(SystemConfiguration));
+            if (DateTime.Now < _options.Value.NextLogDateTime)
+                await Task.Delay(_options.Value.NextLogDateTime - DateTime.Now, stoppingToken);
             _systemConfigurationService.SystemConfiguration.Motherboards = SystemConfigurationService.GetMotherboardsDetails().ToList();
             _systemConfigurationService.SystemConfiguration.PhysicalMemories = SystemConfigurationService.GetPhysicalMemoryInfos().ToList();
             _systemConfigurationService.SystemConfiguration.HardDisks = SystemConfigurationService.GetHardDisksInfo().ToList();
-            if (DateTime.Now < _options.Value.NextLogDateTime || previousSysConfig != _systemConfigurationService.SystemConfiguration) 
-                await Task.Delay(_options.Value.NextLogDateTime - DateTime.Now, stoppingToken);
             await _systemConfigurationService.LogSystemConfiguration();
         }
     }
