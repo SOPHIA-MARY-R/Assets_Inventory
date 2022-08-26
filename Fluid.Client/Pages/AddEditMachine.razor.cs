@@ -73,6 +73,26 @@ public partial class AddEditMachine
         _model.Motherboards.Add(updatedInfo);
     }
 
+    private async Task InvokeHardDiskDialog(bool isNew, bool isEdit, HardDiskInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineHardDiskDialog.IsNew), isNew },
+            { nameof(AddEditMachineHardDiskDialog.IsEdit), isEdit },
+            { nameof(AddEditMachineHardDiskDialog.Model), info }
+        };
+        var options = new DialogOptions
+            { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineHardDiskDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as HardDiskInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (_model.HardDisks.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            _model.HardDisks.Remove(_model.HardDisks.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        _model.HardDisks.Add(updatedInfo);
+    }
+
     private async Task InvokePhysicalMemoryDialog(bool isNew, bool isEdit, PhysicalMemoryInfo info)
     {
         var parameters = new DialogParameters
@@ -160,6 +180,11 @@ public partial class AddEditMachine
     private void DeletePhysicalMemoryInfo(PhysicalMemoryInfo physicalMemoryInfo)
     {
         _model.PhysicalMemories.Remove(physicalMemoryInfo);
+    }
+
+    private void DeleteHardDiskInfo(HardDiskInfo hardDisk)
+    {
+        _model.HardDisks.Remove(hardDisk);
     }
     
     private void DeleteKeyboardInfo(KeyboardInfo keyboardInfo)

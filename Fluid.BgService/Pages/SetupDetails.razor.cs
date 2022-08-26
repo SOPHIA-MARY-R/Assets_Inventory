@@ -55,6 +55,23 @@ public partial class SetupDetails
         Model.Motherboards.Add(updatedInfo);
     }
 
+    private async Task InvokeHardDiskDialog(HardDiskInfo info)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddEditMachineHardDiskDialog.Model), info }
+        };
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<AddEditMachineHardDiskDialog>("", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        var updatedInfo = result.Data as HardDiskInfo;
+        var oemSerialNo = updatedInfo?.OemSerialNo.Trim();
+        if (Model.HardDisks.Any(x => x.OemSerialNo.Trim() == oemSerialNo))
+            Model.HardDisks.Remove(Model.HardDisks.First(x => x.OemSerialNo.Trim() == oemSerialNo));
+        Model.HardDisks.Add(updatedInfo);
+    }
+
     private async Task InvokePhysicalMemoryDialog(PhysicalMemoryInfo info)
     {
         var parameters = new DialogParameters
