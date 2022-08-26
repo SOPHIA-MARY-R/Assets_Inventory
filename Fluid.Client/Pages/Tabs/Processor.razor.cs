@@ -1,5 +1,7 @@
 ﻿using Fluid.Client.Pages.Dialogs;
+using Fluid.Shared.Contracts;
 using Fluid.Shared.Entities;
+using Fluid.Shared.Enums;
 using Fluid.Shared.Models;
 using Fluid.Shared.Requests;
 using MudBlazor;
@@ -46,6 +48,34 @@ public partial class Processor
             foreach (var message in response.Messages)
             {
                 snackbar.Add(message, Severity.Error);
+            }
+        }
+    }
+
+    private async Task InvokeChangeUseStatus(IHardwareComponentInfo hardwareComponentInfo)
+    {
+        var parameters = new DialogParameters();
+        if (hardwareComponentInfo.UseStatus != UseStatus.InUse)
+        {
+            parameters.Add(nameof(ChangeUseStatusDialog.HardwareComponent), hardwareComponentInfo);
+        }
+        var options = new DialogOptions { CloseButton = true, FullWidth = true, DisableBackdropClick = true, Position = DialogPosition.TopCenter };
+        var dialog = dialogService.Show<ChangeUseStatusDialog>("Change Use Status", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var updatedHardwareComponent = result.Data;
+            var apiResult = await masterHttpClient.EditAsync(updatedHardwareComponent as ProcessorInfo);
+            if(apiResult.Succeeded)
+            {
+                snackbar.Add("Updated Use status successfully", Severity.Success);
+            }
+            else
+            {
+                foreach (var message in apiResult.Messages)
+                {
+                    snackbar.Add(message, Severity.Error);
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿@using Fluid.Client.Pages.Dialogs
+@using Fluid.Shared.Enums
 @using MudBlazor.Extensions
 @inject CameraMasterHttpClient masterHttpClient
 <MudTable Dense Elevation=0 Outlined Hover HorizontalScrollbar ServerData="@(new Func<TableState, Task<TableData<CameraInfo>>>(OnServerReloadAsync))" @ref="_CameraTable">
@@ -17,7 +18,6 @@
         <MudTh>IsWireLess</MudTh>
         <MudTh>Resolution</MudTh>
         <MudTh>HasBuiltInMic</MudTh>
- 
         <MudTh Style="column-span: 2">Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -32,12 +32,16 @@
         <MudTd>
             <MudCheckBox Checked=@context.HasBuiltInMic ReadOnly/>
         </MudTd>
-        
         <MudTd>
-            <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />
-        </MudTd>
-        <MudTd>
-            <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />
+            <MudTooltip Text="Change Use Status">
+                <MudIconButton Color="Color.Info" Disabled="@(context.UseStatus == UseStatus.InUse)" Variant="Variant.Filled" Icon="@Icons.Filled.TrackChanges" OnClick="@(() => InvokeChangeUseStatus(context))"/>                
+            </MudTooltip>
+            <MudTooltip Text="Edit">
+                <MudIconButton Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Filled.Edit" OnClick="@(() => InvokeModal(context.OemSerialNo))" />                
+            </MudTooltip>
+            <MudTooltip Text="Delete">
+                <MudIconButton Color="Color.Error" Variant="Variant.Filled" Icon="@Icons.Filled.Delete" OnClick="@(() => Delete(context.OemSerialNo))" />    
+            </MudTooltip>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
