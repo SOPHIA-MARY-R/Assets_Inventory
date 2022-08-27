@@ -1,6 +1,6 @@
 ﻿namespace Fluid.Shared.Entities;
 
-public class PurchaseInfo
+public class PurchaseInfo : IEntity
 {
     [Key]
     public string InvoiceNo { get; set; }

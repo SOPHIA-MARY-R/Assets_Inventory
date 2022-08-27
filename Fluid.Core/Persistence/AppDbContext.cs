@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<HardwareChangeLog> HardwareChangeLogs { get; set; }
     public DbSet<SpeakerInfo> SpeakerMaster { get; set; }
     public DbSet<PurchaseInfo> PurchaseMaster { get; set; }
+    public DbSet<PurchaseItem> PurchaseItemMaster { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +40,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
         modelBuilder.Ignore<IdentityUserClaim<string>>();
         modelBuilder.Entity<AppUser>().ToTable("Technicians", "dbo");
         modelBuilder.Entity<FeedLog>().Ignore(x => x.ShowDetails);
+        modelBuilder.Entity<PurchaseItem>().ToTable("PurchaseItemMaster");
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             if (entityType.ClrType.GetInterface(nameof(IHardwareComponentInfo)) != null)
                 modelBuilder.Entity(entityType.ClrType).Ignore(nameof(IHardwareComponentInfo.HardwareChangeMode));

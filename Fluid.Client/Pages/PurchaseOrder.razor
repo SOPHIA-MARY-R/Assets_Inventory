@@ -1,7 +1,8 @@
 ﻿@page "/Purchase-Order"
-@inject IDialogService DialogService
-@using Fluid.Shared.Entities
-<MudText Typo="@Typo.h5" Color="@Color.Primary">Purchase Order</MudText>
+<PageTitle>Machine Master | Fluid</PageTitle>
+
+<MudText Typo="Typo.h5" Color="Color.Primary">Machine Master</MudText>
+<MudText Typo="Typo.body1">Manage all machines in the inventory</MudText>
 <EditForm Model="Model">
      <div class="d-flex flex-wrap">
         <div class="ml-auto gap-x-2 d-flex">
@@ -69,18 +70,18 @@
     private MudDatePicker _picker;
     private async void OpenDialog(PurchaseItem purchaseItem)
     {
-        var parameters = new DialogParameters();
-        parameters.Add(nameof(PurchaseItemDialog.Model), purchaseItem);
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = DialogService.Show<PurchaseItemDialog>("", parameters, options);
-        var result = await dialog.Result;
-        if(!result.Cancelled)
-        {
-            var resultItem = result.Data as PurchaseItem;
-            if(Model.PurchaseItems.Any(x => x.HSN == resultItem.HSN))
-                Model.PurchaseItems.Remove(Model.PurchaseItems.First(x => x.HSN == purchaseItem.HSN));
-            Model.PurchaseItems.Add(resultItem);
-        }
+        // var parameters = new DialogParameters();
+        // parameters.Add(nameof(PurchaseItemDialog.Model), purchaseItem);
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        // var dialog = await DialogService.Show<PurchaseItemDialog>("", parameters, options);
+        // var result = await dialog.Result;
+        // if(!result.Cancelled)
+        // {
+        //     var resultItem = result.Data as PurchaseItem;
+        //     if(Model.PurchaseItems.Any(x => x.HSN == resultItem.HSN))
+        //         Model.PurchaseItems.Remove(Model.PurchaseItems.First(x => x.HSN == purchaseItem.HSN));
+        //     Model.PurchaseItems.Add(resultItem);
+        // }
     }
 
 }

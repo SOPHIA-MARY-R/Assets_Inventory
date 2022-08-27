@@ -110,6 +110,48 @@
             <MudExpansionPanel>
                 <TitleContent>
                     <div class="d-flex mr-4">
+                        <MudText Typo="Typo.h6">Hard Disks</MudText>
+                        <MudBadge Class="ml-2" Content="_model.HardDisks.Count" Color="Color.Secondary" Origin="Origin.CenterRight" />
+                        <div class="ml-auto d-flex gap-x-2">
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeHardDiskDialog(false, false, new HardDiskInfo()))">Add Existing</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation OnClick="(() => InvokeHardDiskDialog(true, false, new HardDiskInfo()))">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Default" DisableElevation OnClick="(() => _model.HardDisks.Clear())">Leave empty</MudButton>
+                        </div>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudTable Elevation="0" Outlined Dense Bordered HorizontalScrollbar Items="_model.HardDisks">
+                        <HeaderContent>
+                            <MudTh>Serial Number</MudTh>
+                            <MudTh>Manufacturer</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>Media Type</MudTh>
+                            <MudTh>Bus Type</MudTh>
+                            <MudTh>Health Condition</MudTh>
+                            <MudTh>Size</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.OemSerialNo</MudTd>
+                            <MudTd>@context.Manufacturer</MudTd>
+                            <MudTd>@context.Model</MudTd>
+                            <MudTd>@context.MediaType</MudTd>
+                            <MudTd>@context.BusType</MudTd>
+                            <MudTd>@context.HealthCondition</MudTd>
+                            <MudTd>@context.Size</MudTd>
+                            <MudTd>
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" DisableElevation OnClick="(() => InvokeHardDiskDialog(false, true, context))">Edit</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" DisableElevation OnClick="(() => DeleteHardDiskInfo(context))" >Delete</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            No hard disks added!
+                        </NoRecordsContent>
+                    </MudTable>
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex mr-4">
                         <MudText Typo="Typo.h6">Physical Memories</MudText>
                         <MudBadge Class="ml-2" Content="_model.PhysicalMemories.Count" Color="Color.Secondary" Origin="Origin.CenterRight"/>
                         <div class="ml-auto d-flex gap-x-2">

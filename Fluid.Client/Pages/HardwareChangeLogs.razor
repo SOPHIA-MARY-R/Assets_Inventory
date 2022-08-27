@@ -99,6 +99,11 @@
                 <br/>
                 <MudChip Color="Color.Primary" Size="Size.Small">Old: @context.OldAssetLocation</MudChip>
             </MudTd>
+            <MudTd>
+                @context.Remarks
+                <br />
+                <MudText Typo="Typo.body1">@context.Remarks</MudText>
+            </MudTd>
             <MudTd>@context.ChangeDateTime</MudTd>
         </RowTemplate>
     </MudTable>
